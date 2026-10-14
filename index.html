@@ -1795,10 +1795,10 @@ function stageInfo(){const{w,h}=S.stage;let x0=Infinity,y0=Infinity,x1=0,y1=0;S.
   return `<span>Lienzo real <strong>${w} × ${h} px</strong></span><span>${fmt(w*h/1e6)} Mpx</span>`+
     (fitStd?`<span>Cabe en <strong>${fitStd[0]}×${fitStd[1]}</strong> (${fitStd[2]})${fitStd[0]===w&&fitStd[1]===h?" exacto":""}</span>`:`<span class="warn">Mayor que 8K: hará falta más de una salida</span>`)+
     (out?`<span class="warn">Hay pantallas fuera del lienzo</span>`:"")}
-function commit(){if(syncAutoStage())syncStage();$("stInfo").innerHTML=stageInfo();save();snap();renderAll()}
+function commit(){if(syncAutoStage())syncStage();$("stInfo").innerHTML=stageInfo();save();snapUndo();renderAll()}
 /* ---------- deshacer / rehacer (Ctrl+Z, Ctrl+Mayús+Z / Ctrl+Y) ---------- */
 let UNDO=[],REDO=[],lastSnap=null;
-function snap(){let j;try{j=JSON.stringify(S)}catch(e){return}if(lastSnap===null){lastSnap=j;syncUndo();return}
+function snapUndo(){let j;try{j=JSON.stringify(S)}catch(e){return}if(lastSnap===null){lastSnap=j;syncUndo();return}
   if(j===lastSnap)return;UNDO.push(lastSnap);if(UNDO.length>100)UNDO.shift();REDO=[];lastSnap=j;syncUndo()}
 function restoreSnap(j){S=JSON.parse(j);lastSnap=j;ensureElecs();sel=new Set([...sel].filter(id=>S.screens.some(s=>s.id===id)));
   [["mProject","project"],["mPlace","place"],["mDate","date"],["mResp","resp"],["mVer","ver"]].forEach(([id,k])=>{const el=$(id);if(el)el.value=(S.meta||{})[k]||""});
@@ -2186,7 +2186,7 @@ let tt;function toast(m){const t=$("toast");t.textContent=m;t.hidden=false;clear
 /* ---------- arranque ---------- */
 load();dedupeNames();S.screens.forEach(s=>{const p=s.mid&&panelOf(s.mid);if(p&&!s.wm&&p.wm)s.wm=p.wm});if(!S.logo)S.logo=defaultState().logo;initForm();initExport();renderBaseInfo();loadBase();syncStage();syncOpts();loadLogo();
 window.addEventListener("resize",()=>{clearTimeout(window._r);window._r=setTimeout(fit,120)});
-requestAnimationFrame(()=>{if(syncAutoStage())syncStage();$("stInfo").innerHTML=stageInfo();fit();renderAll();snap()});
+requestAnimationFrame(()=>{if(syncAutoStage())syncStage();$("stInfo").innerHTML=stageInfo();fit();renderAll();snapUndo()});
 if(document.fonts)document.fonts.ready.then(render);
 </script>
 
