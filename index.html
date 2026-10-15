@@ -202,6 +202,7 @@ input[type=range]{padding:0;accent-color:var(--accent)}
 .mat-h{font-family:var(--f-display);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:6px 12px 8px}
 table.mat td:nth-child(2),table.mat th:nth-child(2),table.mat td:nth-child(4),table.mat th:nth-child(4){text-align:left}
 table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
+table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:normal;min-width:220px}table.pt td:nth-child(4),table.pt th:nth-child(4){text-align:right;min-width:0;color:inherit;white-space:nowrap}table.pt tr.warn td{color:var(--danger)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:6px;font-size:13px;z-index:9;max-width:calc(100% - 32px)}
 @media (max-width:860px){
   .app{grid-template-columns:1fr}
@@ -479,11 +480,13 @@ table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
   <div class="viewport" id="vp"><div class="pad"><canvas id="view" tabindex="0" aria-label="Lienzo del pixel map. Arrastra pantallas; flechas para mover 1 px, Mayús+flechas 10 px."></canvas></div></div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Pantalla</th><th>X</th><th>Y</th><th>Ancho</th><th>Alto</th><th>Módulos</th><th>Metros</th><th>m²</th><th>Mód/puerto</th><th>Puertos</th><th>Asignación</th><th>Peso</th><th>Kg/col.</th><th>Pot. máx</th><th>Mód/línea</th><th>Líneas</th></tr></thead>
+      <thead><tr><th>Pantalla</th><th>X</th><th>Y</th><th>Ancho</th><th>Alto</th><th>Módulos</th><th>Metros</th><th>m²</th><th title="Máximo de módulos que caben en una boca">Máx. mód/puerto</th><th>Puertos</th><th>Asignación</th><th>Peso</th><th>Kg/col.</th><th>Pot. máx</th><th>Mód/línea</th><th>Líneas</th></tr></thead>
       <tbody id="tbody"></tbody>
       <tfoot><tr id="tfoot"></tr></tfoot>
     </table>
     <p class="hint" style="padding:0 12px 12px" id="foot"></p>
+    <h2 class="mat-h">Bocas de datos · carga</h2>
+    <table class="mat pt"><thead><tr><th>Electrónica</th><th>Boca</th><th>Pantallas en la boca</th><th>Módulos</th><th>Píxeles</th><th>Carga</th></tr></thead><tbody id="portTb"></tbody></table>
     <h2 class="mat-h">Material y stock</h2>
     <table class="mat"><thead><tr><th>Tipo</th><th>Elemento</th><th>Cantidad</th><th>Detalle</th></tr></thead><tbody id="mat"></tbody></table>
     <p class="hint" style="padding:6px 12px 14px">Cantidades exactas sin repuestos. Las cabeceras de corriente no indican el conector del lado de distribución (Schuko, CEE o multipar), que depende del cuadro.</p>
@@ -615,6 +618,7 @@ table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
 <details><summary>5 · Datos y corriente</summary>
 <ul>
 <li><b>Píxeles por puerto</b>: 655.360 (8 bit 60 Hz) o 327.680 (10 bit / 120 Hz). Con eso y el máximo del módulo se calcula cuántos módulos caben por boca.</li>
+<li><b>Bocas de datos · carga</b> (debajo de la tabla de pantallas, y en la ficha PDF/Word): una fila por boca con todas las pantallas que pasan por ella y sus módulos («volado derecho 1 (12) + volado derecho 2 (18) + volado derecho 3 (12)»), el total frente al máximo («42 / 60»), los píxeles y el % del puerto. En rojo si se pasa.</li>
 <li><b>Carga de cada línea</b>: en el plano de corriente, junto a cada triángulo, sale «A · %» (sobre los amperios de la toma); en la tabla, la columna Líneas da el % de la línea más cargada y Puertos el % de la boca de datos más llena. En rojo con «!» si se pasa del uso máximo o del máximo de módulos por línea. Si el módulo no tiene <b>W máx/mód</b>, pone «sin W»: rellénalo para poder calcular.</li>
 <li><b>Corriente</b>: tensión, amperios de la línea y % de uso. Si el módulo tiene un máximo por línea, manda ese número; si no, se calcula con el consumo.</li>
 <li><b>Recorrido, inicio y forma</b> generales (columnas o filas, esquina, serpiente o zigzag). <b>Esquinas vistas</b> desde delante o desde detrás (como se cablea).</li>
@@ -2068,15 +2072,22 @@ function renderTable(){
   $("tbody").innerHTML=S.screens.map(s=>{const w=W(s),h=H(s),mw=s.cols*s.cw/1000,mh=s.rows*s.ch/1000,md=effData(s),nd=nData(s),mp=effPow(s),np=nPow(s),wt=(s.wm||0)*s.cols*s.rows;
     mods+=s.cols*s.rows;m2+=mw*mh;lines+=np||0;watts+=wt;if(mp===null)noPow=true;
     minX=Math.min(minX,s.x);minY=Math.min(minY,s.y);maxX=Math.max(maxX,s.x+w);maxY=Math.max(maxY,s.y+h);
-    return `<tr><td class="n"><i style="background:hsl(${HUES[hueOf(s)]} 70% 45%)"></i>${esc(s.name)}</td><td>${s.x}</td><td>${s.y}</td><td>${w}</td><td>${h}</td><td>${s.cols}×${s.rows}</td><td>${mw.toFixed(2)}×${mh.toFixed(2)}</td><td>${fmt(m2Of(s))}</td><td>${md}</td><td>${(()=>{if(nd==null)return"—";const q=portsOf(A,s);if(!q.length)return nd;const mx=Math.max(...q.map(x=>Math.round(x.runPx/S.opts.pxPort*100))),ov=q.some(x=>x.runPx>S.opts.pxPort);return `${nd} <span${ov?' class="warn"':""} title="Carga de la boca más llena (% de ${S.opts.pxPort.toLocaleString("es-ES")} px)">· ${mx}%</span>`})()}</td><td>${rangeTxt(A,s)}</td><td>${s.kg?fmt(kgOf(s))+" kg":"—"}</td><td>${s.kg?fmt(kgCol(s)):"—"}</td><td>${wt?fmt(wt/1000)+" kW":"—"}</td><td>${mp??"—"}</td><td>${(()=>{if(np==null)return"—";const ls=[...new Set(powRuns(s).map(x=>x.line).filter(Boolean))],ov=ls.some(l=>l.over);if(!s.wm)return `${np} <span class="warn" title="Falta el consumo (W) del módulo">· sin W</span>`;const mx=ls.length?Math.max(...ls.map(l=>l.pct)):0;return `${np} <span${ov?' class="warn"':""} title="Carga de la línea más cargada (% de ${S.opts.amp} A)">· ${mx}%${ov?" !":""}</span>`})()}</td></tr>`}).join("")||`<tr><td colspan="16" style="text-align:left;color:var(--muted)">Sin pantallas.</td></tr>`;
+    return `<tr><td class="n"><i style="background:hsl(${HUES[hueOf(s)]} 70% 45%)"></i>${esc(s.name)}</td><td>${s.x}</td><td>${s.y}</td><td>${w}</td><td>${h}</td><td>${s.cols}×${s.rows}</td><td>${mw.toFixed(2)}×${mh.toFixed(2)}</td><td>${fmt(m2Of(s))}</td><td>${md}</td><td>${(()=>{if(nd==null)return"—";const q=portsOf(A,s);if(!q.length)return nd;const top=q.reduce((a,b)=>b.runPx>a.runPx?b:a,q[0]),mx=Math.round(top.runPx/S.opts.pxPort*100),ov=q.some(x=>x.runPx>S.opts.pxPort);return `${nd} <span${ov?' class="warn"':""} title="Boca más llena: ${top.runN} módulos en la boca (contando las pantallas unidas) · % de ${S.opts.pxPort.toLocaleString("es-ES")} px">· ${top.runN} mód · ${mx}%</span>`})()}</td><td>${rangeTxt(A,s)}</td><td>${s.kg?fmt(kgOf(s))+" kg":"—"}</td><td>${s.kg?fmt(kgCol(s)):"—"}</td><td>${wt?fmt(wt/1000)+" kW":"—"}</td><td>${mp??"—"}</td><td>${(()=>{if(np==null)return"—";const ls=[...new Set(powRuns(s).map(x=>x.line).filter(Boolean))],ov=ls.some(l=>l.over);if(!s.wm)return `${np} <span class="warn" title="Falta el consumo (W) del módulo">· sin W</span>`;const mx=ls.length?Math.max(...ls.map(l=>l.pct)):0;return `${np} <span${ov?' class="warn"':""} title="Carga de la línea más cargada (% de ${S.opts.amp} A)">· ${mx}%${ov?" !":""}</span>`})()}</td></tr>`}).join("")||`<tr><td colspan="16" style="text-align:left;color:var(--muted)">Sin pantallas.</td></tr>`;
   const n=S.screens.length,amps=watts/S.opts.volt;
   $("tfoot").innerHTML=n?`<th>Total · ocupación</th><td>${minX}</td><td>${minY}</td><td>${maxX-minX}</td><td>${maxY-minY}</td><td>${mods}</td><td>—</td><td>${fmt(m2)}</td><td>—</td><td>${ports}</td><td>${A.used} electrónica${A.used===1?"":"s"}</td><td>${(()=>{const t=S.screens.reduce((a,s)=>a+kgOf(s),0),miss=S.screens.some(s=>!s.kg);return t?fmt(t)+" kg"+(miss?"+?":""):"—"})()}</td><td>—</td><td>${watts?fmt(watts/1000)+" kW":"—"}</td><td>${watts?fmt(amps)+" A":"—"}</td><td>${lines}${noPow?"+?":""}</td>`:"";
 }
+// una fila por boca: suma de todas las pantallas que pasan por ella (cableado unido o «continúa en»)
+function portRows(A){const M=new Map();
+  S.screens.forEach(s=>portsOf(A,s).forEach(a=>{const k=a.e+":"+a.p;if(!M.has(k))M.set(k,{a,parts:[],max:effData(s)});const R=M.get(k);R.parts.push([s.name,a.n]);R.max=Math.min(R.max,effData(s))}));
+  return [...M.values()].sort((x,y)=>x.a.e-y.a.e||x.a.p-y.a.p).map(R=>{const a=R.a,x=A.elecs[a.e],pct=Math.round(a.runPx/S.opts.pxPort*100);
+    return{elec:`${x.letter} · ${x.E.name}`,lab:A.lab(a),labB:A.labB(a)||"—",scr:R.parts.map(([n,k])=>R.parts.length>1?`${n} (${k})`:n).join(" + "),n:a.runN,max:R.max,px:a.runPx,pct,over:a.runPx>S.opts.pxPort||a.runN>R.max||a.over}})}
+function renderPorts(){const A=assign(),rows=portRows(A);
+  $("portTb").innerHTML=rows.length?rows.map(r=>`<tr${r.over?' class="warn"':""}><td>${esc(r.elec)}</td><td><strong>${esc(r.lab)}</strong>${r.labB!=="—"?` · resp. ${esc(r.labB)}`:""}</td><td>${esc(r.scr)}</td><td><strong>${r.n}</strong> / ${r.max}</td><td>${r.px.toLocaleString("es-ES")}</td><td><strong>${r.pct}%</strong>${r.over?" ¡SUPERA!":""}</td></tr>`).join(""):`<tr><td colspan="6" style="text-align:left;color:var(--muted)">Sin bocas.</td></tr>`}
 const m2Of=s=>s.cols*s.cw/1000*s.rows*s.ch/1000;
 const fmt=v=>v.toLocaleString("es-ES",{maximumFractionDigits:2});
 function renderProc(){renderElecs();renderScalers();renderBoxes();const v=$("sElec").value;$("sElec").innerHTML=elecOpts(v||S.elecs[S.elecs.length-1].id,true)}
 function renderMat(){$("mat").innerHTML=S.screens.length?material().map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td><td><strong>${r[2]}</strong></td><td>${esc(r[3])}</td></tr>`).join(""):`<tr><td colspan="4" style="text-align:left;color:var(--muted)">Sin pantallas.</td></tr>`}
-function renderAll(){render();renderList();renderTable();renderProc();renderMat();renderTpl();
+function renderAll(){render();renderList();renderTable();renderPorts();renderProc();renderMat();renderTpl();
   const o=S.opts;$("foot").textContent=`Puertos calculados a ${o.pxPort.toLocaleString("es-ES")} px por puerto Gigabit. Líneas de corriente a ${o.volt} V · ${o.amp} A usando el ${o.fac}% (${fmt(o.volt*o.amp*o.fac/100)} W por línea) con el consumo máximo de cada módulo. La fila de total en «Mód/línea» muestra la corriente total a ${o.volt} V. Comprueba siempre con la ficha del fabricante y el procesador real.`}
 const STD=[[1280,720,"HD 720p"],[1920,1080,"Full HD"],[1920,1200,"WUXGA"],[2560,1440,"QHD"],[3840,1080,"Dual Full HD"],[3840,2160,"4K UHD"],[4096,2160,"4K DCI"],[7680,2160,"Dual 4K"],[7680,4320,"8K UHD"]];
 function syncAutoStage(){if(S.opts.autoStage===false||!S.screens.length)return false;
@@ -2316,7 +2327,7 @@ async function exportPdf(){
   const y1=section(mapImage("none"),kv);
   tbl(y1,["","Electrónica","Modelo","Escalador","Entrada · fuente","Bocas (+ resp.)","Píxeles","Zona de entrada","Pantallas"],elecRows(A),{columnStyles:{0:{cellWidth:7,fontStyle:"bold",halign:"center"},1:{fontStyle:"bold"},5:{halign:"right"},6:{halign:"right"},8:{cellWidth:70}},
     didParseCell:d=>{if(d.section==="body"&&d.column.index===0){const x=A.elecs.filter(z=>z.screens.length)[d.row.index];if(x){const c=x.color.match(/\w\w/g).map(h=>parseInt(h,16));d.cell.styles.fillColor=c;d.cell.styles.textColor=[17,17,17]}}}});
-  tbl(doc.lastAutoTable.finalY+5,["Pantalla","Módulo","X","Y","Resolución","Módulos","Medida (m)","m2","Mód/puerto","Puertos","Asignación","Peso","Kg/col.","Pot. máx","Mód/línea","Líneas"],
+  tbl(doc.lastAutoTable.finalY+5,["Pantalla","Módulo","X","Y","Resolución","Módulos","Medida (m)","m2","Máx. mód/puerto","Puertos","Asignación","Peso","Kg/col.","Pot. máx","Mód/línea","Líneas"],
     S.screens.map(s=>[s.name,s.pn||"—",s.x,s.y,`${W(s)}×${H(s)}`,`${s.cols}×${s.rows} = ${s.cols*s.rows}`,`${(s.cols*s.cw/1000).toFixed(2)}×${(s.rows*s.ch/1000).toFixed(2)}`,n2(m2Of(s)),effData(s),nData(s)??"—",rangeTxt(A,s),s.kg?`${n2(kgOf(s))} kg`:"—",s.kg?n2(kgCol(s)):"—",s.wm?`${n2(s.wm*s.cols*s.rows/1000)} kW`:"—",effPow(s)??"—",nPow(s)??"—"]));
 
   // --- página 2: datos ---
@@ -2331,8 +2342,8 @@ async function exportPdf(){
   let y2b=doc.lastAutoTable.finalY+5;
   {const en=noteRows(A).filter(r=>r[0]!=="Pantalla");if(en.length){tbl(y2b,["Notas de montaje","Equipo","Nota"],en.map(r=>r.map(c=>String(c).replace(/→/g,">"))),{headStyles:{fillColor:[30,147,160],textColor:[255,255,255],fontStyle:"bold"},columnStyles:{1:{fontStyle:"bold"}}});y2b=doc.lastAutoTable.finalY+5}}
   if(scalers().length){tbl(y2b,["Procesador de señal","Entradas · fuentes","Salida","A electrónica LED","Entrada LED","Resolución","Comprobación"],scalerRows(A),{columnStyles:{0:{fontStyle:"bold"},3:{fontStyle:"bold"},5:{fontStyle:"bold"}}});y2b=doc.lastAutoTable.finalY+5}
-  const pr=[];S.screens.forEach(s=>portsOf(A,s).forEach(a=>pr.push([`${A.elecs[a.e].letter} · ${A.elecs[a.e].E.name}`,A.lab(a),A.labB(a)||"—",s.name,a.n,a.px.toLocaleString("es-ES"),`${Math.round(a.px/o.pxPort*100)}%`])));
-  tbl(y2b,["Electrónica","Boca","Respaldo","Pantalla","Módulos","Píxeles","Carga"],pr,{columnStyles:{6:{halign:"right"},5:{halign:"right"},4:{halign:"right"}}});
+  const pr=portRows(A).map(r=>[r.elec,r.lab,r.labB,r.scr,`${r.n} / ${r.max}`,r.px.toLocaleString("es-ES"),`${r.pct}%${r.over?" !":""}`]);
+  tbl(y2b,["Electrónica","Boca","Respaldo","Pantallas en la boca","Módulos","Píxeles","Carga"],pr,{columnStyles:{6:{halign:"right"},5:{halign:"right"},4:{halign:"right"}}});
 
   // --- página 3: corriente ---
   doc.addPage();head("CORRIENTE · LÍNEAS DE ALIMENTACIÓN");
@@ -2452,8 +2463,8 @@ async function exportDocx(){
   {const en=noteRows(A).filter(r=>r[0]!=="Pantalla");if(en.length)body.push(H2("Notas de montaje de electrónicas"),table(["Tipo","Equipo","Nota"],en,{widths:[16,28,56],bold:[1]}))}
   if(scalers().length)body.push(H2("Procesadores de señal"),table(["Procesador de señal","Entradas · fuentes","Salida","A electrónica LED","Entrada LED","Resolución","Comprobación"],scalerRows(A),{bold:[0,3,5]}));
   body.push(H2("Bocas"));
-  const pr=[];S.screens.forEach(s=>portsOf(A,s).forEach(a=>pr.push([`${A.elecs[a.e].letter} · ${A.elecs[a.e].E.name}`,A.lab(a),A.labB(a)||"—",s.name,a.n,a.px.toLocaleString("es-ES"),`${Math.round(a.px/o.pxPort*100)}%`])));
-  body.push(table(["Electrónica","Boca","Respaldo","Pantalla","Módulos","Píxeles","Carga"],pr,{right:[4,5,6]}));
+  const pr=portRows(A).map(r=>[r.elec,r.lab,r.labB,r.scr,`${r.n} / ${r.max}`,r.px.toLocaleString("es-ES"),`${r.pct}%${r.over?" !":""}`]);
+  body.push(table(["Electrónica","Boca","Respaldo","Pantallas en la boca","Módulos","Píxeles","Carga"],pr,{right:[4,5,6]}));
   // corriente
   body.push(PB(),H1("Corriente · líneas de alimentación"),img(mapImage("power"),900,300));
   body.push(kvTable([["Línea",`${o.volt} V · ${o.amp} A · uso máx. ${o.fac}% = ${n2(lineW)} W`],["Potencia máx. total",watts?`${n2(watts/1000)} kW`:"sin datos"],["Corriente total",watts?`${n2(watts/o.volt)} A`:"—"],["Nº de líneas",`${lines}${noPow?" + pantallas sin consumo":""}`]]),H2("Líneas"));
