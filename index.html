@@ -189,6 +189,7 @@ input[type=range]{padding:0;accent-color:var(--accent)}
 .credit strong{color:var(--accent);font-weight:600}
 .basebox{border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--sunk);display:flex;flex-direction:column;gap:8px;font-size:13px}
 .basebox code{font-family:var(--f-mono);font-size:11px}
+.badge.prov{background:#6b5bd6;color:#fff}
 .badge.base{background:var(--fg);color:var(--bg)}
 .mosline{grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--muted)}
 .mosline button{padding:4px 8px;font-size:12px}
@@ -276,11 +277,11 @@ table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
   <div id="tabMods" class="tabpane" hidden>
     <section>
       <h2>Biblioteca de módulos</h2>
-      <p class="hint" style="margin-top:0">Crea y edita los cabinets. Marca <strong>En Telesonic</strong> los que tenéis en almacén y cuántas unidades: aparecen primero al agregar pantallas y el proyecto avisa si te quedas corto.</p>
+      <p class="hint" style="margin-top:0">Crea y edita los cabinets. Marca <strong>En Telesonic</strong> los que tenéis en almacén y cuántas unidades: aparecen primero al agregar pantallas y el proyecto avisa si te quedas corto. Si no es vuestro, pon su <strong>proveedor habitual</strong> (Fluge…): se agrupa por proveedor y el material dice a quién alquilarlo.</p>
       <div class="basebox" id="baseBox"><strong>Biblioteca base del equipo</strong><span id="baseInfo">Sin biblioteca base cargada.</span>
         <div class="row"><button id="bBaseExport">Exportar como biblioteca base</button></div>
         <p class="hint" style="margin:0">Genera <code>biblioteca.json</code>. Súbelo al repositorio de GitHub junto a <code>index.html</code> y todos tus compañeros recibirán esos módulos y electrónicas al abrir la herramienta. Lo que añada cada uno se queda solo en su dispositivo. Los elementos <strong>BASE</strong> se actualizan desde ese archivo cada vez que se abre la herramienta: para personalizar uno, usa «Duplicar».</p></div>
-      <div class="row" style="margin:10px 0"><button class="primary" id="bNewMod">+ Nuevo módulo</button><label class="check"><input type="checkbox" id="fModStock">Solo Telesonic</label></div>
+      <div class="row" style="margin:10px 0"><button class="primary" id="bNewMod">+ Nuevo módulo</button><label class="check"><input type="checkbox" id="fModStock">Solo Telesonic</label><select id="fModProv" style="width:auto;padding:4px 6px;font-size:12px" aria-label="Filtrar por proveedor"></select></div>
       <div class="list" id="modLib"></div>
     </section>
   </div>
@@ -561,6 +562,7 @@ table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
 <ul>
 <li><b>Módulos</b>: cada cabinet con medidas (mm), resolución, consumo máximo (W), peso, máximo por línea de corriente, máximo por boca de datos y conector (powerCON azul/blanco, TRUE1 negro).</li>
 <li>Marca <b>En Telesonic</b> y las <b>unidades en almacén</b>: el material avisa si faltan módulos o equipos para el proyecto.</li>
+<li>Si un módulo o electrónica no es vuestro, escribe su <b>Proveedor habitual</b> (p. ej. Fluge). Sale con etiqueta en la biblioteca, agrupado en el desplegable de pantallas, filtrable en «Todos los proveedores» y en el material como «Alquiler · Fluge».</li>
 <li><b>Usar en pantalla nueva</b> lleva el módulo al paso 2. <b>Duplicar</b> sirve para crear variantes.</li>
 <li><b>Electrónicas</b>: procesadores con bocas, capacidad en píxeles, si tienen escalador y sus entradas. La elección automática usa primero los de Telesonic.</li>
 <li><b>Exportar como biblioteca base</b> genera <code>biblioteca.json</code>. Subido junto a la herramienta en GitHub, todos los compañeros ven esos equipos con la etiqueta <b>BASE</b>; lo que cada uno añada se queda solo en su dispositivo.</li>
@@ -606,6 +608,7 @@ table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
 <li><b>Ir a una electrónica</b>: haz clic (sin arrastrar) en su etiqueta de color del dibujo y la columna de ajustes baja hasta su tarjeta en 6 · Electrónicas.</li>
 <li><b>Mover una electrónica entera</b>: arrastra su etiqueta de color (arriba a la izquierda del recuadro discontinuo), haz <b>doble clic</b> en una de sus pantallas o pulsa <b>Seleccionar sus pantallas</b> en su tarjeta (6 · Electrónicas) y luego arrastra o usa las flechas.</li>
 <li><b>Llevar a 0,0</b> coloca la selección en el origen; <b>Ajustar vista</b> encaja el zoom.</li>
+<li>Una <b>pantalla compuesta</b> se dibuja como un solo test pattern: mismo color, una sola diagonal, círculo y rótulo para todo el conjunto (resolución total y «10×2 + 10×1»); solo cambia la proporción de los módulos de la franja.</li>
 <li><b>4 · Dibujo</b>: nombre y resolución, nº de módulo, diagonales, círculo, coordenadas, fondo, patrón y <b>logo</b> sobre cada pantalla.</li>
 </ul></details>
 
@@ -752,14 +755,14 @@ function loadLib(){
   if(ver<9){PROC_SEED.forEach(sd=>{const q=PROCLIB.find(z=>z.id===sd.id);if(q&&q.ly===undefined&&sd.ly)q.ly=sd.ly});try{localStorage.setItem("pixelmap-lib-ver","9")}catch(e){}saveLib()}
 }
 function saveLib(){try{localStorage.setItem("pixelmap-lib-mod",JSON.stringify(LIB));localStorage.setItem("pixelmap-lib-proc",JSON.stringify(PROCLIB))}catch(e){}}
-const pLabel=p=>`${p.stock?"★ ":""}${p.n} · ${fmtN(p.w)}×${fmtN(p.h)} mm · ${p.x}×${p.y} px${p.wm?` · ${p.wm} W`:""}`;
+const pLabel=p=>`${p.stock?"★ ":p.prov?`[${p.prov}] `:""}${p.n} · ${fmtN(p.w)}×${fmtN(p.h)} mm · ${p.x}×${p.y} px${p.wm?` · ${p.wm} W`:""}`;
 const fmtN=v=>String(v).replace(".",",");
 function panelOf(v){if(!v||v==="custom")return null;return LIB.find(p=>p.id===v)||null}
 const procOf=id=>PROCLIB.find(p=>p.id===id)||null;
 function buildPanelSelect(val){
-  const st=LIB.filter(p=>p.stock),ot=LIB.filter(p=>!p.stock);
+  const st=LIB.filter(p=>p.stock),ot=LIB.filter(p=>!p.stock&&!p.prov),provs=[...new Set(LIB.filter(p=>!p.stock&&p.prov).map(p=>p.prov))].sort();
   const grp=(label,arr)=>arr.length?`<optgroup label="${label}">${arr.map(p=>`<option value="${p.id}">${esc(pLabel(p))}</option>`).join("")}</optgroup>`:"";
-  $("panel").innerHTML=grp("En Telesonic",st)+grp("Otros módulos",ot)+`<option value="custom">Personalizado…</option>`;
+  $("panel").innerHTML=grp("En Telesonic",st)+provs.map(v=>grp(esc(v),LIB.filter(p=>!p.stock&&p.prov===v))).join("")+grp("Otros módulos",ot)+`<option value="custom">Personalizado…</option>`;
   $("panel").value=val&&(val==="custom"||panelOf(val))?val:(st[0]||LIB[0]||{id:"custom"}).id;
 }
 const STAGES=[[1920,1080],[3840,2160],[1920,1200],[2560,1440],[4096,2160],[7680,1080]];
@@ -1241,9 +1244,13 @@ function usage(){
 let armed=null;
 function renderLib(){
   const U=usage(),only=$("fModStock").checked;
-  $("modLib").innerHTML=LIB.filter(p=>!only||p.stock).map(p=>{const used=U.mods[p.id]||0,low=p.stock&&p.qty>0&&used>p.qty;
+  const provs=[...new Set([...LIB,...PROCLIB].map(p=>p.prov).filter(Boolean))].sort();
+  {const fp=$("fModProv"),cur=fp.value;fp.innerHTML=`<option value="">Todos los proveedores</option><option value="__tls">Telesonic</option>`+provs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");fp.value=[...fp.options].some(o=>o.value===cur)?cur:"";
+   let dl=document.getElementById("dl-prov");if(!dl){dl=document.createElement("datalist");dl.id="dl-prov";document.body.appendChild(dl)}dl.innerHTML=provs.map(v=>`<option value="${esc(v)}">`).join("")}
+  const fpv=$("fModProv").value;
+  $("modLib").innerHTML=LIB.filter(p=>(!only||p.stock)&&(!fpv||(fpv==="__tls"?p.stock:p.prov===fpv&&!p.stock))).map(p=>{const used=U.mods[p.id]||0,low=p.stock&&p.qty>0&&used>p.qty;
     return `<div class="lib${p.stock?" stock":""}" data-id="${p.id}">
-    <div class="hd">${p.base?'<span class="badge base" title="Viene de la biblioteca base del equipo">BASE</span>':""}${p.stock?'<span class="badge">TELESONIC</span>':""}<input data-f="n" value="${esc(p.n)}" aria-label="Nombre del módulo"></div>
+    <div class="hd">${p.base?'<span class="badge base" title="Viene de la biblioteca base del equipo">BASE</span>':""}${p.stock?'<span class="badge">TELESONIC</span>':""}${!p.stock&&p.prov?`<span class="badge prov" title="Proveedor habitual">${esc(p.prov.toUpperCase())}</span>`:""}<input data-f="n" value="${esc(p.n)}" aria-label="Nombre del módulo"></div>
     <label>Ancho (mm)<input type="number" min="1" step="0.1" data-f="w" value="${p.w}"></label>
     <label>Alto (mm)<input type="number" min="1" step="0.1" data-f="h" value="${p.h}"></label>
     <label>Resolución X<input type="number" min="1" data-f="x" value="${p.x}"></label>
@@ -1263,12 +1270,13 @@ function renderLib(){
       <label class="full" style="grid-column:1/-1">Por proyecto (aunque haya varias pantallas)<textarea data-f="perProj" rows="1" placeholder="Llave especial × 1">${esc(p.perProj||"")}</textarea></label>
     </div></details>
     <label class="check"><input type="checkbox" data-f="stock"${p.stock?" checked":""}>En Telesonic</label>
+    ${p.stock?"":`<label>Proveedor habitual<input data-f="prov" list="dl-prov" value="${esc(p.prov||"")}" placeholder="p. ej. Fluge"></label>`}
     <label>Unidades en almacén<input type="number" min="0" data-f="qty" value="${p.qty||""}"${p.stock?"":" disabled"}></label>
     <div class="info">P${(p.w/p.x).toFixed(2).replace(".",",")} · ${fmt(maxData({rx:p.x,ry:p.y,kd:p.kd}))} mód/boca · ${(()=>{const q={wm:p.wm,k:p.k},m=maxPow(q);return m===null?"sin consumo":`${m} mód/línea${p.k?"":` (${S.opts.fac}% de ${S.opts.amp} A)`}${powWarn(q)?` <span class="warn">⚠ ${p.k}×${p.wm} W = ${fmt(p.k*p.wm)} W supera ${S.opts.amp} A a ${S.opts.volt} V</span>`:""}`})()}${used?` · <span${low?' class="warn"':""}>en proyecto: ${used}${p.stock&&p.qty?` / ${p.qty}`:""}</span>`:""}</div>
     <div class="acts"><button data-a="use">Usar en pantalla nueva</button><button data-a="dup">Duplicar</button><button data-a="del" class="ghost danger">${armed===p.id?"¿Seguro? Pulsa otra vez":"Eliminar"}</button></div></div>`}).join("")||`<p class="hint">No hay módulos${only?" marcados como Telesonic":""}.</p>`;
   $("procLib").innerHTML=PROCLIB.map(p=>{const used=U.procs[p.id]||0,low=p.stock&&p.qty>0&&used>p.qty;
     return `<div class="lib${p.stock?" stock":""}" data-id="${p.id}">
-    <div class="hd">${p.base?'<span class="badge base" title="Viene de la biblioteca base del equipo">BASE</span>':""}${p.stock?'<span class="badge">TELESONIC</span>':""}<input data-f="n" value="${esc(p.n)}" aria-label="Nombre de la electrónica"></div>
+    <div class="hd">${p.base?'<span class="badge base" title="Viene de la biblioteca base del equipo">BASE</span>':""}${p.stock?'<span class="badge">TELESONIC</span>':""}${!p.stock&&p.prov?`<span class="badge prov" title="Proveedor habitual">${esc(p.prov.toUpperCase())}</span>`:""}<input data-f="n" value="${esc(p.n)}" aria-label="Nombre de la electrónica"></div>
     <label>Bocas (puertos)<input type="number" min="1" data-f="p" value="${p.p}"></label>
     <label>Capas (layers)<input type="number" min="1" data-f="ly" value="${p.ly||""}" placeholder="?"></label>
     <label>Capacidad (Mpx)<input type="number" min="0.01" step="0.01" data-f="c" value="${+(p.c/1e6).toFixed(3)}"></label>
@@ -1277,15 +1285,17 @@ function renderLib(){
     <label>Píxeles de entrada (1:1)<input type="text" data-f="in" value="${p.inW?`${p.inW}x${p.inH}`:""}" placeholder="${p.sc?"no aplica":"ej. 1920x1200"}" title="Total de píxeles que puede recibir, con la forma que quieras"></label>
     <label>Lado máx. de entrada (px)<input type="number" min="0" data-f="side" value="${p.side||""}" placeholder="${p.sc?"no aplica":"opcional"}"></label>
     <label class="check"><input type="checkbox" data-f="stock"${p.stock?" checked":""}>En Telesonic</label>
+    ${p.stock?"":`<label>Proveedor habitual<input data-f="prov" list="dl-prov" value="${esc(p.prov||"")}" placeholder="p. ej. Fluge"></label>`}
     <label>Unidades<input type="number" min="0" data-f="qty" value="${p.qty||""}"${p.stock?"":" disabled"}></label>
     <div class="info">${p.sc?"Escala la señal de entrada":"Sin escalador: entrada 1:1"} · ${fmt(p.c/p.p/1000)} kpx por boca de media${used?` · <span${low?' class="warn"':""}>en proyecto: ${used}${p.stock&&p.qty?` / ${p.qty}`:""}</span>`:""}</div>
     <div class="acts"><button data-a="dup">Duplicar</button><button data-a="del" class="ghost danger">${armed===p.id?"¿Seguro? Pulsa otra vez":"Eliminar"}</button></div></div>`}).join("");
 }
 function libChanged(){saveLib();buildPanelSelect($("panel").value);commit()}
-$("fModStock").onchange=renderLib;
+$("fModStock").onchange=renderLib;$("fModProv").onchange=renderLib;
 $("modLib").addEventListener("change",e=>{const card=e.target.closest(".lib"),f=e.target.dataset.f;if(!card||!f)return;const p=LIB.find(z=>z.id===card.dataset.id);
   if(f==="n")p.n=e.target.value.trim()||p.n;else if(f==="pc")p.pc=e.target.value;else if(f==="stock")p.stock=e.target.checked;
   else if(["bumper","garra","baseO","baseT","perMod","perProj","garraPos"].includes(f)){p[f]=e.target.value.trim()}
+  else if(f==="prov"){const v=e.target.value.trim();if(v)p.prov=v;else delete p.prov}
   else{const v=+e.target.value||0;if(["w","h","x","y"].includes(f)&&!(v>0)){toast("Medidas y resolución deben ser mayores que 0.");renderLib();return}p[f]=["x","y","k","kd","qty"].includes(f)?Math.round(v):v}
   S.screens.forEach(s=>{if(s.mid===p.id){s.pn=p.n;s.cw=p.w;s.ch=p.h;s.rx=p.x;s.ry=p.y;s.wm=p.wm||0;s.kg=p.kg||0;s.k=p.k||0;s.kd=p.kd||0;s.pc=p.pc||""}});
   libChanged();renderLib()});
@@ -1297,7 +1307,7 @@ $("modLib").addEventListener("click",e=>{const b=e.target.closest("button[data-a
 $("bNewMod").onclick=()=>{const p={id:uid("m"),n:"Nuevo módulo",w:500,h:500,x:200,y:200,wm:0,kg:0,k:0,pc:"",stock:true,qty:0};LIB.unshift(p);$("fModStock").checked=false;libChanged();renderLib();
   const el=document.querySelector(`#modLib [data-id="${p.id}"] input[data-f="n"]`);if(el){el.focus();el.select()}};
 $("procLib").addEventListener("change",e=>{const card=e.target.closest(".lib"),f=e.target.dataset.f;if(!card||!f)return;const p=PROCLIB.find(z=>z.id===card.dataset.id);
-  if(f==="n")p.n=e.target.value.trim()||p.n;else if(f==="stock")p.stock=e.target.checked;else if(f==="sc")p.sc=e.target.checked;else if(f==="inputs")p.inputs=e.target.value.trim();else if(f==="side")p.side=Math.max(0,+e.target.value|0);
+  if(f==="n")p.n=e.target.value.trim()||p.n;else if(f==="stock")p.stock=e.target.checked;else if(f==="prov"){const v=e.target.value.trim();if(v)p.prov=v;else delete p.prov}else if(f==="sc")p.sc=e.target.checked;else if(f==="inputs")p.inputs=e.target.value.trim();else if(f==="side")p.side=Math.max(0,+e.target.value|0);
   else if(f==="in"){const m=e.target.value.match(/(\d+)\s*[x×*]\s*(\d+)/i);if(m){p.inW=+m[1];p.inH=+m[2]}else{p.inW=0;p.inH=0}}
   else if(f==="c")p.c=Math.max(10000,Math.round((+e.target.value||0)*1e6));else if(f==="p")p.p=Math.max(1,+e.target.value|0);else p[f]=Math.max(0,+e.target.value|0);
   libChanged();renderLib()});
@@ -1319,7 +1329,7 @@ function batchRows(){
 }
 function stockRows(){
   const U=usage(),rows=[];
-  const st=(p,n,unit)=>p.stock?(p.qty?(n>p.qty?`FALTAN ${n-p.qty} ${unit}`:"Hay suficientes en Telesonic"):"En Telesonic (sin cantidad indicada)"):"No es de Telesonic: alquiler";
+  const st=(p,n,unit)=>p.stock?(p.qty?(n>p.qty?`FALTAN ${n-p.qty} ${unit}`:"Hay suficientes en Telesonic"):"En Telesonic (sin cantidad indicada)"):p.prov?`Alquiler · ${p.prov}`:"No es de Telesonic: alquiler";
   Object.entries(U.mods).forEach(([id,n])=>{const p=panelOf(id);if(p)rows.push(["Stock",p.n,`${n}${p.stock&&p.qty?` / ${p.qty}`:""}`,st(p,n,"módulos")])});
   Object.entries(U.procs).forEach(([id,n])=>{const p=procOf(id);if(p)rows.push(["Stock",p.n,`${n}${p.stock&&p.qty?` / ${p.qty}`:""}`,st(p,n,"unidades")])});
   return rows.concat(batchRows());
@@ -1439,7 +1449,7 @@ function draw(ctx,{transparent=false,highlight=false}={}){
   const {w,h}=S.stage,o=S.opts;
   ctx.clearRect(0,0,w,h);
   if(!transparent){ctx.fillStyle=o.bg;ctx.fillRect(0,0,w,h)}
-  S.screens.forEach((s,i)=>drawScreen(ctx,s,i));drawJumps(ctx);
+  drawScreens(ctx);drawJumps(ctx);
   if(LOGO&&S.logo.pos==="stage"&&!o.lean)drawLogo(ctx,0,0,w,h,"center",false);
   if(highlight){
     drawElecs(ctx,1/scale);
@@ -1465,8 +1475,8 @@ function drawLogo(ctx,x,y,w,h,pos,labels){
 }
 function syncLogo(){const L=S.logo,has=!!(L&&L.src);$("logoPrev").hidden=!has;if(has)$("logoPrev").src=L.src;$("bLogoDel").hidden=!has;$("logoOpts").hidden=!has;
   $("bLogo").textContent=has?"Cambiar logo":"Cargar logo";if(!L)return;$("oLogoPos").value=L.pos;$("oLogoSize").value=L.size;$("oLogoOp").value=L.op;$("lSizeV").textContent=L.size+"%";$("lOpV").textContent=L.op+"%"}
-function drawScreen(ctx,s,i,coordTxt){
-  const o=S.opts,hue=HUES[s.c%HUES.length],sw=W(s),sh=H(s);
+function drawScreen(ctx,s,i,coordTxt,G){
+  const o=S.opts,hue=HUES[hueOf(G?G.g[0]:s)],sw=W(s),sh=H(s);
   ctx.save();ctx.beginPath();ctx.rect(s.x,s.y,sw,sh);ctx.clip();
   for(let r=0;r<s.rows;r++)for(let c=0;c<s.cols;c++){
     const x=s.x+c*s.rx,y=s.y+r*s.ry;let l;
@@ -1479,23 +1489,56 @@ function drawScreen(ctx,s,i,coordTxt){
   ctx.strokeStyle=o.wiring==="power"?"rgba(255,200,0,.35)":`hsl(${hue} 80% 78% / .55)`;ctx.lineWidth=1;ctx.beginPath();
   for(let c=1;c<s.cols;c++){const x=s.x+c*s.rx+.5;ctx.moveTo(x,s.y);ctx.lineTo(x,s.y+sh)}
   for(let r=1;r<s.rows;r++){const y=s.y+r*s.ry+.5;ctx.moveTo(s.x,y);ctx.lineTo(s.x+sw,y)}
+  if(G){ctx.rect(s.x+.5,s.y+.5,sw-1,sh-1)} // costura entre partes = una línea más de la rejilla
   ctx.stroke();
   if(o.nums){const fs=Math.min(s.rx,s.ry)*.2;if(fs>=7){ctx.fillStyle="rgba(255,255,255,.75)";ctx.font=`500 ${fs}px "IBM Plex Mono",monospace`;ctx.textAlign="left";ctx.textBaseline="top";
     for(let r=0;r<s.rows;r++)for(let c=0;c<s.cols;c++)ctx.fillText(`${c+1}.${r+1}`,s.x+c*s.rx+fs*.35,s.y+r*s.ry+fs*.3)}}
-  if(o.diag){ctx.strokeStyle="rgba(255,255,255,.7)";ctx.lineWidth=Math.max(1,Math.min(sw,sh)/400);ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x+sw,s.y+sh);ctx.moveTo(s.x+sw,s.y);ctx.lineTo(s.x,s.y+sh);ctx.stroke()}
-  if(o.circle){ctx.strokeStyle="rgba(255,255,255,.7)";ctx.lineWidth=Math.max(1,Math.min(sw,sh)/300);ctx.beginPath();ctx.arc(s.x+sw/2,s.y+sh/2,Math.min(sw,sh)/2-ctx.lineWidth,0,Math.PI*2);ctx.stroke()}
-  if(LOGO&&S.logo.pos!=="stage"&&!o.lean)drawLogo(ctx,s.x,s.y,sw,sh,S.logo.pos,o.labels);
+  if(!G)drawOverlay(ctx,s.x,s.y,sw,sh);
   ctx.restore();
+  if(G)return;
   ctx.strokeStyle=o.wiring==="power"?"#ffc400":"#ffffff";ctx.lineWidth=o.wiring==="power"?Math.max(3,Math.min(sw,sh)*.012):2;ctx.strokeRect(s.x+1,s.y+1,sw-2,sh-2);
-  if(o.wiring==="power"){const fs=Math.max(10,Math.min(sw,sh)*.07),tx="CORRIENTE";ctx.save();ctx.font=`800 ${fs}px "Archivo",sans-serif`;const tw=ctx.measureText(tx).width;
-    ctx.fillStyle="#ffc400";ctx.fillRect(s.x+sw-tw*1.12-fs*.9,s.y+fs*.3,tw*1.12+fs*.6,fs*1.3);ctx.fillStyle="#111";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tx,s.x+sw-tw*.56-fs*.6,s.y+fs*.97,tw*1.1);ctx.restore()}
+  if(o.wiring==="power")drawPowTag(ctx,s.x,s.y,sw,sh);
   if(o.wiring!=="none")drawWiring(ctx,s);
   if(o.wiring==="data")drawPowerTris(ctx,s);
   if(o.labels){
     const nm=s.cols*s.rows,lines=o.lean?[s.name,`${sw} × ${sh} px`]:[s.name,`${sw} × ${sh} px`,`${s.cols}×${s.rows} (${nm} módulo${nm===1?"":"s"})`];if(o.lean){}else if(coordTxt)lines.push(coordTxt);else if(o.coords)lines.push(`X ${s.x}  Y ${s.y}`);
-    const nt=s.note&&o.notes!==false&&!o.lean?(n=>"Nota: "+(n.length>60?n.slice(0,59)+"…":n))(s.note.replace(/\s+/g," ")):"";
+    drawLabels(ctx,s.x,s.y,sw,sh,lines,s.note)}
+}
+function drawOverlay(ctx,x,y,w,h){const o=S.opts;
+  if(o.diag){ctx.strokeStyle="rgba(255,255,255,.7)";ctx.lineWidth=Math.max(1,Math.min(w,h)/400);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+w,y+h);ctx.moveTo(x+w,y);ctx.lineTo(x,y+h);ctx.stroke()}
+  if(o.circle){ctx.strokeStyle="rgba(255,255,255,.7)";ctx.lineWidth=Math.max(1,Math.min(w,h)/300);ctx.beginPath();ctx.arc(x+w/2,y+h/2,Math.min(w,h)/2-ctx.lineWidth,0,Math.PI*2);ctx.stroke()}
+  if(LOGO&&S.logo.pos!=="stage"&&!o.lean)drawLogo(ctx,x,y,w,h,S.logo.pos,o.labels)}
+function drawPowTag(ctx,x,y,sw,sh){const fs=Math.max(10,Math.min(sw,sh)*.07),tx="CORRIENTE";ctx.save();ctx.font=`800 ${fs}px "Archivo",sans-serif`;const tw=ctx.measureText(tx).width;
+    ctx.fillStyle="#ffc400";ctx.fillRect(x+sw-tw*1.12-fs*.9,y+fs*.3,tw*1.12+fs*.6,fs*1.3);ctx.fillStyle="#111";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tx,x+sw-tw*.56-fs*.6,y+fs*.97,tw*1.1);ctx.restore()}
+// pantalla compuesta: un solo test pattern (diagonales, círculo, logo, rótulo y borde exterior) sobre el conjunto
+const hueOf=s=>{const G=cmpGroup(s);return (G?G.g[0]:s).c%HUES.length};
+function cmpGroup(s){if(!s.cmp)return null;const g=S.screens.filter(t=>t.cmp&&t.cmp.g===s.cmp.g);if(g.length<2)return null;
+  const x0=Math.min(...g.map(t=>t.x)),y0=Math.min(...g.map(t=>t.y)),x1=Math.max(...g.map(t=>t.x+W(t))),y1=Math.max(...g.map(t=>t.y+H(t)));
+  const head=g.find(t=>!/ · /.test(t.name))||g[0];return{g,head,x0,y0,w:x1-x0,h:y1-y0}}
+function drawScreens(ctx){const done=new Set();
+  S.screens.forEach((s,i)=>{const G=cmpGroup(s);if(!G){drawScreen(ctx,s,i);return}
+    if(done.has(s.cmp.g))return;done.add(s.cmp.g);drawGroup(ctx,G)})}
+function drawGroup(ctx,G){const o=S.opts,{g,x0,y0,w,h}=G;
+  g.forEach(s=>drawScreen(ctx,s,S.screens.indexOf(s),null,G));
+  ctx.save();ctx.beginPath();g.forEach(s=>ctx.rect(s.x,s.y,W(s),H(s)));ctx.clip();drawOverlay(ctx,x0,y0,w,h);ctx.restore();
+  // borde exterior: solo los tramos que no tocan otra parte
+  const pw=o.wiring==="power";ctx.strokeStyle=pw?"#ffc400":"#ffffff";ctx.lineWidth=pw?Math.max(3,Math.min(w,h)*.012):2;const d=ctx.lineWidth/2;ctx.beginPath();
+  const free=(a0,a1,cov)=>{let segs=[[a0,a1]];cov.forEach(([c0,c1])=>{segs=segs.flatMap(([u,v])=>c1<=u||c0>=v?[[u,v]]:[[u,c0],[c1,v]].filter(([p,q])=>q-p>.5))});return segs};
+  g.forEach(s=>{const sx=s.x,sy=s.y,ex=s.x+W(s),ey=s.y+H(s),oth=g.filter(t=>t!==s);
+    free(sx,ex,oth.filter(t=>t.y+H(t)===sy).map(t=>[t.x,t.x+W(t)])).forEach(([u,v])=>{ctx.moveTo(u,sy+d);ctx.lineTo(v,sy+d)});
+    free(sx,ex,oth.filter(t=>t.y===ey).map(t=>[t.x,t.x+W(t)])).forEach(([u,v])=>{ctx.moveTo(u,ey-d);ctx.lineTo(v,ey-d)});
+    free(sy,ey,oth.filter(t=>t.x+W(t)===sx).map(t=>[t.y,t.y+H(t)])).forEach(([u,v])=>{ctx.moveTo(sx+d,u);ctx.lineTo(sx+d,v)});
+    free(sy,ey,oth.filter(t=>t.x===ex).map(t=>[t.y,t.y+H(t)])).forEach(([u,v])=>{ctx.moveTo(ex-d,u);ctx.lineTo(ex-d,v)})});
+  ctx.stroke();
+  if(pw)drawPowTag(ctx,x0,y0,w,h);
+  if(o.wiring!=="none")g.forEach(s=>{drawWiring(ctx,s);if(o.wiring==="data")drawPowerTris(ctx,s)});
+  if(o.labels){const nm=g.reduce((a,s)=>a+s.cols*s.rows,0),nmTxt=g.map(s=>`${s.cols}×${s.rows}`).join(" + ")+` (${nm} módulos)`;
+    const lines=o.lean?[G.head.name,`${w} × ${h} px`]:[G.head.name,`${w} × ${h} px`,nmTxt];if(!o.lean&&o.coords)lines.push(`X ${x0}  Y ${y0}`);
+    drawLabels(ctx,x0,y0,w,h,lines,g.map(s=>s.note).filter(Boolean).join(" · "))}}
+function drawLabels(ctx,x,y,sw,sh,lines,note){const o=S.opts;{
+    const nt=note&&o.notes!==false&&!o.lean?(n=>"Nota: "+(n.length>60?n.slice(0,59)+"…":n))(note.replace(/\s+/g," ")):"";
     let fs=Math.min(sw/ (Math.max(...lines.map(t=>t.length))*.62), sh/((lines.length+(nt?1:0))*1.9));fs=Math.min(fs,72);
-    if(fs>=6){const cx=s.x+sw/2,cy=s.y+sh/2,lh=fs*1.25,y0=cy-(lines.length-1)*lh/2;
+    if(fs>=6){const cx=x+sw/2,cy=y+sh/2,lh=fs*1.25,y0=cy-(lines.length-1)*lh/2;
       ctx.textAlign="center";ctx.textBaseline="middle";
       lines.forEach((t,k)=>{const f=k===0?`700 ${fs}px "Archivo",sans-serif`:`500 ${fs*.8}px "IBM Plex Mono",monospace`;ctx.font=f;
         const tw=ctx.measureText(t).width;ctx.fillStyle="rgba(0,0,0,.55)";ctx.fillRect(cx-tw/2-fs*.3,y0+k*lh-lh/2+1,tw+fs*.6,lh-2);
@@ -1688,7 +1731,7 @@ function renderList(){
   $("list").innerHTML=(S.example?`<p class="hint" style="margin:0 0 4px">Ejemplo cargado. Al agregar tu primera pantalla se vacía.</p>`:"")+S.screens.map(s=>{
     const out=s.x<0||s.y<0||s.x+W(s)>S.stage.w||s.y+H(s)>S.stage.h;
     return `<div class="scr${sel.has(s.id)?" sel":""}" data-id="${s.id}">
-      <span class="sw" style="background:hsl(${HUES[s.c%HUES.length]} 70% 45%)"></span>
+      <span class="sw" style="background:hsl(${HUES[hueOf(s)]} 70% 45%)"></span>
       <input class="nm" data-k="name" value="${esc(s.name)}" aria-label="Nombre" style="font-family:var(--f-body);padding:4px 6px">
       <span class="acts"><button data-a="dup" title="Duplicar">⧉</button><button data-a="del" class="danger" title="Eliminar">✕</button></span>
       <span class="meta">${W(s)}×${H(s)} px · ${s.pn?esc(s.pn)+" · ":""}${s.rx}×${s.ry}/mód · ${(s.cols*s.cw/1000).toFixed(2)}×${(s.rows*s.ch/1000).toFixed(2)} m${out?' · <span class="warn">fuera del lienzo</span>':""}<br>Datos ${(()=>{const A=assign(),q=portsOf(A,s);if(!q.length)return"—";const gm=wgOf(s);if(gm.length>1)return `unido con ${gm.filter(o=>o!==s).map(o=>esc(o.name)).join(", ")} · ${q.map(x=>A.lab(x)+" ("+x.runN+")").join(", ")}`;return `${q.length} boca${q.length===1?"":"s"} (${q.map(x=>x.n).join("+")})`})()} · Corriente ${(()=>{const m=effPow(s);if(m===null)return"sin consumo";const c=powRuns(s);return `${c.length} línea${c.length===1?"":"s"} (${c.map(x=>x.length).join("+")})`})()}<br>Peso ${s.kg?`${fmt(kgOf(s))} kg · ${fmt(kgCol(s))} kg por columna`:"sin dato"}</span>
@@ -2016,7 +2059,7 @@ function renderTable(){
   $("tbody").innerHTML=S.screens.map(s=>{const w=W(s),h=H(s),mw=s.cols*s.cw/1000,mh=s.rows*s.ch/1000,md=effData(s),nd=nData(s),mp=effPow(s),np=nPow(s),wt=(s.wm||0)*s.cols*s.rows;
     mods+=s.cols*s.rows;m2+=mw*mh;lines+=np||0;watts+=wt;if(mp===null)noPow=true;
     minX=Math.min(minX,s.x);minY=Math.min(minY,s.y);maxX=Math.max(maxX,s.x+w);maxY=Math.max(maxY,s.y+h);
-    return `<tr><td class="n"><i style="background:hsl(${HUES[s.c%HUES.length]} 70% 45%)"></i>${esc(s.name)}</td><td>${s.x}</td><td>${s.y}</td><td>${w}</td><td>${h}</td><td>${s.cols}×${s.rows}</td><td>${mw.toFixed(2)}×${mh.toFixed(2)}</td><td>${fmt(m2Of(s))}</td><td>${md}</td><td>${nd??"—"}</td><td>${rangeTxt(A,s)}</td><td>${s.kg?fmt(kgOf(s))+" kg":"—"}</td><td>${s.kg?fmt(kgCol(s)):"—"}</td><td>${wt?fmt(wt/1000)+" kW":"—"}</td><td>${mp??"—"}</td><td>${np??"—"}</td></tr>`}).join("")||`<tr><td colspan="16" style="text-align:left;color:var(--muted)">Sin pantallas.</td></tr>`;
+    return `<tr><td class="n"><i style="background:hsl(${HUES[hueOf(s)]} 70% 45%)"></i>${esc(s.name)}</td><td>${s.x}</td><td>${s.y}</td><td>${w}</td><td>${h}</td><td>${s.cols}×${s.rows}</td><td>${mw.toFixed(2)}×${mh.toFixed(2)}</td><td>${fmt(m2Of(s))}</td><td>${md}</td><td>${nd??"—"}</td><td>${rangeTxt(A,s)}</td><td>${s.kg?fmt(kgOf(s))+" kg":"—"}</td><td>${s.kg?fmt(kgCol(s)):"—"}</td><td>${wt?fmt(wt/1000)+" kW":"—"}</td><td>${mp??"—"}</td><td>${np??"—"}</td></tr>`}).join("")||`<tr><td colspan="16" style="text-align:left;color:var(--muted)">Sin pantallas.</td></tr>`;
   const n=S.screens.length,amps=watts/S.opts.volt;
   $("tfoot").innerHTML=n?`<th>Total · ocupación</th><td>${minX}</td><td>${minY}</td><td>${maxX-minX}</td><td>${maxY-minY}</td><td>${mods}</td><td>—</td><td>${fmt(m2)}</td><td>—</td><td>${ports}</td><td>${A.used} electrónica${A.used===1?"":"s"}</td><td>${(()=>{const t=S.screens.reduce((a,s)=>a+kgOf(s),0),miss=S.screens.some(s=>!s.kg);return t?fmt(t)+" kg"+(miss?"+?":""):"—"})()}</td><td>—</td><td>${watts?fmt(watts/1000)+" kW":"—"}</td><td>${watts?fmt(amps)+" A":"—"}</td><td>${lines}${noPow?"+?":""}</td>`:"";
 }
@@ -2193,7 +2236,7 @@ function mapImage(wiring){
   ctx.fillStyle=S.opts.bg;ctx.fillRect(0,0,c.width,c.height);
   ctx.setTransform(k,0,0,k,-x0*k,-y0*k);
   const prev=S.opts.wiring;S.opts.wiring=wiring;
-  S.screens.forEach((s,i)=>drawScreen(ctx,s,i));drawJumps(ctx);
+  drawScreens(ctx);drawJumps(ctx);
   if(wiring==="data")drawElecs(ctx,Math.max(bw,bh)/1100);
   S.opts.wiring=prev;return{data:c.toDataURL("image/jpeg",.92),w:bw,h:bh};
 }
