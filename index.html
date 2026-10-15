@@ -129,6 +129,12 @@ td.n i{width:10px;height:10px;border-radius:2px;display:inline-block}
 .bx .bxr .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bx .bxr .am{font-family:var(--f-mono);color:var(--muted)}
 .bx .phs{display:flex;gap:10px;font:500 11px var(--f-mono);color:var(--muted);border-top:1px solid var(--line);padding-top:4px;margin-top:2px}
+.acc{border-top:1px dashed var(--line);padding-top:6px}
+.acc summary{cursor:pointer;font-size:12px;font-weight:600;color:var(--muted)}
+.acc .grid2{margin-top:6px}
+.mnt{border-top:1px solid var(--line);padding-top:6px}
+.sod{margin-top:6px}.sod summary{cursor:pointer;font-size:12px;font-weight:600;color:var(--muted)}.sod .grid2{margin-top:6px}
+.mnt .elsel{margin-top:6px;display:block}
 .pord .prow{display:grid;grid-template-columns:auto 1fr auto auto;gap:6px;align-items:center;padding:3px 0;border-top:1px solid var(--line)}
 .pord .pnum{font:600 12px var(--f-mono);color:var(--accent);min-width:44px}
 .pord .pnm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
@@ -374,7 +380,7 @@ table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
       <label class="full">Redundancia de datos<select id="oRed"><option value="same">Sí · respaldo en la misma electrónica (dobla bocas)</option><option value="mirror">Sí · electrónica espejo (dobla equipos)</option><option value="none">Sin redundancia</option></select></label>
       <label>Dibujar<select id="oWire"><option value="none">Nada</option><option value="data">Líneas de datos</option><option value="power">Líneas de corriente</option></select></label>
       <label class="check full"><input type="checkbox" id="oFull">Repartir por columnas/filas completas</label>
-      <label class="check full"><input type="checkbox" id="oPowF">Corriente sigue el recorrido de datos (corta al llegar al máximo por línea)</label>
+      <label class="full">Líneas de corriente<select id="oPowF"><option value="cols">Columnas enteras, todas desde el mismo borde, repartidas por igual</option><option value="data">Siguen el recorrido de datos (cortan al máximo)</option></select></label>
     </div>
     <p class="hint">Este es el recorrido por defecto. Cada pantalla puede tener el suyo, distinto para datos y corriente, desde su tarjeta en «Pantallas» (como los 16 patrones de NovaStar). Con «Desde detrás», la esquina de inicio se entiende mirando la pantalla por la espalda, como la ve quien cablea; el plano se sigue dibujando de frente. Módulos por puerto = píxeles por puerto ÷ píxeles del módulo. Módulos por línea = V × A × % ÷ consumo máx. del módulo, y nunca más que el máximo en cadena del fabricante si lo indicas.</p>
   </section>
@@ -545,7 +551,9 @@ table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
 <li><b>Nuevo</b>: vacía el proyecto (las bibliotecas no se tocan).</li>
 <li><b>Guardar .json / Abrir .json</b>: guarda o abre un proyecto completo. Es la forma de pasarlo a otro equipo o compañero.</li>
 <li><b>Coordenadas .csv</b>: posición y tamaño de cada pantalla para el servidor de medios.</li>
-<li><b>Ficha PDF</b>: ficha técnica con el diseño de Telesonic.</li>
+<li><b>⚡ Ficha rápida</b>: crea el proyecto a partir de una descripción en texto.</li>
+<li><b>? Ayuda</b>: esta guía.</li>
+<li><b>Ficha PDF / Ficha Word</b>: ficha técnica con el diseño de Telesonic (la de Word, editable).</li>
 <li><b>PNG con fondo / transparente</b>: el lienzo completo a resolución real.</li>
 </ul></details>
 
@@ -607,14 +615,15 @@ table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
 <li><b>Corriente</b>: tensión, amperios de la línea y % de uso. Si el módulo tiene un máximo por línea, manda ese número; si no, se calcula con el consumo.</li>
 <li><b>Recorrido, inicio y forma</b> generales (columnas o filas, esquina, serpiente o zigzag). <b>Esquinas vistas</b> desde delante o desde detrás (como se cablea).</li>
 <li><b>Redundancia</b>: en la misma electrónica (dobla bocas: 4 líneas = 8 bocas) o con electrónica espejo.</li>
-<li><b>Corriente sigue el recorrido de datos</b> (activado por defecto): cada línea de corriente va por el mismo camino que la de datos y, si la boca lleva más módulos que el máximo por línea (por ejemplo P4.8: 60 de datos, 20 de corriente), se corta y empieza una línea nueva; el círculo L# marca el módulo de entrada de cada línea. Si una pantalla tiene recorrido de corriente propio, va por su cuenta.</li>
-<li><b>Dibujar</b>: líneas de datos (P1, P2… con respaldo en el último módulo) o líneas de corriente (L1, L2…).</li>
+<li><b>Líneas de corriente</b> (por defecto «columnas enteras»): cada línea coge columnas completas, todas nacen desde el mismo borde y se reparten por igual, sin pasar del máximo del módulo ni de lo que admite la línea (V × A × %). Con el máximo por línea de la tarjeta fuerzas otro reparto (p. ej. 12 = 2 columnas de 6). La otra opción, «siguen el recorrido de datos», corta al llegar al máximo.</li>
+<li><b>Bocas de datos</b>: con columnas enteras por boca, todas nacen desde el mismo borde (la serpiente solo va dentro de cada boca).</li>
+<li><b>Dibujar</b>: líneas de datos (P1, P2… con respaldo en el último módulo) o líneas de corriente. El plano de corriente se ve distinto para no confundirlo: damero gris, borde amarillo, rótulo «CORRIENTE» y triángulos con cuadro.circuito.</li>
 </ul></details>
 
 <details><summary>5b · Cuadros eléctricos</summary>
 <ul>
 <li>Cada línea de corriente es una <b>toma</b> que sale de un circuito de un cuadro. Por defecto, cuadros de <b>32 A con 6 circuitos</b> en trifásico (circuitos 1-2 fase 1, 3-4 fase 2, 5-6 fase 3). Puedes cambiar amperios, circuitos y fases.</li>
-<li>Las tomas se reparten solas en orden (por electrónica y pantalla) y se crean los cuadros necesarios. Con el desplegable de cada toma la mueves a otro cuadro y circuito; si está ocupado, se intercambian. <b>Repartir automático</b> lo deja como al principio.</li>
+<li>Las tomas se reparten solas en orden (por electrónica y pantalla) y se crean los cuadros necesarios. <b>Repartir automático</b> lo deja como al principio. Con la <b>✕</b> eliminas un cuadro (sus tomas pasan a circuitos libres); los cuadros vacíos que crea la herramienta desaparecen solos y los que añades tú se quedan.</li>
 <li>Cada cuadro muestra sus 6 circuitos, también los <b>libres</b>, así nunca se pierde una toma. En un circuito libre, <b>Traer aquí</b> te deja elegir cualquier toma (te dice dónde está ahora) y la mueve a ese circuito. Con <b>Mover a</b> llevas una toma a cualquier circuito: si está libre, va sola; si ya tiene otra, las dos <b>comparten circuito</b> (doblado con derivación o ladrón: 1.1a, 1.1b) y suma el consumo, avisando si pasa de 16 A. El resto de tomas no se mueve. Ctrl+Z deshace.</li>
 <li>Pon nombre o ubicación a cada cuadro («escenario izq.»). Debajo ves la carga de cada fase; en rojo si supera el cuadro.</li>
 <li>En el plano, un <b>triángulo rojo con «1.3»</b> marca el módulo donde entra la toma del cuadro 1, circuito 3. Sale en el plano de corriente y, si lo dejas marcado, también en el de datos (esquina del módulo). Como la corriente sigue a la señal y se corta al máximo por línea, en pantallas como la P4.8 verás varios triángulos dentro de una misma boca de datos.</li>
@@ -646,6 +655,19 @@ table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
 <li><b>PNG de cada pantalla (.zip)</b>: un PNG por pantalla a su resolución nativa, con o sin cableado y con o sin fondo.</li>
 <li><b>Solo nombre y resolución (limpio)</b>: marca esta casilla para que los PNG (los de arriba, los de cada pantalla y la plantilla de señal) salgan solo con el damero de módulos, el nombre y la resolución: sin cableado, números, diagonales, círculo, coordenadas, notas ni logo.</li>
 <li><b>Plantilla de señal</b>: encaja la composición en la señal que te llega (Full HD de una realización, 4K…). Elige qué pantallas (todas, una electrónica o la selección), ajuste y alineación. Te dice qué zona de la señal va a cada pantalla, y lo descargas en PNG o CSV.</li>
+</ul></details>
+
+<details><summary>Montaje, accesorios y preparación de material</summary>
+<ul>
+<li>En cada pantalla elige el <b>Montaje</b>: <b>Volada</b> (bumpers de 1 m y 0,5 m según el ancho; un punto de volado por cada 0,5 m, con su grillete y su eslinga acerada de 2 m), <b>Apoyada</b> (base original o chapa fina Telesonic de 0,5 m, y la garra o yugo a estructura con cantidad por decidir) o <b>Apoyada con estructura de 8s</b>.</li>
+<li><b>Ajustar estructura a mano</b> (en la tarjeta, debajo del montaje): número de verticales, dónde va la primera vertical (eje X), alto de los 8s y alturas de las horizontales («0; 1,5; 3»). Lo que dejes vacío sigue la propuesta automática, que ves como ejemplo en cada campo. Avisa si la estructura se sale de la pantalla. <b>Volver a la propuesta automática</b> lo deshace.</li>
+<li><b>Pantalla apoyada en tarima</b>: la estructura va con patas desde el suelo solo para sujetar, el peso y la altura los da la tarima (pon su altura); no aplica el límite de 4 m. En la ficha rápida: «sobre tarima de 1 m».</li>
+<li><b>Patas</b> (+0,26 m, una por vertical; con balcón van puestas por defecto, sobre bumper no) y <b>apoyo de la pantalla</b>: sobre su bumper en el suelo (+0,15 m, típico en Absen) o en un balcón en la base, la mitad o arriba del primer 8s (típico en Yestech). La estructura se calcula desde el suelo sin pasar de la parte de arriba de la pantalla.</li>
+<li><b>Estructura de 8s</b>: una vertical cada metro. Según el módulo (Módulos → Accesorios → «La garra se amarra en»): en el <b>eje del módulo</b> (Absen) la primera vertical va a 0,25 m del borde y sobra el resto al otro lado; en el <b>marco</b> (Yestech, Digiled) las verticales van en las juntas, dejando un módulo al aire a cada lado para que no asome la estructura (4 m = 4 verticales a 0,5 / 1,5 / 2,5 / 3,5 m). horizontales con huecos de 1,5 a 2 m (nunca de 1 m si se puede evitar) y cerrando arriba sin pasar de la pantalla, 2 vasos y 2 tornillos por empalme vertical, 2 tornillos por unión, una garra por metro en cada vertical, base por vertical si la pones y, opcional, horizontal de balcón. Avisa si pasa de 4 m (homologación). Sale un dibujo con cotas en la ficha.</li>
+<li>Los accesorios de cada módulo se definen en <b>Módulos → Accesorios de montaje</b>: nombre del bumper, garra, base original y base Telesonic, y listas «por módulo» y «por proyecto» (p. ej. «Llave Digiled × 1»). Exporta la biblioteca base para que todos los tengan.</li>
+<li><b>Extras de esta pantalla</b>: cualquier cosa más, una por línea («Eslinga larga 3 m × 2»).</li>
+<li>La ficha PDF y Word terminan con <b>Preparación de material</b>: una lista por pantalla, otra del proyecto (electrónicas, mangueras a Schuko y tiradas de señal con metros por rellenar, cuadros) y el total, con casillas para marcar.</li>
+<li>En la <b>⚡ Ficha rápida</b> puedes escribir «volada», «apoyada», «con estructura», «balcón en la base / en la mitad / en el segundo tramo (arriba del primer 8s)», «sobre bumper», «sobre tarima de 1 m», «con patas» o «sin patas».</li>
 </ul></details>
 
 <details><summary>Material y stock</summary>
@@ -690,12 +712,12 @@ const PC={
 };
 const pcOpts=v=>Object.entries(PC).map(([k,p])=>`<option value="${k}"${(v||"")===k?" selected":""}>${p.n}</option>`).join("");
 const PANEL_SEED=[
-  {id:"yestech-p19",n:"Yestech P1.9",w:500,h:500,x:256,y:256,wm:130,kg:6.6,kd:10,k:30,pc:"pc",stock:true},
-  {id:"absen-p19",n:"Absen Indoor P1.9",w:500,h:500,x:256,y:256,wm:135,kg:9.4,kd:10,k:16,pc:"t1",stock:true},
-  {id:"absen-pl25pro",n:"Absen Indoor P2.5 · Batch 1",w:500,h:500,x:200,y:200,wm:135,kg:9.4,kd:16,k:16,pc:"t1",stock:true},
-  {id:"yestech-p26",n:"Yestech P2.6",w:500,h:500,x:192,y:192,wm:160,kg:6.7,kd:17,k:22,stock:true},
-  {id:"digiled-p48",n:"Digiled P4.8",w:500,h:500,x:104,y:104,wm:175,kg:6.6,k:20,stock:true},
-  {id:"ledman-p39",n:"Ledman P3.9",w:480,h:480,x:120,y:120,kg:8.5,pc:"pc",stock:true},
+  {id:"yestech-p19",n:"Yestech P1.9",w:500,h:500,x:256,y:256,wm:130,kg:6.6,kd:10,k:30,pc:"pc",stock:true,bumper:"Bumper Yestech",baseO:"Base Yestech original",baseT:"Chapa fina Telesonic Yestech 0,5 m",garra:"Yugo",perProj:"",garraPos:"marco"},
+  {id:"absen-p19",n:"Absen Indoor P1.9",w:500,h:500,x:256,y:256,wm:135,kg:9.4,kd:10,k:16,pc:"t1",stock:true,bumper:"Bumper Absen",baseO:"Base Absen original",baseT:"Chapa fina Telesonic Absen 0,5 m",garra:"Garra extensible + chapa de amarre",perProj:"",garraPos:"eje"},
+  {id:"absen-pl25pro",n:"Absen Indoor P2.5 · Batch 1",w:500,h:500,x:200,y:200,wm:135,kg:9.4,kd:16,k:16,pc:"t1",stock:true,bumper:"Bumper Absen",baseO:"Base Absen original",baseT:"Chapa fina Telesonic Absen 0,5 m",garra:"Garra extensible + chapa de amarre",perProj:"",garraPos:"eje"},
+  {id:"yestech-p26",n:"Yestech P2.6",w:500,h:500,x:192,y:192,wm:160,kg:6.7,kd:17,k:22,stock:true,bumper:"Bumper Yestech",baseO:"Base Yestech original",baseT:"Chapa fina Telesonic Yestech 0,5 m",garra:"Yugo",perProj:"",garraPos:"marco"},
+  {id:"digiled-p48",n:"Digiled P4.8",w:500,h:500,x:104,y:104,wm:175,kg:6.6,k:20,stock:true,bumper:"Bumper Digiled",baseO:"Base Digiled original",baseT:"Chapa fina Telesonic Digiled 0,5 m",garra:"Yugo",perProj:"Llave Digiled × 1",garraPos:"marco"},
+  {id:"ledman-p39",n:"Ledman P3.9",w:480,h:480,x:120,y:120,kg:8.5,pc:"pc",stock:true,bumper:"Bumper Ledman",baseO:"Base Ledman original",baseT:"Chapa fina Telesonic Ledman 0,5 m",garra:"",perProj:"",garraPos:"marco"},
   {id:"g-p195",n:"P1.95",w:500,h:500,x:256,y:256},
   {id:"g-p26",n:"P2.6",w:500,h:500,x:192,y:192},
   {id:"g-p297",n:"P2.97",w:500,h:500,x:168,y:168},
@@ -724,6 +746,8 @@ function loadLib(){
       ["sc","inW","inH"].forEach(k=>{if(p[k]===undefined&&sd[k]!==undefined)p[k]=sd[k]});if(sd.stock)p.stock=true});
     const ord=PROC_SEED.map(s=>s.id);PROCLIB.sort((a,b)=>(ord.indexOf(a.id)<0?99:ord.indexOf(a.id))-(ord.indexOf(b.id)<0?99:ord.indexOf(b.id)));
     try{localStorage.setItem("pixelmap-lib-ver","8")}catch(e){}saveLib()}
+  if(ver<12){PANEL_SEED.forEach(sd=>{const q=LIB.find(z=>z.id===sd.id);if(q&&q.garraPos===undefined&&sd.garraPos)q.garraPos=sd.garraPos});try{localStorage.setItem("pixelmap-lib-ver","12")}catch(e){}saveLib()}
+  if(ver<11){PANEL_SEED.forEach(sd=>{const q=LIB.find(z=>z.id===sd.id);if(q)["bumper","baseO","baseT","garra","perProj"].forEach(k=>{if(q[k]===undefined&&sd[k]!==undefined)q[k]=sd[k]})});try{localStorage.setItem("pixelmap-lib-ver","11")}catch(e){}saveLib()}
   if(ver<10){const d=LIB.find(z=>z.id==="digiled-p48");if(d&&!d.wm)d.wm=175;try{localStorage.setItem("pixelmap-lib-ver","10")}catch(e){}saveLib()}
   if(ver<9){PROC_SEED.forEach(sd=>{const q=PROCLIB.find(z=>z.id===sd.id);if(q&&q.ly===undefined&&sd.ly)q.ly=sd.ly});try{localStorage.setItem("pixelmap-lib-ver","9")}catch(e){}saveLib()}
 }
@@ -785,6 +809,15 @@ function chunks(s,max,kind="data"){
   // si la pantalla tiene un máximo propio, se respeta exacto (como en NovaStar): 20 → 20 + 10
   const exact=kind==="power"?!!(s.wp&&s.wp.n>0):!!(s.wd&&s.wd.n>0);
   const size=!exact&&S.opts.full&&max>=len?Math.floor(max/len)*len:max,out=[];
+  // con columnas (o filas) enteras por boca, cada boca empieza desde el mismo borde (serpiente solo dentro de la boca)
+  const fp=frontPat(patOf(s,kind));
+  if(fp.z!=="z"&&size>=len&&size%len===0){const vert=fp.d==="v",right=fp.c.endsWith("r"),bottom=fp.c.startsWith("b"),units=vert?s.cols:s.rows,k=size/len;
+    for(let u0=0;u0<units;u0+=k){const cells=[];
+      for(let j=0;j<k&&u0+j<units;j++){const u=u0+j,fwd=j%2===0;
+        for(let q=0;q<len;q++){const qq=fwd?q:len-1-q;
+          if(vert)cells.push([right?s.cols-1-u:u,bottom?s.rows-1-qq:qq]);else cells.push([right?s.cols-1-qq:qq,bottom?s.rows-1-u:u])}}
+      out.push(cells)}
+    return out}
   for(let i=0;i<seq.length;i+=size)out.push(seq.slice(i,i+size));return out;
 }
 // cableado unido: varias pantallas del mismo módulo se cablean como si fueran una
@@ -805,12 +838,28 @@ let _ac=null;const assignCache=()=>_ac||assign();
 const totalPorts=()=>assign().elecs.reduce((a,x)=>a+x.main,0);
 // líneas de corriente: por defecto siguen el recorrido de datos y se cortan al llegar al máximo por línea
 // (el corte marca un módulo de entrada nuevo). Con recorrido de corriente propio, va por su cuenta.
-const followPow=s=>!(S.opts.powFollow===false||(s.wp&&s.wp.pat)||!effData(s)||!(assign().map.get(s.id)||[]).length);
+const powMode=()=>S.opts.powMode||(S.opts.powFollow===true?"data":"cols");
+const followPow=s=>powMode()==="data"&&!((s.wp&&s.wp.pat)||!effData(s)||!(assign().map.get(s.id)||[]).length);
+// líneas de corriente por columnas (o filas) enteras, todas naciendo desde el mismo borde y repartidas por igual
+// capacidad: el menor entre el máximo del módulo y lo que admite la línea (V·A·%)
+const powCap=s=>{const m=effPow(s);if(!m)return 0;const c=calcPow(s);return c?Math.min(m,c):m};
+function colsPowRuns(s){const cap=powCap(s);if(!cap)return[];
+  const{c,d}=frontPat(globalPat()),right=c.endsWith("r"),bottom=c.startsWith("b"),vert=d!=="h";
+  const units=vert?s.cols:s.rows,len=vert?s.rows:s.cols;
+  if(len>cap)return chunks(s,cap,"power");
+  const per=Math.max(1,Math.floor(cap/len)),n=Math.ceil(units/per),base=Math.floor(units/n),extra=units%n,out=[];let u0=0;
+  for(let i=0;i<n;i++){const k=base+(i<extra?1:0),cells=[];
+    for(let j=0;j<k;j++){const u=u0+j,U=vert?(right?s.cols-1-u:u):(bottom?s.rows-1-u:u),fwd=j%2===0;
+      for(let q=0;q<len;q++){const qq=fwd?q:len-1-q;
+        if(vert)cells.push([U,bottom?s.rows-1-qq:qq]);else cells.push([right?s.cols-1-qq:qq,U])}}
+    out.push(cells);u0+=k}
+  return out}
 function ownPowRuns(s){const m=effPow(s);if(!m)return[];
+  if(powMode()==="cols"&&!(s.wp&&s.wp.pat))return colsPowRuns(s);
   if(!followPow(s))return chunks(s,m,"power");
   const out=[];(assign().map.get(s.id)||[]).forEach(a=>{for(let i=0;i<a.cells.length;i+=m)out.push(a.cells.slice(i,i+m))});return out}
 // tramos continuos de corriente de una pantalla (para encadenar con otra)
-const powPaths=s=>followPow(s)?(assign().map.get(s.id)||[]).map(a=>a.cells):[seqFor(s,"power")];
+const powPaths=s=>powMode()==="cols"&&!(s.wp&&s.wp.pat)?[colsPowRuns(s).flat()]:followPow(s)?(assign().map.get(s.id)||[]).map(a=>a.cells):[seqFor(s,"power")];
 // plan de corriente: líneas (tomas) que pueden pasar de una pantalla a otra («la corriente continúa en»)
 let _ppK="",_ppV=null;
 function powerPlan(){
@@ -1092,7 +1141,8 @@ function boxPlan(){
   L.filter(l=>!l.b).forEach(l=>{next();l.b=b;l.c=c;slots.set(b+"."+c,[l])});
   const o=S.opts,circ=[...slots.entries()].map(([k,ls])=>({k,ls,amps:ls.reduce((a,l)=>a+l.amps,0)}));
   circ.forEach(C=>{C.over=C.amps>o.amp+1e-6;C.ls.forEach((l,j)=>{l.circ=C;l.sub=C.ls.length>1?"abcdefgh"[j]||String(j+1):""})});
-  const nb=Math.max(boxNames().length,...L.map(l=>l.b),0);while(boxNames().length<nb)boxNames().push("");
+  let need=Math.max(0,...L.map(l=>l.b||0));while(boxNames().length>need&&!boxNames()[boxNames().length-1])boxNames().pop();
+  const nb=Math.max(boxNames().length,need);while(boxNames().length<nb)boxNames().push("");
   const perPh=Math.max(1,Math.ceil(cfg.n/cfg.ph)),phOf=c=>Math.min(cfg.ph,Math.ceil(c/perPh));
   const boxes=[];for(let i=1;i<=nb;i++){const lines=L.filter(l=>l.b===i).sort((p,q)=>p.c-q.c),ph=[];
     for(let f=1;f<=cfg.ph;f++)ph.push(lines.filter(l=>phOf(l.c)===f).reduce((a,l)=>a+l.amps,0));
@@ -1119,7 +1169,7 @@ function renderBoxes(){
   const perPh=Math.max(1,Math.ceil(cfg.n/cfg.ph));
   $("boxes").innerHTML=P.boxes.map(B=>`<div class="el bx" data-b="${B.i}"><span class="tag" style="background:#ff3d3d;color:#fff">${B.i}</span>
     <input data-x="bname" value="${esc(boxNames()[B.i-1]||"")}" placeholder="Cuadro ${B.i} (ubicación…)" aria-label="Nombre del cuadro" style="font-family:var(--f-body);padding:4px 6px">
-    <span class="${B.over?"warn":"hint"}" style="font-size:12px;margin:0">${fmt(B.w/1000)} kW</span>
+    <span style="display:flex;gap:6px;align-items:center"><span class="${B.over?"warn":"hint"}" style="font-size:12px;margin:0">${fmt(B.w/1000)} kW</span><button data-x="bdel" class="ghost danger" title="Eliminar cuadro (sus tomas pasan a otros circuitos libres)" style="padding:3px 7px">✕</button></span>
     <div class="bxl">${Array.from({length:cfg.n},(_,ci)=>{const c=ci+1,ls=B.lines.filter(l=>l.c===c),amps=ls.reduce((a,l)=>a+l.amps,0),f=Math.min(cfg.ph,Math.ceil(c/perPh));
       return `<div class="circ${ls.length?"":" free"}"><div class="ch"><b>${B.i}.${c}</b><span>F${f}</span><span class="${amps>o.amp+1e-6?"warn":""}">${ls.length?`${fmt(amps)} / ${o.amp} A`:"libre"}</span>${ls.length>1?`<span class="badge">DOBLADO ×${ls.length}</span>`:""}</div>
         ${ls.length?"":`<div class="bxr"><label class="mv">Traer aquí<select data-x="bring" data-slot="${B.i}.${c}" aria-label="Traer una toma a ${B.i}.${c}"><option value="">elige una toma…</option>${P.lines.map(z=>`<option value="${esc(z.key)}">${esc(z.name)} · L${z.i+1} (ahora en ${z.tag})</option>`).join("")}</select></label></div>`}
@@ -1127,6 +1177,8 @@ function renderBoxes(){
           <label class="mv">Mover a<select data-x="slot" aria-label="Mover a cuadro y circuito">${opts(l)}</select></label></div>`).join("")}</div>`}).join("")}
       <div class="phs">${B.ph.map((a,f)=>`<span${a>cfg.a+1e-6?' class="warn"':""}>F${f+1} ${fmt(a)} / ${cfg.a} A</span>`).join("")}</div></div></div>`).join("")||`<p class="hint" style="margin:0">Sin líneas de corriente: indica el consumo o el máximo por línea de los módulos.</p>`;
 }
+$("boxes").addEventListener("click",e=>{const b=e.target.closest('button[data-x="bdel"]');if(!b)return;const i=+b.closest(".bx").dataset.b;
+  S.pa=S.pa||{};Object.keys(S.pa).forEach(k=>{const m=S.pa[k];if(m.b===i)delete S.pa[k];else if(m.b>i)m.b--});boxNames().splice(i-1,1);commit();toast(`Cuadro ${i} eliminado · Ctrl+Z para deshacer`)});
 $("boxes").addEventListener("change",e=>{const x=e.target.dataset.x;if(!x)return;
   if(x==="bname"){const i=+e.target.closest(".bx").dataset.b;boxNames()[i-1]=e.target.value.trim();commit();return}
   if(x==="slot"||x==="bring"){const k=x==="bring"?e.target.value:e.target.closest(".bxr").dataset.k;if(!k)return;const[b,c]=(x==="bring"?e.target.dataset.slot:e.target.value).split(".").map(Number);S.pa=S.pa||{};
@@ -1136,7 +1188,7 @@ $("boxes").addEventListener("change",e=>{const x=e.target.dataset.x;if(!x)return
     const shared=P.lines.some(l=>l.key!==k&&l.b===b&&l.c===c);
     toast(shared?`Circuito ${b}.${c} doblado: ${fmt(tot)} A${tot>S.opts.amp?` · ¡más de ${S.opts.amp} A!`:""} · Ctrl+Z para deshacer`:`Toma movida a ${b}.${c} · Ctrl+Z para deshacer`);commit()}});
 $("bxAuto").onclick=()=>{S.pa={};S.boxes=[];commit();toast("Tomas repartidas de nuevo en orden")};
-$("bxAdd").onclick=()=>{boxNames().push("");commit()};
+$("bxAdd").onclick=()=>{boxNames().push(`Cuadro ${boxNames().length+1}`);commit()};
 ["bxA","bxN","bxPh"].forEach(id=>$(id).onchange=()=>{S.opts.box=Object.assign(boxCfg(),{a:Math.max(1,+$("bxA").value||32),n:Math.max(1,+$("bxN").value|0||6),ph:Math.max(1,Math.min(3,+$("bxPh").value|0||3))});commit()});
 $("oBoxTri").onchange=()=>{S.opts.boxTri=$("oBoxTri").checked;commit()};
 function boxRows(){const P=boxPlan();return P.lines.slice().sort((a,b)=>a.b-b.b||a.c-b.c).map(l=>[`${l.b} · ${boxName(l.b)}`,`${l.c}${l.sub}${l.sub?" (doblado)":""}`,`F${l.f}`,`${l.name} · L${l.i+1}`,l.pl.pcs.map(k=>(PC[k]||PC[""]).n).join(" + "),l.n,`${Math.round(l.w)} W`,`${fmt(l.amps)} A`])}
@@ -1201,6 +1253,15 @@ function renderLib(){
     <label>Máx. por boca (datos)<input type="number" min="0" data-f="kd" value="${p.kd||""}" placeholder="calculado"></label>
     <label>Máx. por línea (corriente)<input type="number" min="0" data-f="k" value="${p.k||""}" placeholder="calculado"></label>
     <label class="full" style="grid-column:1/-1">Conector<select data-f="pc">${pcOpts(p.pc)}</select></label>
+    <details class="acc" style="grid-column:1/-1"${p.bumper||p.perMod||p.perProj?"":""}><summary>Accesorios de montaje</summary><div class="grid2">
+      <label>Bumper (volada)<input data-f="bumper" value="${esc(p.bumper||"")}" placeholder="Bumper …"></label>
+      <label>Garra a estructura<input data-f="garra" value="${esc(p.garra||"")}" placeholder="Yugo / garra + chapa"></label>
+      <label class="full" style="grid-column:1/-1">La garra se amarra en<select data-f="garraPos"><option value="eje"${(p.garraPos||"eje")==="eje"?" selected":""}>El eje del módulo (verticales a 0,25 m del borde · Absen)</option><option value="marco"${p.garraPos==="marco"?" selected":""}>El marco entre módulos (verticales desde el borde · Yestech, Digiled)</option></select></label>
+      <label>Base original<input data-f="baseO" value="${esc(p.baseO||"")}" placeholder="Base original"></label>
+      <label>Base Telesonic 0,5 m<input data-f="baseT" value="${esc(p.baseT||"")}" placeholder="Chapa fina 0,5 m"></label>
+      <label class="full" style="grid-column:1/-1">Por módulo (una línea cada uno: «nombre × cantidad»)<textarea data-f="perMod" rows="2" placeholder="Latiguillo de red × 1&#10;Puente powerCON × 1">${esc(p.perMod||"")}</textarea></label>
+      <label class="full" style="grid-column:1/-1">Por proyecto (aunque haya varias pantallas)<textarea data-f="perProj" rows="1" placeholder="Llave especial × 1">${esc(p.perProj||"")}</textarea></label>
+    </div></details>
     <label class="check"><input type="checkbox" data-f="stock"${p.stock?" checked":""}>En Telesonic</label>
     <label>Unidades en almacén<input type="number" min="0" data-f="qty" value="${p.qty||""}"${p.stock?"":" disabled"}></label>
     <div class="info">P${(p.w/p.x).toFixed(2).replace(".",",")} · ${fmt(maxData({rx:p.x,ry:p.y,kd:p.kd}))} mód/boca · ${(()=>{const q={wm:p.wm,k:p.k},m=maxPow(q);return m===null?"sin consumo":`${m} mód/línea${p.k?"":` (${S.opts.fac}% de ${S.opts.amp} A)`}${powWarn(q)?` <span class="warn">⚠ ${p.k}×${p.wm} W = ${fmt(p.k*p.wm)} W supera ${S.opts.amp} A a ${S.opts.volt} V</span>`:""}`})()}${used?` · <span${low?' class="warn"':""}>en proyecto: ${used}${p.stock&&p.qty?` / ${p.qty}`:""}</span>`:""}</div>
@@ -1224,6 +1285,7 @@ function libChanged(){saveLib();buildPanelSelect($("panel").value);commit()}
 $("fModStock").onchange=renderLib;
 $("modLib").addEventListener("change",e=>{const card=e.target.closest(".lib"),f=e.target.dataset.f;if(!card||!f)return;const p=LIB.find(z=>z.id===card.dataset.id);
   if(f==="n")p.n=e.target.value.trim()||p.n;else if(f==="pc")p.pc=e.target.value;else if(f==="stock")p.stock=e.target.checked;
+  else if(["bumper","garra","baseO","baseT","perMod","perProj","garraPos"].includes(f)){p[f]=e.target.value.trim()}
   else{const v=+e.target.value||0;if(["w","h","x","y"].includes(f)&&!(v>0)){toast("Medidas y resolución deben ser mayores que 0.");renderLib();return}p[f]=["x","y","k","kd","qty"].includes(f)?Math.round(v):v}
   S.screens.forEach(s=>{if(s.mid===p.id){s.pn=p.n;s.cw=p.w;s.ch=p.h;s.rx=p.x;s.ry=p.y;s.wm=p.wm||0;s.kg=p.kg||0;s.k=p.k||0;s.kd=p.kd||0;s.pc=p.pc||""}});
   libChanged();renderLib()});
@@ -1304,7 +1366,7 @@ function initForm(){
   const num=(id,k,min)=>{$(id).onchange=()=>{const v=+$(id).value;if(v>=min){o[k]=v}syncOpts();commit();preview()}};
   num("oPx","pxPort",1000);num("oV","volt",1);num("oA","amp",1);num("oF","fac",10);
   $("pxPresets").onclick=e=>{const b=e.target.closest("button");if(!b)return;o.pxPort=+b.dataset.v;syncOpts();commit();preview()};
-  $("oDir").onchange=()=>{o.dir=$("oDir").value;commit()};$("oZig").onchange=()=>{o.zig=$("oZig").value;commit()};$("oPowF").onchange=()=>{o.powFollow=$("oPowF").checked;commit()};$("oRed").onchange=()=>{o.red=$("oRed").value;commit()};$("oView").onchange=()=>{o.view=$("oView").value;commit()};$("oStart").onchange=()=>{o.start=$("oStart").value;commit()};
+  $("oDir").onchange=()=>{o.dir=$("oDir").value;commit()};$("oZig").onchange=()=>{o.zig=$("oZig").value;commit()};$("oPowF").onchange=()=>{o.powMode=$("oPowF").value;delete o.powFollow;commit()};$("oRed").onchange=()=>{o.red=$("oRed").value;commit()};$("oView").onchange=()=>{o.view=$("oView").value;commit()};$("oStart").onchange=()=>{o.start=$("oStart").value;commit()};
   $("oWire").onchange=()=>{o.wiring=$("oWire").value;commit()};
   [["mProject","project"],["mPlace","place"],["mDate","date"],["mResp","resp"],["mVer","ver"]].forEach(([id,k])=>{$(id).oninput=()=>{S.meta[k]=$(id).value;save()}});
   $("bPdf").onclick=$("bPdf2").onclick=exportPdf;$("bDocx").onclick=$("bDocx2").onclick=exportDocx;
@@ -1338,7 +1400,7 @@ function initForm(){
 }
 function syncOpts(){const o=S.opts;o.fac=Math.min(100,o.fac);
   const m=S.meta;$("mProject").value=m.project;$("mPlace").value=m.place;$("mDate").value=m.date;$("mResp").value=m.resp;$("mVer").value=m.ver||"";
-  $("oPx").value=o.pxPort;$("oV").value=o.volt;$("oA").value=o.amp;$("oF").value=o.fac;$("oDir").value=o.dir;$("oZig").value=o.zig||"s";$("oPowF").checked=o.powFollow!==false;$("oRed").value=o.red||"same";$("oView").value=o.view||"front";$("oStart").value=o.start;$("oWire").value=o.wiring;$("oFull").checked=o.full;
+  $("oPx").value=o.pxPort;$("oV").value=o.volt;$("oA").value=o.amp;$("oF").value=o.fac;$("oDir").value=o.dir;$("oZig").value=o.zig||"s";$("oPowF").value=powMode();$("oRed").value=o.red||"same";$("oView").value=o.view||"front";$("oStart").value=o.start;$("oWire").value=o.wiring;$("oFull").checked=o.full;
   [...$("pxPresets").children].forEach(b=>b.classList.toggle("on",+b.dataset.v===o.pxPort));$("oLabels").checked=o.labels;$("oNums").checked=o.nums;$("oDiag").checked=o.diag;$("oCircle").checked=o.circle;$("oCoords").checked=o.coords;$("oNotes").checked=o.notes!==false;$("oSnap").checked=o.snap;$("oNoOv").checked=o.noOv!==false;$("oBg").value=o.bg;$("oPattern").value=o.pattern}
 function syncStage(){const auto=S.opts.autoStage!==false;$("oAutoStage").checked=auto;$("stW").disabled=$("stH").disabled=auto;$("stagePresets").classList.toggle("dim",auto);
   $("stW").value=S.stage.w;$("stH").value=S.stage.h;if($("stInfo"))$("stInfo").innerHTML=stageInfo();
@@ -1411,10 +1473,10 @@ function drawScreen(ctx,s,i,coordTxt){
     if(o.pattern==="checker")l=(r+c)%2?34:46;
     else if(o.pattern==="grad")l=26+28*((c/(Math.max(1,s.cols-1))+r/(Math.max(1,s.rows-1)))/2);
     else l=40;
-    ctx.fillStyle=`hsl(${hue} 70% ${l}%)`;ctx.fillRect(x,y,s.rx,s.ry);
+    ctx.fillStyle=o.wiring==="power"?`hsl(${hue} 6% ${l-8}%)`:`hsl(${hue} 70% ${l}%)`;ctx.fillRect(x,y,s.rx,s.ry);
   }
   // rejilla de módulos
-  ctx.strokeStyle=`hsl(${hue} 80% 78% / .55)`;ctx.lineWidth=1;ctx.beginPath();
+  ctx.strokeStyle=o.wiring==="power"?"rgba(255,200,0,.35)":`hsl(${hue} 80% 78% / .55)`;ctx.lineWidth=1;ctx.beginPath();
   for(let c=1;c<s.cols;c++){const x=s.x+c*s.rx+.5;ctx.moveTo(x,s.y);ctx.lineTo(x,s.y+sh)}
   for(let r=1;r<s.rows;r++){const y=s.y+r*s.ry+.5;ctx.moveTo(s.x,y);ctx.lineTo(s.x+sw,y)}
   ctx.stroke();
@@ -1424,7 +1486,9 @@ function drawScreen(ctx,s,i,coordTxt){
   if(o.circle){ctx.strokeStyle="rgba(255,255,255,.7)";ctx.lineWidth=Math.max(1,Math.min(sw,sh)/300);ctx.beginPath();ctx.arc(s.x+sw/2,s.y+sh/2,Math.min(sw,sh)/2-ctx.lineWidth,0,Math.PI*2);ctx.stroke()}
   if(LOGO&&S.logo.pos!=="stage"&&!o.lean)drawLogo(ctx,s.x,s.y,sw,sh,S.logo.pos,o.labels);
   ctx.restore();
-  ctx.strokeStyle="#ffffff";ctx.lineWidth=2;ctx.strokeRect(s.x+1,s.y+1,sw-2,sh-2);
+  ctx.strokeStyle=o.wiring==="power"?"#ffc400":"#ffffff";ctx.lineWidth=o.wiring==="power"?Math.max(3,Math.min(sw,sh)*.012):2;ctx.strokeRect(s.x+1,s.y+1,sw-2,sh-2);
+  if(o.wiring==="power"){const fs=Math.max(10,Math.min(sw,sh)*.07),tx="CORRIENTE";ctx.save();ctx.font=`800 ${fs}px "Archivo",sans-serif`;const tw=ctx.measureText(tx).width;
+    ctx.fillStyle="#ffc400";ctx.fillRect(s.x+sw-tw*1.12-fs*.9,s.y+fs*.3,tw*1.12+fs*.6,fs*1.3);ctx.fillStyle="#111";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tx,s.x+sw-tw*.56-fs*.6,s.y+fs*.97,tw*1.1);ctx.restore()}
   if(o.wiring!=="none")drawWiring(ctx,s);
   if(o.wiring==="data")drawPowerTris(ctx,s);
   if(o.labels){
@@ -1628,6 +1692,7 @@ function renderList(){
       <input class="nm" data-k="name" value="${esc(s.name)}" aria-label="Nombre" style="font-family:var(--f-body);padding:4px 6px">
       <span class="acts"><button data-a="dup" title="Duplicar">⧉</button><button data-a="del" class="danger" title="Eliminar">✕</button></span>
       <span class="meta">${W(s)}×${H(s)} px · ${s.pn?esc(s.pn)+" · ":""}${s.rx}×${s.ry}/mód · ${(s.cols*s.cw/1000).toFixed(2)}×${(s.rows*s.ch/1000).toFixed(2)} m${out?' · <span class="warn">fuera del lienzo</span>':""}<br>Datos ${(()=>{const A=assign(),q=portsOf(A,s);if(!q.length)return"—";const gm=wgOf(s);if(gm.length>1)return `unido con ${gm.filter(o=>o!==s).map(o=>esc(o.name)).join(", ")} · ${q.map(x=>A.lab(x)+" ("+x.runN+")").join(", ")}`;return `${q.length} boca${q.length===1?"":"s"} (${q.map(x=>x.n).join("+")})`})()} · Corriente ${(()=>{const m=effPow(s);if(m===null)return"sin consumo";const c=powRuns(s);return `${c.length} línea${c.length===1?"":"s"} (${c.map(x=>x.length).join("+")})`})()}<br>Peso ${s.kg?`${fmt(kgOf(s))} kg · ${fmt(kgCol(s))} kg por columna`:"sin dato"}</span>
+      ${mountBox(s)}
       <label class="elsel" style="grid-column:1/-1">Notas${s.note?' <span class="note-on">●</span>':""}<textarea data-k="note" rows="${s.note?2:1}" placeholder="Batch, de otra empresa, observaciones…" aria-label="Notas de ${esc(s.name)}">${esc(s.note||"")}</textarea></label>
       ${wireBox(s)}
       ${mosaicBox(s)}
@@ -1753,6 +1818,128 @@ function joinWiring(list){
   const off=all.some(q=>(q.x-h.x)%h.rx||(q.y-h.y)%h.ry);
   toast(`Cableado unido: ${all.map(q=>q.name).join(" + ")}${moved?" · misma electrónica":""}${off?" · ojo: no están alineadas a módulo":""}`);return true;
 }
+
+/* ---------- montaje, accesorios y estructura de 8s ---------- */
+const MOUNT={"":"Sin indicar",fly:"Volada",ground:"Apoyada",struct:"Apoyada con estructura de 8s"};
+// «nombre × 2» por línea
+const parseItems=t=>String(t||"").split(/\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const m=l.match(/^(.*?)\s*[x×]\s*(\d+(?:[.,]\d+)?)\s*$/i);return m?{n:m[1].trim(),q:qNum(m[2])}:{n:l,q:1}});
+// piezas de 1 m y 0,5 m para un ancho
+function pieces(wm){const w=Math.round(wm*2)/2,a=Math.floor(w+1e-9),b=w-a>=.5-1e-9?1:0;return{a,b,w}}
+// grupo físico (pantalla compuesta = una sola pantalla)
+function physOf(s){const g=s.cmp?S.screens.filter(t=>t.cmp&&t.cmp.g===s.cmp.g):[s];
+  const x0=Math.min(...g.map(t=>t.x)),y0=Math.min(...g.map(t=>t.y));
+  const wM=Math.max(...g.map(t=>(t.x-x0)/t.rx*t.cw+t.cols*t.cw))/1000,hM=Math.max(...g.map(t=>(t.y-y0)/t.ry*t.ch+t.rows*t.ch))/1000;
+  const top=g.reduce((a,t)=>t.y<a.y?t:a,g[0]),bot=g.reduce((a,t)=>t.y+H(t)>a.y+H(a)?t:a,g[0]);return{g,head:g[0],wM,hM,top,bot}}
+// estructura de 8s: verticales cada metro, horizontales con huecos de 1,5–2 m, nunca por encima de la pantalla
+const SUP={tarima:"Pantalla apoyada en tarima (el peso lo lleva la tarima)",bumper:"Pantalla sobre su bumper en el suelo (+0,15 m)",b0:"Balcón en la base del primer 8s",b05:"Balcón en la mitad del primer 8s",b1:"Balcón arriba del primer 8s"};
+const PATA=.26,BUMPH=.15;
+// con balcón la estructura va con patas por defecto; sobre bumper, sin patas salvo que se pidan
+const hasPata=s=>s.sbase===0?false:s.sbase?true:(s.sup||"b0")!=="bumper";
+function structPlan(s){const P=physOf(s),md=panelOf(P.top.mid)||{},onFrame=md.garraPos==="marco",pata=hasPata(s)?PATA:0;
+  // eje del módulo (Absen): verticales a medio módulo del borde; marco (Yestech): verticales en las juntas, desde el borde
+  // en marco se deja un módulo al aire a cada lado para que no asome la estructura
+  const mw=(md.w||500)/1000,so=s.so||{},nVa=onFrame?Math.max(2,Math.floor(P.wM-2*mw+1e-9)+1):Math.max(2,Math.floor(P.wM+1e-9)),nV=so.nV>=2?so.nV:nVa;
+  const sup=s.sup||(s.balc?"b0":"b0"),bal={b0:0,b05:.5,b1:1}[sup];
+  const tar=s.tar>0?s.tar:1;
+  const e=sup==="bumper"?BUMPH:sup==="tarima"?tar:+(pata+bal).toFixed(2),top=e+P.hM;            // altura de la pantalla desde el suelo
+  const ha=Math.max(1,Math.floor(top-pata+1e-9)),h=so.h>=1?so.h:ha;          // 8s apilados sin pasar de la pantalla
+  const gaps=Math.max(1,Math.ceil(h/2)),lva=[];for(let i=0;i<=gaps;i++)lva.push(+(h*i/gaps).toFixed(2));
+  const levels=Array.isArray(so.lv)&&so.lv.length?[...new Set(so.lv.filter(v=>v>=0&&v<=h))].sort((a,b)=>a-b):lva;
+  const balc=sup!=="bumper"&&sup!=="tarima"&&!levels.some(l=>Math.abs(l-bal)<.01),nLev=levels.length+(balc?1:0);
+  const horiz=(nV-1)*nLev,vert=nV*h,joints=nV*(h-1),unions=nV*nLev;
+  const mod=md,offA=onFrame?mw:(mod.w||500)/2000,off=so.off!=null&&so.off>=0?so.off:offA,right=+(P.wM-off-(nV-1)).toFixed(2);
+  const gm=[];for(let j=0;j<h;j++){const a=pata+j,b=a+1;if(Math.min(b,top)-Math.max(a,e)>.2)gm.push(j)}   // garras solo donde hay pantalla
+  const man=!!(s.so&&Object.keys(s.so).length),warn=[];if(right<-1e-6)warn.push(`la estructura se sale ${fmt(-right)} m por la derecha`);if(pata+h>top+1e-6)warn.push(`los 8s pasan ${fmt(pata+h-top)} m de la pantalla`);
+  return{man,warn,auto:{nV:nVa,off:offA,h:ha,lv:lva},gm,onFrame,h,nV,levels,balc,bal,sup,pata,e,top,horiz,vert,eights:horiz+vert,joints,vasos:2*joints,tornV:2*joints,unions,tornU:2*unions,garras:nV*gm.length,bases:pata?nV:0,off,right,wM:P.wM,hM:P.hM,over4:sup!=="tarima"&&h+pata>4,tar,garra:mod.garra||"Garra a estructura",bumper:mod.bumper||"Bumper"}}
+function prepScreen(s){
+  const P=physOf(s);if(P.head!==s)return null; // la compuesta se cuenta en su primera parte
+  const items=[],add=(n,q,d="")=>{if(q>0)items.push({n,q,d})},m=s.mount||"",top=panelOf(P.top.mid)||{},bot=panelOf(P.bot.mid)||{};
+  P.g.forEach(t=>{const mod=panelOf(t.mid);add(`Módulo ${t.pn||"LED"}`,t.cols*t.rows,`${t.cols}×${t.rows}${batchOf(t)?" · batch "+batchOf(t):""}`);
+    if(mod)parseItems(mod.perMod).forEach(it=>add(it.n,it.q*t.cols*t.rows,"por módulo"))});
+  if(m==="fly"){const p=pieces(P.wM),pts=p.a*2+p.b,nm=top.bumper||"Bumper";
+    add(`${nm} 1 m`,p.a,`${fmt(P.wM)} m de ancho`);add(`${nm} 0,5 m`,p.b,"");add("Grillete",pts,`${pts} puntos de volado`);add("Eslinga acerada 2 m",pts,"una por punto")}
+  if(m==="ground"){const t=s.base||"orig";
+    if(t==="orig"){const p=pieces(P.wM),nm=bot.baseO||"Base original";add(`${nm} 1 m`,p.a,`${fmt(P.wM)} m de ancho`);add(`${nm} 0,5 m`,p.b,"")}
+    else if(t==="tls")add(bot.baseT||"Chapa fina Telesonic 0,5 m",Math.round(P.wM*2),`${fmt(P.wM)} m de ancho`);
+    items.push({n:top.garra||"Garra a estructura",q:null,d:"cantidad según el planteamiento del montaje"})}
+  let st=null;if(m==="struct"){st=structPlan(s);
+    add("8s (vertical)",st.vert,`${st.nV} verticales × ${st.h} m`);add("8s (horizontal)",st.horiz,`${st.nV-1} × ${st.levels.length+(st.balc?1:0)} niveles${st.balc?" (con balcón)":""}`);
+    if(st.sup==="bumper"){const p=pieces(P.wM);add(`${st.bumper} 1 m`,p.a,"pantalla apoyada en su bumper");add(`${st.bumper} 0,5 m`,p.b,"")}
+    add("Vaso",st.vasos,"2 por empalme vertical");add("Tornillo de vaso",st.tornV,"2 por empalme");add("Tornillo de unión",st.tornU,`2 por unión (${st.unions})`);
+    add(st.garra,st.garras,`una por metro con pantalla en cada vertical (${st.gm.length} × ${st.nV})`);if(st.bases)add("Pata de 8s (+0,26 m)",st.bases,"una por vertical")}
+  parseItems(s.xtra).forEach(it=>add(it.n,it.q,"extra"));
+  const tbd=m==="ground"?[(top.garra||"Garra a estructura")]:[];
+  return{s,P,items:items.filter(i=>i.q===null||i.q>0),st,mount:m,tbd};
+}
+function prepProject(){const A=assign(),o=S.opts,out=[],add=(n,q,d="")=>{if(q>0)out.push({n,q,d})},usedMods=new Set(S.screens.map(s=>s.mid).filter(Boolean));
+  usedMods.forEach(id=>{const p=panelOf(id);if(p)parseItems(p.perProj).forEach(it=>add(it.n,it.q,`por proyecto · ${p.n}`))});
+  const PP=powerPlan();const byPc={};PP.lines.forEach(l=>{const k=(l.segs[0].s.pc)||"";byPc[k]=(byPc[k]||0)+1});
+  Object.entries(byPc).forEach(([k,n])=>add(k?`Manguera ${(PC[k]||PC[""]).n.replace(/ \(.*\)/,"")} → Schuko`:"Manguera de corriente → Schuko (conector a indicar)",n,"una por toma · metros: ____"));
+  const ports=A.elecs.reduce((a,x)=>a+x.main,0);add("Tirada de señal (red) a pantalla",ports,"una por boca · metros: ____");
+  if(o.red&&o.red!=="none")add("Tirada de señal de respaldo",ports,"metros: ____");
+  A.elecs.filter(x=>x.screens.length).forEach(x=>add(`Electrónica ${short(x.spec.n)}`,1,`${x.letter} · ${x.E.name}`));
+  scalers().forEach(X=>add(`Procesador ${X.model||X.name}`,1,X.name));
+  const BP=boxPlan();if(BP.boxes.length)add(`Cuadro ${BP.cfg.a} A · ${BP.cfg.n} circuitos`,BP.boxes.length,BP.boxes.map(B=>B.name).join(", "));
+  return out}
+function prepTotals(){const m=new Map(),put=(n,q)=>{if(q===null){if(!m.has(n))m.set(n,null);return}if(q>0)m.set(n,(m.get(n)||0)+q)};
+  S.screens.forEach(s=>{const r=prepScreen(s);if(r)r.items.forEach(i=>put(i.n,i.q))});prepProject().forEach(i=>put(i.n,i.q));return[...m.entries()]}
+// dibujo de la estructura (alzado frontal)
+function structImage(s){const st=structPlan(s),P=physOf(s),k=110,pad=70,W0=Math.round(st.wM*k),topM=Math.max(st.top,st.pata+st.h),H0=Math.round(topM*k),c=document.createElement("canvas");
+  c.width=W0+pad*2+150;c.height=H0+pad*2+30;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);
+  const X=m=>pad+m*k,Y=m=>pad+H0-m*k,sx0=st.pata;
+  // suelo
+  x.strokeStyle="#6b7a86";x.lineWidth=2;x.beginPath();x.moveTo(X(-.3),Y(0));x.lineTo(X(st.wM+.3),Y(0));x.stroke();
+  // pantalla
+  x.fillStyle="#e8f1f6";x.fillRect(X(0),Y(st.top),W0,st.hM*k);x.strokeStyle="#9fb6c4";x.lineWidth=1;
+  const mw=(P.top.cw||500)/1000;for(let i=1;i<st.wM/mw-.01;i++){x.beginPath();x.moveTo(X(i*mw),Y(st.top));x.lineTo(X(i*mw),Y(st.e));x.stroke()}
+  x.strokeStyle="#065678";x.lineWidth=2;x.strokeRect(X(0),Y(st.top),W0,st.hM*k);
+  if(st.sup==="bumper"){x.fillStyle="#333";x.fillRect(X(0),Y(st.e),W0,st.e*k)}
+  if(st.sup==="tarima"){x.fillStyle="#c9a46a";x.fillRect(X(-.25),Y(st.e),W0+.5*k,st.e*k);x.strokeStyle="#8a6a35";x.lineWidth=2;x.strokeRect(X(-.25),Y(st.e),W0+.5*k,st.e*k);
+    x.fillStyle="#5a4420";x.font="600 13px Helvetica, Arial";x.textAlign="center";x.fillText(`TARIMA ${fmt(st.e)} m`,X(st.wM/2),Y(st.e/2)+5)}
+  // patas
+  if(st.pata)for(let i=0;i<st.nV;i++){const vx=X(st.off+i);x.fillStyle="#777";x.fillRect(vx-16,Y(st.pata),32,st.pata*k)}
+  // horizontales
+  x.strokeStyle="#1E93A0";x.lineWidth=7;const lv=[...st.levels.map(l=>l+sx0)];
+  lv.forEach(l=>{x.beginPath();x.moveTo(X(st.off),Y(l));x.lineTo(X(st.off+st.nV-1),Y(l));x.stroke()});
+  if(st.balc){x.strokeStyle="#e8a000";x.lineWidth=9;x.beginPath();x.moveTo(X(st.off),Y(sx0+st.bal));x.lineTo(X(st.off+st.nV-1),Y(sx0+st.bal));x.stroke()}
+  // verticales, empalmes y garras
+  for(let i=0;i<st.nV;i++){const vx=X(st.off+i);x.strokeStyle="#0b3b52";x.lineWidth=6;x.beginPath();x.moveTo(vx,Y(sx0));x.lineTo(vx,Y(sx0+st.h));x.stroke();
+    for(let j=1;j<st.h;j++){x.fillStyle="#fff";x.fillRect(vx-6,Y(sx0+j)-2,12,4)}
+    st.gm.forEach(j=>{x.fillStyle="#ff3d3d";x.beginPath();x.arc(vx,Y(sx0+j+.5),5,0,Math.PI*2);x.fill()})}
+  // cotas
+  x.fillStyle="#222";x.font="600 13px Helvetica, Arial";x.textAlign="center";
+  x.fillText(`${fmt(st.wM)} m`,X(st.wM/2),Y(st.top)-24);if(st.off>0)x.fillText(`${fmt(st.off)} m`,X(st.off/2),Y(0)+26);if(st.right>0)x.fillText(`${fmt(st.right)} m`,X(st.wM-st.right/2),Y(0)+26);
+  for(let i=0;i<st.nV-1;i++)x.fillText("1 m",X(st.off+i+.5),Y(0)+26);
+  x.textAlign="left";x.font="500 12px Helvetica, Arial";const rx=X(st.wM)+12,lab=[];
+  lab.push([Y(st.top)+4,`pantalla ${fmt(st.e)} → ${fmt(st.top)} m`]);
+  if(st.e>0)lab.push([Y(st.e)+4,st.sup==="bumper"?`bumper ${fmt(st.e)} m`:st.sup==="tarima"?`tarima ${fmt(st.e)} m`:`apoyo a ${fmt(st.e)} m`]);
+  if(st.pata)lab.push([Y(st.pata/2)+4,`pata ${fmt(st.pata)} m`]);
+  lab.push([Y(st.pata+st.h)+4,`8s hasta ${fmt(st.pata+st.h)} m`]);
+  for(let i=0;i<st.levels.length-1;i++){const a=st.levels[i],b=st.levels[i+1];lab.push([Y(sx0+(a+b)/2)+4,`hueco ${fmt(b-a)} m`])}
+  lab.sort((p,q)=>p[0]-q[0]);for(let i=1;i<lab.length;i++)if(lab[i][0]-lab[i-1][0]<15)lab[i][0]=lab[i-1][0]+15;
+  lab.forEach(([yy,tx])=>{x.fillStyle="#222";x.fillText(tx,rx,yy)});
+  x.fillText(`● garra   ▬ 8s   ─ empalme (2 vasos)${st.balc?"   ▬ naranja: balcón":""}${st.pata?"   ▮ pata":""}`,X(0),c.height-12);
+  return{data:c.toDataURL("image/png"),w:c.width,h:c.height}}
+
+function mountBox(s){if(s.cmp&&physOf(s).head!==s)return `<p class="hint" style="grid-column:1/-1;margin:0">Montaje: el de la primera parte de la pantalla compuesta.</p>`;
+  const m=s.mount||"",r=m?prepScreen(s):null,st=m==="struct"?structPlan(s):null;
+  return `<div class="mnt" style="grid-column:1/-1"><div class="grid2">
+    <label>Montaje<select data-k="mount">${Object.entries(MOUNT).map(([k,v])=>`<option value="${k}"${m===k?" selected":""}>${v}</option>`).join("")}</select></label>
+    ${m==="ground"?`<label>Base<select data-k="base"><option value="orig"${(s.base||"orig")==="orig"?" selected":""}>Original</option><option value="tls"${s.base==="tls"?" selected":""}>Chapa fina Telesonic</option><option value="none"${s.base==="none"?" selected":""}>Sin base</option></select></label>`:
+      m==="struct"?`<label>Patas<select data-k="sbase"><option value="0"${hasPata(s)?"":" selected"}>Sin pata</option><option value="1"${hasPata(s)?" selected":""}>Con pata (+0,26 m, una por vertical)</option></select></label>`:"<span></span>"}
+    ${m==="struct"?`<label class="full" style="grid-column:1/-1">Apoyo de la pantalla<select data-k="sup">${Object.entries(SUP).map(([k,v])=>`<option value="${k}"${(s.sup||"b0")===k?" selected":""}>${v}</option>`).join("")}</select></label>`:""}
+    ${m==="struct"&&s.sup==="tarima"?`<label>Altura de la tarima (m)<input type="number" min="0.1" step="0.05" data-k="tar" value="${s.tar||""}" placeholder="1"></label><span class="hint" style="margin:0;font-size:11px">El peso va en la tarima: sin límite de 4 m</span>`:""}
+    </div>
+    ${r&&r.items.length?`<div class="wnote">${r.items.filter(i=>!/^Módulo /.test(i.n)).map(i=>`${i.q===null?"¿?":i.q+"×"} ${esc(i.n)}`).join(" · ")}</div>`:""}
+    ${st?`<details class="sod"${s.so?" open":""}><summary>Ajustar estructura a mano${st.man?' <span class="badge">MANUAL</span>':""}</summary><div class="grid2">
+      <label>Verticales<input type="number" min="2" data-k="so.nV" value="${s.so&&s.so.nV||""}" placeholder="auto: ${st.auto.nV}"></label>
+      <label>1ª vertical desde la izq. (m)<input type="number" min="0" step="0.05" data-k="so.off" value="${s.so&&s.so.off!=null?s.so.off:""}" placeholder="auto: ${fmt(st.auto.off)}"></label>
+      <label>Alto de 8s (m)<input type="number" min="1" data-k="so.h" value="${s.so&&s.so.h||""}" placeholder="auto: ${st.auto.h}"></label>
+      <label>Horizontales a (m)<input data-k="so.lv" value="${s.so&&s.so.lv?s.so.lv.map(fmt).join("; "):""}" placeholder="auto: ${st.auto.lv.map(fmt).join("; ")}"></label>
+      ${st.man?`<button data-a="soreset" class="ghost full" style="grid-column:1/-1">Volver a la propuesta automática</button>`:""}</div></details>
+      ${st.warn.length?`<div class="wnote warn">${st.warn.join(" · ")}</div>`:""}`:""}
+    ${st?`<div class="wnote${st.over4?" warn":""}">Pantalla de ${fmt(st.e)} a ${fmt(st.top)} m del suelo · estructura ${st.nV} verticales × ${st.h} m${st.pata?" sobre patas":""} · huecos de ${fmt(st.levels[1]-st.levels[0])} m ${st.onFrame?` · amarre al marco, ${fmt(st.off)} m al aire a la izq. y ${fmt(st.right)} m a la der.`:` · sobra ${fmt(st.off)} m a la izq. y ${fmt(st.right)} m a la der.`}${st.over4?" · más de 4 m: revisar homologación":""}</div>`:""}
+    <label class="elsel">Extras de esta pantalla («nombre × cantidad»)<textarea data-k="xtra" rows="1" placeholder="Eslinga larga 3 m × 2">${esc(s.xtra||"")}</textarea></label></div>`}
 function wireBox(s){
   const own=(s.wd&&(s.wd.pat||s.wd.n))||(s.wp&&(s.wp.pat||s.wp.n))||s.next||s.wg||s.pnext;
   const sel=(k,v)=>`<select data-k="${k}"><option value="">Por defecto · ${esc(patName(globalPat()))}</option>${PATS.map(p=>`<option value="${p}"${v===p?" selected":""}>${patName(p)}</option>`).join("")}</select>`;
@@ -1778,6 +1965,7 @@ function esc(t){return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;","
 $("list").addEventListener("click",e=>{
   const card=e.target.closest(".scr");if(!card)return;const s=S.screens.find(t=>t.id===card.dataset.id);
   const a=e.target.closest("button")?.dataset.a;
+  if(a==="soreset"){delete s.so;commit();return}
   if(a==="wreset"){unjoin(s);delete s.wd;delete s.wp;delete s.pnext;delete s.pjump;commit();return}
   if(a==="msplit"){const d=e.target.closest("details"),v=k=>d.querySelector(`[data-m="${k}"]`).value;openMos.delete(s.id);splitMosaic(s,+v("n"),v("dir"),v("el"),v("sizes"));return}
   if(a==="mless"||a==="mmore"){resizeMosaic(s,a==="mmore"?1:-1);return}
@@ -1791,6 +1979,9 @@ $("list").addEventListener("click",e=>{
 $("list").addEventListener("toggle",e=>{const d=e.target;if(!d.classList||!d.classList.contains("wire"))return;const set=d.classList.contains("mosd")?openMos:d.classList.contains("bandd")?openBand:openWire;d.open?set.add(d.dataset.id):set.delete(d.dataset.id)},true);
 $("list").addEventListener("change",e=>{
   const k=e.target.dataset.k;if(!k)return;const s=S.screens.find(t=>t.id===e.target.closest(".scr").dataset.id);
+  if(k.startsWith("so.")){const f=k.slice(3),v=e.target.value.trim();s.so=Object.assign({},s.so);
+    if(!v)delete s.so[f];else if(f==="lv")s.so.lv=v.split(/[;\s]+/).map(x=>qNum(x)).filter(x=>!isNaN(x));else s.so[f]=f==="off"?qNum(v):Math.round(qNum(v));
+    if(!Object.keys(s.so).length)delete s.so;commit();return}
   if(k.includes(".")){const[g,f]=k.split(".");const v=f==="pat"?e.target.value:Math.max(0,+e.target.value|0);
     (g==="wd"?wgOf(s):[s]).forEach(q=>{q[g]=Object.assign({},q[g]);q[g][f]=v});commit();return}
   if(k==="wg"){const v=e.target.value;if(!v){unjoin(s);commit();return}joinWiring([s,S.screens.find(q=>q.id===v)]);openWire.add(s.id);commit();return}
@@ -1803,6 +1994,12 @@ $("list").addEventListener("change",e=>{
     let c=S.screens.find(q=>q.id===v),guard=0;while(c&&guard++<500){if(c===s){toast("Eso cerraría un bucle de cable.");renderList();return}c=c.next?S.screens.find(q=>q.id===c.next):null}
     s.next=v;const tgt=S.screens.find(q=>q.id===v);let moved=0,cc=tgt;guard=0;while(cc&&guard++<500){if(cc.e!==s.e){cc.e=s.e;moved++}cc=cc.next?S.screens.find(q=>q.id===cc.next):null}
     if(moved)toast(`«${tgt.name}» pasa a la electrónica de «${s.name}» para compartir boca.`);openWire.add(s.id);commit();return}
+  if(k==="mount"){const v=e.target.value;if(v)s.mount=v;else delete s.mount;commit();return}
+  if(k==="base"){s.base=e.target.value;commit();return}
+  if(k==="sbase"){s.sbase=e.target.value==="1"?1:0;commit();return}
+  if(k==="tar"){const v=qNum(e.target.value);if(v>0)s.tar=v;else delete s.tar;commit();return}
+  if(k==="sup"){s.sup=e.target.value;delete s.balc;if(s.sup!=="bumper")s.sbase=1;commit();return}
+  if(k==="xtra"){const v=e.target.value.trim();if(v)s.xtra=v;else delete s.xtra;commit();return}
   if(k==="note"){const v=e.target.value.trim();if(v)s.note=v;else delete s.note;commit();return}
   if(k==="pnext"){const v=e.target.value;if(!v){delete s.pnext;delete s.pjump;commit();return}
     let c=S.screens.find(q=>q.id===v),g=0;while(c&&g++<500){if(c===s){toast("Eso cerraría un bucle de corriente.");renderList();return}c=c.pnext?S.screens.find(q=>q.id===c.pnext):null}
@@ -2104,6 +2301,27 @@ async function exportPdf(){
   if(notes.length){let ny=yy+14;if(ny>PH-40){doc.addPage();head("NOTAS DE MONTAJE");ny=24}else{doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(20,20,20);doc.text("Notas de montaje",MG,ny-3)}
     tbl(ny,["Tipo","Equipo","Nota"],notes.map(r=>r.map(c=>String(c).replace(/→/g,">"))),{columnStyles:{0:{cellWidth:35},1:{cellWidth:70,fontStyle:"bold"}},styles:{font:"helvetica",fontSize:9,cellPadding:2,lineColor:[205,210,218],lineWidth:.1,textColor:[20,20,20]}})}
 
+  // --- preparación de material ---
+  {const R=S.screens.map(prepScreen).filter(Boolean),qs=q=>q===null?"____":String(q),SAFE=v=>String(v).replace(/→/g,">");
+    doc.addPage();head("PREPARACIÓN DE MATERIAL");let y=24;
+    const blk={styles:{font:"helvetica",fontSize:8.5,cellPadding:1.8,lineColor:[205,210,218],lineWidth:.1,textColor:[20,20,20]},columnStyles:{0:{cellWidth:9,halign:"center"},2:{halign:"right",fontStyle:"bold",cellWidth:22}}};
+    R.forEach(r=>{const s=r.s,ttl=`${r.P.g.map(t=>t.name).join(" + ")} · ${fmt(r.P.wM)} × ${fmt(r.P.hM)} m · ${MOUNT[r.mount]}`;
+      let img=null;if(r.st){img=structImage(s)}
+      const need=img?95:30;if(y>PH-need){doc.addPage();head("PREPARACIÓN DE MATERIAL");y=24}
+      doc.setFont("helvetica","bold");doc.setFontSize(10.5);doc.setTextColor(...NAVY);doc.text(SAFE(ttl),MG,y);y+=3;
+      if(img){const mw=150,mh=80,k=Math.min(mw/img.w,mh/img.h);doc.addImage(img.data,"PNG",MG,y,img.w*k,img.h*k);
+        tbl(y,["","Elemento","Cant.","Detalle"],r.items.map(i=>["[  ]",SAFE(i.n),qs(i.q),SAFE(i.d)]),Object.assign({},blk,{margin:{left:MG+155,right:MG,top:22}}));
+        y=Math.max(y+img.h*k,doc.lastAutoTable.finalY)+4;
+        if(r.st.over4){doc.setFontSize(8);doc.setTextColor(200,40,40);doc.text("Estructura de más de 4 m: revisar homologación.",MG,y);y+=5}}
+      else{tbl(y,["","Elemento","Cant.","Detalle"],r.items.map(i=>["[  ]",SAFE(i.n),qs(i.q),SAFE(i.d)]),blk);y=doc.lastAutoTable.finalY+7}});
+    const pj=prepProject();if(pj.length){if(y>PH-40){doc.addPage();head("PREPARACIÓN DE MATERIAL");y=24}
+      doc.setFont("helvetica","bold");doc.setFontSize(10.5);doc.setTextColor(...NAVY);doc.text("Proyecto · electrónica, señal y corriente",MG,y);y+=3;
+      tbl(y,["","Elemento","Cant.","Detalle"],pj.map(i=>["[  ]",SAFE(i.n),qs(i.q),SAFE(i.d)]),blk);y=doc.lastAutoTable.finalY+7}
+    doc.addPage();head("PREPARACIÓN DE MATERIAL · TOTAL");
+    tbl(24,["","Elemento","Cantidad"],prepTotals().map(([n,q])=>["[  ]",SAFE(n),qs(q)]),Object.assign({},blk,{columnStyles:{0:{cellWidth:9,halign:"center"},2:{halign:"right",fontStyle:"bold",cellWidth:30}}}));
+    let yy2=doc.lastAutoTable.finalY+6;if(yy2>PH-24){doc.addPage();head("PREPARACIÓN DE MATERIAL · TOTAL");yy2=26}doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(93,102,117);
+    doc.text(doc.splitTextToSize("Puntos de volado: uno por cada 0,5 m de ancho (2 por bumper de 1 m, 1 por bumper de 0,5 m); se recomienda llevar todos los grilletes y eslingas. Estructura de 8s: verticales cada metro, horizontales con huecos de 1,5 a 2 m, nunca por encima de la pantalla. Las cantidades marcadas ____ se deciden según el planteamiento del montaje.",PW-2*MG),MG,yy2)}
+
   // pies
   const np=doc.getNumberOfPages();
   for(let i=1;i<=np;i++){doc.setPage(i);doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.setTextColor(...GREY);
@@ -2198,6 +2416,13 @@ async function exportDocx(){
   body.push(P("Cantidades exactas sin repuestos. Una cabecera por línea o puerto y un puente por cada módulo restante de esa línea. El conector del lado de distribución (Schuko, CEE o multipar) depende del cuadro y no se incluye.",{size:16,color:GREY},{spacing:{before:120,after:120}}));
   const notes=noteRows(A);
   if(notes.length){body.push(H2("Notas de montaje"),table(["Tipo","Equipo","Nota"],notes,{widths:[16,28,56],bold:[1]}))}
+  {const R=S.screens.map(prepScreen).filter(Boolean),qs=q=>q===null?"____":String(q);
+    body.push(PB(),H1("Preparación de material"));
+    R.forEach(r=>{body.push(H2(`${r.P.g.map(t=>t.name).join(" + ")} · ${fmt(r.P.wM)} × ${fmt(r.P.hM)} m · ${MOUNT[r.mount]}`));
+      if(r.st){const im=structImage(r.s);body.push(img({data:im.data,w:im.w,h:im.h},700,300));if(r.st.over4)body.push(P("Estructura de más de 4 m: revisar homologación.",{color:"C62828",bold:true}))}
+      body.push(table(["☐","Elemento","Cant.","Detalle"],r.items.map(i=>["☐",i.n,qs(i.q),i.d]),{widths:[5,45,10,40],right:[2],bold:[2]}))});
+    const pj=prepProject();if(pj.length)body.push(H2("Proyecto · electrónica, señal y corriente"),table(["☐","Elemento","Cant.","Detalle"],pj.map(i=>["☐",i.n,qs(i.q),i.d]),{widths:[5,45,10,40],right:[2],bold:[2]}));
+    body.push(H2("Total"),table(["☐","Elemento","Cantidad"],prepTotals().map(([n,q])=>["☐",n,qs(q)]),{widths:[5,75,20],right:[2],bold:[2]}))}
   body.push(H2("Observaciones"),P("Escribe aquí cualquier observación del montaje.",{color:GREY,italics:true}));
   // documento
   const hdr=new Header({children:[new Paragraph({alignment:AlignmentType.RIGHT,border:{bottom:{color:TEAL,size:6,style:BorderStyle.SINGLE,space:2}},children:[T("FICHA TÉCNICA · PANTALLAS LED",{bold:true,size:16,color:NAVY}),T("   "+[m.project||"Proyecto sin nombre",m.place,dateTxt].filter(Boolean).join("  ·  "),{size:16,color:GREY})]})]});
@@ -2251,7 +2476,12 @@ function qParse(text){
     let name=(line.match(/^([^:]{1,40}):/)||[])[1];if(!name){const nm=line.match(/(?:pantalla|led)\s+(?:llamada\s+)?["«]([^"»]+)["»]/i);name=nm?nm[1]:""}
     if(!name){const w=line.match(/pantallas?\s+([a-záéíóúñ]+)\s+(?:de|en)\b/i);if(w&&!/^(de|led|grande|peque)/i.test(w[1]))name=w[1].charAt(0).toUpperCase()+w[1].slice(1)}
     const proc=PROCLIB.find(p=>{const k=qNorm(short(p.n)).replace(/\s+/g,"");return k.length>2&&n2.replace(/\s+/g,"").includes(k)});
-    for(let i=0;i<qty;i++)out.screens.push({name:name?(qty>1?`${name} ${i+1}`:name):"",mod,cols,rows,exact,want:{a,b,byMods},proc:proc||null});
+    const mount=/estructura|\b8s\b|balcon|tarima/.test(n2)?"struct":/volad|colgad/.test(n2)?"fly":/apoyad|suelo|en base/.test(n2)?"ground":"";
+    const tm=n2.match(/tarima(?:\s+de)?\s*(\d+(?:[.,]\d+)?)\s*(?:m|cm)?/);
+    const sup=/tarima/.test(n2)?"tarima":/sobre\s+(su\s+)?bumper|en\s+bumper/.test(n2)?"bumper":/balcon/.test(n2)?(/mitad|medio/.test(n2)?"b05":/arriba|segundo|encima|1[.,]26|1\s*m/.test(n2)?"b1":"b0"):"";
+    const pata=/sin\s+pata/.test(n2)?0:/con\s+pata|patas/.test(n2)?1:null;
+    const tar=tm?(qNum(tm[1])>10?qNum(tm[1])/100:qNum(tm[1])):null;
+    for(let i=0;i<qty;i++)out.screens.push({mount,sup,pata,tar,name:name?(qty>1?`${name} ${i+1}`:name):"",mod,cols,rows,exact,want:{a,b,byMods},proc:proc||null});
   });
   return out;
 }
@@ -2275,7 +2505,7 @@ function qBuild(P){
   Object.assign(S.meta,P.meta);Object.assign(S.opts,P.opts);ensureElecs();
   let x=S.screens.reduce((a,s)=>Math.max(a,s.x+W(s)),0),cIdx=S.screens.length;
   P.screens.forEach((q,i)=>{const p=q.mod,s=mk(uniqueName(q.name||`Pantalla ${S.screens.length+1}`),p.x,p.y,p.w,p.h,q.cols,q.rows,x,0,(cIdx++)%HUES.length);
-    Object.assign(s,{pn:p.n,mid:p.id,wm:p.wm||0,kg:p.kg||0,k:p.k||0,kd:p.kd||0,pc:p.pc||""});
+    Object.assign(s,{pn:p.n,mid:p.id,wm:p.wm||0,kg:p.kg||0,k:p.k||0,kd:p.kd||0,pc:p.pc||""});if(q.mount)s.mount=q.mount;if(q.sup)s.sup=q.sup;if(q.tar)s.tar=q.tar;if(q.pata!=null)s.sbase=q.pata;
     if(q.proc){const E=newElec(S.elecs.length+1);E.model=q.proc.id;E.name=`${short(q.proc.n)} · ${s.name}`;S.elecs.push(E);s.e=E.id}else s.e=S.elecs[0].id;
     S.screens.push(s);(P._ids=P._ids||[]).push(s.id);x+=W(s)});
   S.elecs=S.elecs.filter(E=>S.screens.some(s=>s.e===E.id));if(!S.elecs.length)S.elecs=[newElec(1)];
