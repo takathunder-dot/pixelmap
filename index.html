@@ -615,6 +615,7 @@ table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
 <details><summary>5 · Datos y corriente</summary>
 <ul>
 <li><b>Píxeles por puerto</b>: 655.360 (8 bit 60 Hz) o 327.680 (10 bit / 120 Hz). Con eso y el máximo del módulo se calcula cuántos módulos caben por boca.</li>
+<li><b>Carga de cada línea</b>: en el plano de corriente, junto a cada triángulo, sale «A · %» (sobre los amperios de la toma); en la tabla, la columna Líneas da el % de la línea más cargada y Puertos el % de la boca de datos más llena. En rojo con «!» si se pasa del uso máximo o del máximo de módulos por línea. Si el módulo no tiene <b>W máx/mód</b>, pone «sin W»: rellénalo para poder calcular.</li>
 <li><b>Corriente</b>: tensión, amperios de la línea y % de uso. Si el módulo tiene un máximo por línea, manda ese número; si no, se calcula con el consumo.</li>
 <li><b>Recorrido, inicio y forma</b> generales (columnas o filas, esquina, serpiente o zigzag). <b>Esquinas vistas</b> desde delante o desde detrás (como se cablea).</li>
 <li><b>Redundancia</b>: en la misma electrónica (dobla bocas: 4 líneas = 8 bocas) o con electrónica espejo.</li>
@@ -883,6 +884,9 @@ function powerPlan(){
           if(!seg||seg.s!==s){seg={s,cells:[]};cur.segs.push(seg)}
           seg.cells.push(cell);cur.load+=wgt;cur.n++;cur.w+=s.wm||0})})})}});
   lines.forEach(l=>{l.amps=l.w/o.volt;l.screens=[...new Set(l.segs.map(g=>g.s))];l.name=l.screens.map(s=>s.name).join(" + ");
+    // carga de la línea: % de los amperios de la toma; se marca si pasa del uso máx. o del máximo de módulos por línea
+    l.cap=Math.min(...l.screens.map(s=>effPow(s)||Infinity));l.pct=Math.round(l.w/(o.volt*o.amp)*100);l.noW=l.screens.some(s=>!s.wm);
+    l.over=l.n>l.cap||l.w>o.volt*o.amp*o.fac/100+1e-6;
     l.pcs=[...new Set(l.screens.map(s=>s.pc||""))];
     l.segs.forEach((g,k)=>{const arr=g.cells.slice();arr.line=l;arr.first=k===0;arr.next=k<l.segs.length-1?l.segs[k+1]:null;arr.prev=k?l.segs[k-1]:null;
       if(!pieces.has(g.s.id))pieces.set(g.s.id,[]);pieces.get(g.s.id).push(arr)})});
@@ -1176,7 +1180,7 @@ function renderBoxes(){
     <div class="bxl">${Array.from({length:cfg.n},(_,ci)=>{const c=ci+1,ls=B.lines.filter(l=>l.c===c),amps=ls.reduce((a,l)=>a+l.amps,0),f=Math.min(cfg.ph,Math.ceil(c/perPh));
       return `<div class="circ${ls.length?"":" free"}"><div class="ch"><b>${B.i}.${c}</b><span>F${f}</span><span class="${amps>o.amp+1e-6?"warn":""}">${ls.length?`${fmt(amps)} / ${o.amp} A`:"libre"}</span>${ls.length>1?`<span class="badge">DOBLADO ×${ls.length}</span>`:""}</div>
         ${ls.length?"":`<div class="bxr"><label class="mv">Traer aquí<select data-x="bring" data-slot="${B.i}.${c}" aria-label="Traer una toma a ${B.i}.${c}"><option value="">elige una toma…</option>${P.lines.map(z=>`<option value="${esc(z.key)}">${esc(z.name)} · L${z.i+1} (ahora en ${z.tag})</option>`).join("")}</select></label></div>`}
-        ${ls.map(l=>`<div class="bxr" data-k="${esc(l.key)}"><span class="nm">${l.sub?`<b>${l.tag}</b> `:""}${esc(l.name)} · L${l.i+1} <span class="am">${l.n} mód · ${fmt(l.amps)} A</span></span>
+        ${ls.map(l=>`<div class="bxr" data-k="${esc(l.key)}"><span class="nm">${l.sub?`<b>${l.tag}</b> `:""}${esc(l.name)} · L${l.i+1} <span class="am${l.pl.over?" warn":""}">${l.n} mód · ${l.pl.noW?"sin W":`${fmt(l.amps)} A · ${l.pl.pct}%`}${l.pl.over?" ¡SOBRECARGA!":""}</span></span>
           <label class="mv">Mover a<select data-x="slot" aria-label="Mover a cuadro y circuito">${opts(l)}</select></label></div>`).join("")}</div>`}).join("")}
       <div class="phs">${B.ph.map((a,f)=>`<span${a>cfg.a+1e-6?' class="warn"':""}>F${f+1} ${fmt(a)} / ${cfg.a} A</span>`).join("")}</div></div></div>`).join("")||`<p class="hint" style="margin:0">Sin líneas de corriente: indica el consumo o el máximo por línea de los módulos.</p>`;
 }
@@ -1605,7 +1609,11 @@ function drawWiring(ctx,s){
       ctx.fillStyle=col;ctx.font=`700 ${fb}px "IBM Plex Mono",monospace`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tb,x1,y1+rb*.05)}
     // etiqueta de inicio (en corriente: triángulo cuadro.circuito)
     const [sx,sy]=pts[0],r=u*.2;
-    if(power){if(run.first){const l=run.line&&boxPlan().byKey.get(run.line.key);drawTri(ctx,sx,sy,r*1.25,l?l.tag:`L${i+1}`,col)}ctx.restore();return}
+    if(power){if(run.first){const l=run.line&&boxPlan().byKey.get(run.line.key);drawTri(ctx,sx,sy,r*1.25,l?l.tag:`L${i+1}`,run.line&&run.line.over?"#ff3d3d":col);
+      if(run.line&&!S.opts.lean){const L=run.line,tx=(L.over?"! ":"")+(L.noW?"sin W":`${fmt(Math.round(L.amps*10)/10)} A · ${L.pct}%`),fs=Math.max(8,u*.11);
+        ctx.font=`700 ${fs}px "IBM Plex Mono",monospace`;const tw=ctx.measureText(tx).width+fs*.6,cy=sy<s.y+H(s)/2?sy+r*1.25*.7+fs*1.1:sy-r*1.25-fs*.85,bx=Math.max(s.x+2,Math.min(sx-tw/2,s.x+W(s)-tw-2));
+        ctx.fillStyle=L.over?"#ff3d3d":"rgba(0,0,0,.85)";ctx.fillRect(bx,cy-fs*.72,tw,fs*1.44);ctx.fillStyle=L.over?"#fff":col;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tx,bx+tw/2,cy+fs*.04)}}
+      ctx.restore();return}
     ctx.beginPath();ctx.arc(sx,sy,r,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();ctx.lineWidth=Math.max(1,lw*.5);ctx.strokeStyle="rgba(0,0,0,.7)";ctx.stroke();
     const txt=power?`L${i+1}`:(asg[i]?A.lab(asg[i]):`D${i+1}`),fs=Math.min(r*.95,r*1.75/(txt.length*.62));
     ctx.fillStyle="#000";ctx.font=`700 ${fs}px "IBM Plex Mono",monospace`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(txt,sx,sy+r*.05);
@@ -1734,7 +1742,8 @@ function renderList(){
       <span class="sw" style="background:hsl(${HUES[hueOf(s)]} 70% 45%)"></span>
       <input class="nm" data-k="name" value="${esc(s.name)}" aria-label="Nombre" style="font-family:var(--f-body);padding:4px 6px">
       <span class="acts"><button data-a="dup" title="Duplicar">⧉</button><button data-a="del" class="danger" title="Eliminar">✕</button></span>
-      <span class="meta">${W(s)}×${H(s)} px · ${s.pn?esc(s.pn)+" · ":""}${s.rx}×${s.ry}/mód · ${(s.cols*s.cw/1000).toFixed(2)}×${(s.rows*s.ch/1000).toFixed(2)} m${out?' · <span class="warn">fuera del lienzo</span>':""}<br>Datos ${(()=>{const A=assign(),q=portsOf(A,s);if(!q.length)return"—";const gm=wgOf(s);if(gm.length>1)return `unido con ${gm.filter(o=>o!==s).map(o=>esc(o.name)).join(", ")} · ${q.map(x=>A.lab(x)+" ("+x.runN+")").join(", ")}`;return `${q.length} boca${q.length===1?"":"s"} (${q.map(x=>x.n).join("+")})`})()} · Corriente ${(()=>{const m=effPow(s);if(m===null)return"sin consumo";const c=powRuns(s);return `${c.length} línea${c.length===1?"":"s"} (${c.map(x=>x.length).join("+")})`})()}<br>Peso ${s.kg?`${fmt(kgOf(s))} kg · ${fmt(kgCol(s))} kg por columna`:"sin dato"}</span>
+      <span class="meta">${W(s)}×${H(s)} px · ${s.pn?esc(s.pn)+" · ":""}${s.rx}×${s.ry}/mód · ${(s.cols*s.cw/1000).toFixed(2)}×${(s.rows*s.ch/1000).toFixed(2)} m${out?' · <span class="warn">fuera del lienzo</span>':""}<br>Datos ${(()=>{const A=assign(),q=portsOf(A,s);if(!q.length)return"—";const gm=wgOf(s);if(gm.length>1)return `unido con ${gm.filter(o=>o!==s).map(o=>esc(o.name)).join(", ")} · ${q.map(x=>A.lab(x)+" ("+x.runN+")").join(", ")}`;return `${q.length} boca${q.length===1?"":"s"} (${q.map(x=>x.n).join("+")})`})()} · Corriente ${(()=>{const m=effPow(s);if(m===null)return"sin consumo";const c=powRuns(s);const ls=[...new Set(c.map(x=>x.line).filter(Boolean))],mx=ls.length?Math.max(...ls.map(l=>l.pct)):0,ov=ls.some(l=>l.over);
+          return `${c.length} línea${c.length===1?"":"s"} (${c.map(x=>x.length).join("+")})${!s.wm?' · <span class="warn">sin W/módulo: no se puede calcular la carga</span>':` · carga máx. <span${ov?' class="warn"':""}>${mx}%${ov?" ¡SOBRECARGA!":""}</span>`}`})()}<br>Peso ${s.kg?`${fmt(kgOf(s))} kg · ${fmt(kgCol(s))} kg por columna`:"sin dato"}</span>
       ${mountBox(s)}
       <label class="elsel" style="grid-column:1/-1">Notas${s.note?' <span class="note-on">●</span>':""}<textarea data-k="note" rows="${s.note?2:1}" placeholder="Batch, de otra empresa, observaciones…" aria-label="Notas de ${esc(s.name)}">${esc(s.note||"")}</textarea></label>
       ${wireBox(s)}
@@ -2059,7 +2068,7 @@ function renderTable(){
   $("tbody").innerHTML=S.screens.map(s=>{const w=W(s),h=H(s),mw=s.cols*s.cw/1000,mh=s.rows*s.ch/1000,md=effData(s),nd=nData(s),mp=effPow(s),np=nPow(s),wt=(s.wm||0)*s.cols*s.rows;
     mods+=s.cols*s.rows;m2+=mw*mh;lines+=np||0;watts+=wt;if(mp===null)noPow=true;
     minX=Math.min(minX,s.x);minY=Math.min(minY,s.y);maxX=Math.max(maxX,s.x+w);maxY=Math.max(maxY,s.y+h);
-    return `<tr><td class="n"><i style="background:hsl(${HUES[hueOf(s)]} 70% 45%)"></i>${esc(s.name)}</td><td>${s.x}</td><td>${s.y}</td><td>${w}</td><td>${h}</td><td>${s.cols}×${s.rows}</td><td>${mw.toFixed(2)}×${mh.toFixed(2)}</td><td>${fmt(m2Of(s))}</td><td>${md}</td><td>${nd??"—"}</td><td>${rangeTxt(A,s)}</td><td>${s.kg?fmt(kgOf(s))+" kg":"—"}</td><td>${s.kg?fmt(kgCol(s)):"—"}</td><td>${wt?fmt(wt/1000)+" kW":"—"}</td><td>${mp??"—"}</td><td>${np??"—"}</td></tr>`}).join("")||`<tr><td colspan="16" style="text-align:left;color:var(--muted)">Sin pantallas.</td></tr>`;
+    return `<tr><td class="n"><i style="background:hsl(${HUES[hueOf(s)]} 70% 45%)"></i>${esc(s.name)}</td><td>${s.x}</td><td>${s.y}</td><td>${w}</td><td>${h}</td><td>${s.cols}×${s.rows}</td><td>${mw.toFixed(2)}×${mh.toFixed(2)}</td><td>${fmt(m2Of(s))}</td><td>${md}</td><td>${(()=>{if(nd==null)return"—";const q=portsOf(A,s);if(!q.length)return nd;const mx=Math.max(...q.map(x=>Math.round(x.runPx/S.opts.pxPort*100))),ov=q.some(x=>x.runPx>S.opts.pxPort);return `${nd} <span${ov?' class="warn"':""} title="Carga de la boca más llena (% de ${S.opts.pxPort.toLocaleString("es-ES")} px)">· ${mx}%</span>`})()}</td><td>${rangeTxt(A,s)}</td><td>${s.kg?fmt(kgOf(s))+" kg":"—"}</td><td>${s.kg?fmt(kgCol(s)):"—"}</td><td>${wt?fmt(wt/1000)+" kW":"—"}</td><td>${mp??"—"}</td><td>${(()=>{if(np==null)return"—";const ls=[...new Set(powRuns(s).map(x=>x.line).filter(Boolean))],ov=ls.some(l=>l.over);if(!s.wm)return `${np} <span class="warn" title="Falta el consumo (W) del módulo">· sin W</span>`;const mx=ls.length?Math.max(...ls.map(l=>l.pct)):0;return `${np} <span${ov?' class="warn"':""} title="Carga de la línea más cargada (% de ${S.opts.amp} A)">· ${mx}%${ov?" !":""}</span>`})()}</td></tr>`}).join("")||`<tr><td colspan="16" style="text-align:left;color:var(--muted)">Sin pantallas.</td></tr>`;
   const n=S.screens.length,amps=watts/S.opts.volt;
   $("tfoot").innerHTML=n?`<th>Total · ocupación</th><td>${minX}</td><td>${minY}</td><td>${maxX-minX}</td><td>${maxY-minY}</td><td>${mods}</td><td>—</td><td>${fmt(m2)}</td><td>—</td><td>${ports}</td><td>${A.used} electrónica${A.used===1?"":"s"}</td><td>${(()=>{const t=S.screens.reduce((a,s)=>a+kgOf(s),0),miss=S.screens.some(s=>!s.kg);return t?fmt(t)+" kg"+(miss?"+?":""):"—"})()}</td><td>—</td><td>${watts?fmt(watts/1000)+" kW":"—"}</td><td>${watts?fmt(amps)+" A":"—"}</td><td>${lines}${noPow?"+?":""}</td>`:"";
 }
