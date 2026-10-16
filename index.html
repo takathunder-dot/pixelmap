@@ -83,6 +83,8 @@ textarea{font-family:var(--f-body);resize:vertical;min-height:34px;line-height:1
 .scr .acts{display:flex;gap:4px}
 .scr .acts button{padding:4px 7px;font-size:12px}
 .warn{color:var(--danger)}
+.chains{display:flex;flex-direction:column;gap:3px;margin-top:5px}.chain{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--fg)}
+button.chainx{font-size:11px;padding:2px 8px;margin:0}
 .main{display:flex;flex-direction:column;min-width:0;min-height:0}
 .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-block:10px;padding-left:16px;padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line)}
 .toolbar .zoom{font-family:var(--f-mono);font-size:12px;color:var(--muted);min-width:46px;text-align:center}
@@ -281,7 +283,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
       <p class="hint" style="margin-top:0">Crea y edita los cabinets. Marca <strong>En Telesonic</strong> los que tenéis en almacén y cuántas unidades: aparecen primero al agregar pantallas y el proyecto avisa si te quedas corto. Si no es vuestro, pon su <strong>proveedor habitual</strong> (Fluge…): se agrupa por proveedor y el material dice a quién alquilarlo.</p>
       <div class="basebox" id="baseBox"><strong>Biblioteca base del equipo</strong><span id="baseInfo">Sin biblioteca base cargada.</span>
         <div class="row"><button id="bBaseExport">Exportar como biblioteca base</button></div>
-        <p class="hint" style="margin:0">Genera <code>biblioteca.json</code>. Súbelo al repositorio de GitHub junto a <code>index.html</code> y todos tus compañeros recibirán esos módulos y electrónicas al abrir la herramienta. Lo que añada cada uno se queda solo en su dispositivo. Los elementos <strong>BASE</strong> se actualizan desde ese archivo cada vez que se abre la herramienta: para personalizar uno, usa «Duplicar».</p></div>
+        <p class="hint" style="margin:0">Genera <code>biblioteca.json</code>. Súbelo al repositorio de GitHub junto a <code>index.html</code> y todos tus compañeros recibirán esos módulos y electrónicas al abrir la herramienta. Lo que añada cada uno se queda solo en su dispositivo. Los elementos <strong>BASE</strong> se actualizan desde ese archivo cada vez que se abre la herramienta. Si alguien cambia uno en su navegador, conserva su cambio hasta que se publique una base más nueva; para tener una versión propia que no se toque nunca, usa «Duplicar».</p></div>
       <div class="row" style="margin:10px 0"><button class="primary" id="bNewMod">+ Nuevo módulo</button><label class="check"><input type="checkbox" id="fModStock">Solo Telesonic</label><select id="fModProv" style="width:auto;padding:4px 6px;font-size:12px" aria-label="Filtrar por proveedor"></select></div>
       <div class="list" id="modLib"></div>
     </section>
@@ -595,6 +597,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <li><b>Máx. módulos por boca / por línea</b>: un número exacto, como en NovaStar. Ejemplo: 30 módulos con máximo 20 → 20 + 10 en la misma dirección.</li>
 <li><b>Cablear como una sola pantalla con…</b>: varias pantallas del mismo módulo se cablean como si fueran una (por ejemplo una C que pasa de un volado al otro). El paso entre ellas es un puente normal, no un salto. Se hace también seleccionando varias y pulsando <b>Unir cableado</b> en la barra del dibujo.</li>
 <li><b>La corriente continúa en…</b>: comparte una toma entre pantallas (aunque sean de módulos distintos, por ejemplo una P4.8 con un banner de suelo). La última línea de la primera pantalla sigue en la siguiente hasta llenar la línea, sumando lo que pesa cada módulo frente a su máximo (10 de un módulo con máximo 20 = media línea). Si los conectores son distintos, el material pide un adaptador. Pon los metros del cable de corriente entre pantallas.</li>
+<li><b>Separar</b>: en la tarjeta de cada pantalla, debajo de sus datos, salen sus uniones con 🔗 («La boca sigue en…», «Le llega la boca de…», «Cableado unido con…», «La corriente sigue en…»). El botón <b>Separar</b> de cada una la quita y las pantallas vuelven a ir por su cuenta.</li>
 <li><b>La boca continúa en…</b>: encadena pantallas separadas que comparten boca, con los metros del <b>cable de salto</b> (sale en el material).</li>
 <li>Nunca se mezclan módulos distintos en una misma línea: solo se ofrecen pantallas del mismo módulo.</li>
 </ul>
@@ -633,6 +636,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <li>Cada línea de corriente es una <b>toma</b> que sale de un circuito de un cuadro. Por defecto, cuadros de <b>32 A con 6 circuitos</b> en trifásico (circuitos 1-2 fase 1, 3-4 fase 2, 5-6 fase 3). Puedes cambiar amperios, circuitos y fases.</li>
 <li>Las tomas se reparten solas en orden (por electrónica y pantalla) y se crean los cuadros necesarios. <b>Repartir automático</b> lo deja como al principio. Con la <b>✕</b> eliminas un cuadro (sus tomas pasan a circuitos libres); los cuadros vacíos que crea la herramienta desaparecen solos y los que añades tú se quedan.</li>
 <li>Cada cuadro muestra sus 6 circuitos, también los <b>libres</b>, así nunca se pierde una toma. En un circuito libre, <b>Traer aquí</b> te deja elegir cualquier toma (te dice dónde está ahora) y la mueve a ese circuito. Con <b>Mover a</b> llevas una toma a cualquier circuito: si está libre, va sola; si ya tiene otra, las dos <b>comparten circuito</b> (doblado con derivación o ladrón: 1.1a, 1.1b) y suma el consumo, avisando si pasa de 16 A. El resto de tomas no se mueve. Ctrl+Z deshace.</li>
+<li><b>Reparto equilibrado</b>: las tomas se colocan solas equilibrando fases. En un cuadro de 6 circuitos (1-2 fase 1, 3-4 fase 2, 5-6 fase 3) con 3 tomas salen en 1, 3 y 5; con más, cada una va a la fase menos cargada, de mayor a menor consumo. Debajo de cada cuadro ves la carga por fase y el <b>neutro aproximado</b>: si las fases están descompensadas sale en rojo. Lo que muevas a mano con «Mover a» se respeta.</li>
 <li>Pon nombre o ubicación a cada cuadro («escenario izq.»). Debajo ves la carga de cada fase; en rojo si supera el cuadro.</li>
 <li>En el plano, un <b>triángulo rojo con «1.3»</b> marca el módulo donde entra la toma del cuadro 1, circuito 3. Sale en el plano de corriente y, si lo dejas marcado, también en el de datos (esquina del módulo). Como la corriente sigue a la señal y se corta al máximo por línea, en pantallas como la P4.8 verás varios triángulos dentro de una misma boca de datos.</li>
 <li>La ficha PDF y Word incluyen la tabla de cuadros (cuadro, circuito, fase, pantalla y línea, consumo) y la carga por fase; el material, los cuadros y sus acometidas.</li>
@@ -1141,6 +1145,8 @@ function boxNames(){if(!Array.isArray(S.boxes))S.boxes=[];return S.boxes}
 // todas las líneas de corriente del proyecto, en el orden de las electrónicas
 function powerLines(){return powerPlan().lines.map(l=>({key:l.key,s:l.segs[0].s,i:l.i,cells:l.segs[0].cells,n:l.n,w:l.w,amps:l.amps,name:l.name,pl:l}))}
 let _bp=null,_bpKey="";
+// corriente aproximada por el neutro de un trifásico (cargas a 120°)
+const neutralA=ph=>{const[a=0,b=0,c=0]=ph;return Math.sqrt(Math.max(0,a*a+b*b+c*c-a*b-b*c-c*a))};
 function boxPlan(){
   const L=powerLines(),cfg=boxCfg(),pa=S.pa||{},slots=new Map(),K=JSON.stringify([L.map(l=>l.key+l.n),pa,cfg,boxNames()]);
   if(_bp&&_bpKey===K)return _bp;
@@ -1148,8 +1154,18 @@ function boxPlan(){
   // un circuito puede «doblarse» (derivación / ladrón) para alimentar varias tomas si se marca compartir
   L.forEach(l=>{const m=pa[l.key];if(m&&m.b>0&&m.c>=1&&m.c<=cfg.n){const k=m.b+"."+m.c,cur=slots.get(k);
     if(!cur)slots.set(k,[]);slots.get(k).push(l);l.b=m.b;l.c=m.c;l.man=!!m.u}});
-  let b=1,c=1;const next=()=>{while(slots.has(b+"."+c)){c++;if(c>cfg.n){c=1;b++}}};
-  L.filter(l=>!l.b).forEach(l=>{next();l.b=b;l.c=c;slots.set(b+"."+c,[l])});
+  // reparto automático equilibrando fases: cada toma va al circuito libre de la fase menos cargada del cuadro
+  // (con cargas iguales sale 1, 3, 5, 2, 4, 6); solo se abre otro cuadro cuando el actual está lleno
+  const perPh0=Math.max(1,Math.ceil(cfg.n/cfg.ph)),ph0=c=>Math.min(cfg.ph,Math.ceil(c/perPh0));
+  const load=(bx,f)=>{let a=0,k=0;for(let c=1;c<=cfg.n;c++)if(ph0(c)===f){const ls=slots.get(bx+"."+c);if(ls){k+=ls.length;a+=ls.reduce((s,l)=>s+l.amps,0)}}return a+k*1e-3};
+  // las tomas que caben en el cuadro se reparten de mayor a menor consumo, cada una a la fase con menos carga
+  let b=1,rest=L.filter(l=>!l.b);
+  while(rest.length){const freeOf=()=>Array.from({length:cfg.n},(_,i)=>i+1).filter(c=>!slots.has(b+"."+c));
+    if(!freeOf().length){b++;continue}
+    const take=rest.slice(0,freeOf().length);rest=rest.slice(take.length);
+    take.map((l,i)=>({l,i})).sort((x,y)=>y.l.amps-x.l.amps||x.i-y.i).forEach(({l})=>{const free=freeOf();
+      free.sort((x,y)=>load(b,ph0(x))-load(b,ph0(y))||ph0(x)-ph0(y)||x-y);const c=free[0];
+      l.b=b;l.c=c;slots.set(b+"."+c,[l])})}
   const o=S.opts,circ=[...slots.entries()].map(([k,ls])=>({k,ls,amps:ls.reduce((a,l)=>a+l.amps,0)}));
   circ.forEach(C=>{C.over=C.amps>o.amp+1e-6;C.ls.forEach((l,j)=>{l.circ=C;l.sub=C.ls.length>1?"abcdefgh"[j]||String(j+1):""})});
   let need=Math.max(0,...L.map(l=>l.b||0));while(boxNames().length>need&&!boxNames()[boxNames().length-1])boxNames().pop();
@@ -1186,7 +1202,7 @@ function renderBoxes(){
         ${ls.length?"":`<div class="bxr"><label class="mv">Traer aquí<select data-x="bring" data-slot="${B.i}.${c}" aria-label="Traer una toma a ${B.i}.${c}"><option value="">elige una toma…</option>${P.lines.map(z=>`<option value="${esc(z.key)}">${esc(z.name)} · L${z.i+1} (ahora en ${z.tag})</option>`).join("")}</select></label></div>`}
         ${ls.map(l=>`<div class="bxr" data-k="${esc(l.key)}"><span class="nm">${l.sub?`<b>${l.tag}</b> `:""}${esc(l.name)} · L${l.i+1} <span class="am${l.pl.over?" warn":""}">${l.n} mód · ${l.pl.noW?"sin W":`${fmt(l.amps)} A · ${l.pl.pct}%`}${l.pl.over?" ¡SOBRECARGA!":""}</span></span>
           <label class="mv">Mover a<select data-x="slot" aria-label="Mover a cuadro y circuito">${opts(l)}</select></label></div>`).join("")}</div>`}).join("")}
-      <div class="phs">${B.ph.map((a,f)=>`<span${a>cfg.a+1e-6?' class="warn"':""}>F${f+1} ${fmt(a)} / ${cfg.a} A</span>`).join("")}</div></div></div>`).join("")||`<p class="hint" style="margin:0">Sin líneas de corriente: indica el consumo o el máximo por línea de los módulos.</p>`;
+      <div class="phs">${B.ph.map((a,f)=>`<span${a>cfg.a+1e-6?' class="warn"':""}>F${f+1} ${fmt(a)} / ${cfg.a} A</span>`).join("")}${cfg.ph===3?(n=>`<span${n>cfg.a/4?' class="warn"':""} title="Corriente aproximada por el neutro (cargas a 120°). Cuanto más iguales las fases, menos neutro.">Neutro ≈ ${fmt(Math.round(n*10)/10)} A${n>cfg.a/4?" · desequilibrado":""}</span>`)(neutralA(B.ph)):""}</div></div></div>`).join("")||`<p class="hint" style="margin:0">Sin líneas de corriente: indica el consumo o el máximo por línea de los módulos.</p>`;
 }
 $("boxes").addEventListener("click",e=>{const b=e.target.closest('button[data-x="bdel"]');if(!b)return;const i=+b.closest(".bx").dataset.b;
   S.pa=S.pa||{};Object.keys(S.pa).forEach(k=>{const m=S.pa[k];if(m.b===i)delete S.pa[k];else if(m.b>i)m.b--});boxNames().splice(i-1,1);commit();toast(`Cuadro ${i} eliminado · Ctrl+Z para deshacer`)});
@@ -1306,7 +1322,7 @@ $("modLib").addEventListener("change",e=>{const card=e.target.closest(".lib"),f=
   else if(f==="prov"){const v=e.target.value.trim();if(v)p.prov=v;else delete p.prov}
   else{const v=+e.target.value||0;if(["w","h","x","y"].includes(f)&&!(v>0)){toast("Medidas y resolución deben ser mayores que 0.");renderLib();return}p[f]=["x","y","k","kd","qty"].includes(f)?Math.round(v):v}
   S.screens.forEach(s=>{if(s.mid===p.id){s.pn=p.n;s.cw=p.w;s.ch=p.h;s.rx=p.x;s.ry=p.y;s.wm=p.wm||0;s.kg=p.kg||0;s.k=p.k||0;s.kd=p.kd||0;s.pc=p.pc||""}});
-  libChanged();renderLib()});
+  if(p)p.edT=Date.now();libChanged();renderLib()});
 $("modLib").addEventListener("click",e=>{const b=e.target.closest("button[data-a]");if(!b)return;const id=b.closest(".lib").dataset.id,p=LIB.find(z=>z.id===id),a=b.dataset.a;
   if(a==="use"){buildPanelSelect(id);applyPanel();showTab("tabProj");$("cols").focus();return}
   if(a==="dup"){const n=Object.assign({},p,{id:uid("m"),n:p.n+" copia",stock:false,qty:0});LIB.splice(LIB.indexOf(p)+1,0,n);libChanged();renderLib();return}
@@ -1318,7 +1334,7 @@ $("procLib").addEventListener("change",e=>{const card=e.target.closest(".lib"),f
   if(f==="n")p.n=e.target.value.trim()||p.n;else if(f==="stock")p.stock=e.target.checked;else if(f==="prov"){const v=e.target.value.trim();if(v)p.prov=v;else delete p.prov}else if(f==="sc")p.sc=e.target.checked;else if(f==="inputs")p.inputs=e.target.value.trim();else if(f==="side")p.side=Math.max(0,+e.target.value|0);
   else if(f==="in"){const m=e.target.value.match(/(\d+)\s*[x×*]\s*(\d+)/i);if(m){p.inW=+m[1];p.inH=+m[2]}else{p.inW=0;p.inH=0}}
   else if(f==="c")p.c=Math.max(10000,Math.round((+e.target.value||0)*1e6));else if(f==="p")p.p=Math.max(1,+e.target.value|0);else p[f]=Math.max(0,+e.target.value|0);
-  libChanged();renderLib()});
+  if(p)p.edT=Date.now();libChanged();renderLib()});
 $("procLib").addEventListener("click",e=>{const b=e.target.closest("button[data-a]");if(!b)return;const id=b.closest(".lib").dataset.id,p=PROCLIB.find(z=>z.id===id),a=b.dataset.a;
   if(a==="dup"){PROCLIB.splice(PROCLIB.indexOf(p)+1,0,Object.assign({},p,{id:uid("p"),n:p.n+" copia",stock:false,qty:0}));libChanged();renderLib();return}
   if(a==="del"){if(PROCLIB.length<2){toast("Debe quedar al menos una electrónica en la biblioteca.");return}
@@ -1346,11 +1362,13 @@ function stockRows(){
 
 /* ---------- biblioteca base del equipo (biblioteca.json junto a la página) ---------- */
 let BASE_INFO=null;
+// un cambio hecho aquí después de la fecha del archivo base no se pisa al recargar (hasta que llegue una base más nueva)
+const keepLocal=(loc,b)=>!!(loc&&loc.edT&&(!b.stamp||loc.edT>b.stamp));
 function mergeBase(b){
   const strip=o=>{const c=Object.assign({},o);delete c.base;return c};
   let nm=0,np=0;
-  (b.modules||[]).forEach(m=>{if(!m||!m.id)return;const i=LIB.findIndex(z=>z.id===m.id),it=Object.assign({},strip(m),{base:true});if(i>=0)LIB[i]=it;else LIB.push(it);nm++});
-  (b.processors||[]).forEach(m=>{if(!m||!m.id)return;const i=PROCLIB.findIndex(z=>z.id===m.id),it=Object.assign({},strip(m),{base:true});if(i>=0)PROCLIB[i]=it;else PROCLIB.push(it);np++});
+  (b.modules||[]).forEach(m=>{if(!m||!m.id)return;const i=LIB.findIndex(z=>z.id===m.id),it=Object.assign({},strip(m),{base:true});if(i>=0){if(!keepLocal(LIB[i],b))LIB[i]=it;else LIB[i].base=true}else LIB.push(it);nm++});
+  (b.processors||[]).forEach(m=>{if(!m||!m.id)return;const i=PROCLIB.findIndex(z=>z.id===m.id),it=Object.assign({},strip(m),{base:true});if(i>=0){if(!keepLocal(PROCLIB[i],b))PROCLIB[i]=it;else PROCLIB[i].base=true}else PROCLIB.push(it);np++});
   BASE_INFO={nm,np,ver:b.version||"",date:b.date||"",by:b.by||""};saveLib();buildPanelSelect($("panel").value);renderBaseInfo();commit();
 }
 function renderBaseInfo(){$("baseInfo").textContent=BASE_INFO?`Cargada: ${BASE_INFO.nm} módulos y ${BASE_INFO.np} electrónicas${BASE_INFO.date?` · ${BASE_INFO.date}`:""}${BASE_INFO.by?` · ${BASE_INFO.by}`:""}.`:"Sin biblioteca base cargada."}
@@ -1358,8 +1376,8 @@ function loadBase(){if(window.claude||!location.protocol.startsWith("http"))retu
   fetch("biblioteca.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(b=>{if(b&&(b.modules||b.processors))mergeBase(b)}).catch(()=>{})}
 $("bBaseExport").onclick=()=>{
   const now=new Date(),d=`${String(now.getDate()).padStart(2,"0")}/${String(now.getMonth()+1).padStart(2,"0")}/${now.getFullYear()}`;
-  const clean=a=>a.map(o=>{const c=Object.assign({},o);delete c.base;return c});
-  offer("biblioteca.json",JSON.stringify({app:"pixelmap-led",kind:"biblioteca-base",date:d,by:"takathunder",modules:clean(LIB),processors:clean(PROCLIB)},null,2));
+  const clean=a=>a.map(o=>{const c=Object.assign({},o);delete c.base;delete c.edT;return c});
+  offer("biblioteca.json",JSON.stringify({app:"pixelmap-led",kind:"biblioteca-base",date:d,stamp:now.getTime(),by:"takathunder",modules:clean(LIB),processors:clean(PROCLIB)},null,2));
 };
 
 /* ---------- persistencia ---------- */
@@ -1747,7 +1765,7 @@ function renderList(){
       <input class="nm" data-k="name" value="${esc(s.name)}" aria-label="Nombre" style="font-family:var(--f-body);padding:4px 6px">
       <span class="acts"><button data-a="dup" title="Duplicar">⧉</button><button data-a="del" class="danger" title="Eliminar">✕</button></span>
       <span class="meta">${W(s)}×${H(s)} px · ${s.pn?esc(s.pn)+" · ":""}${s.rx}×${s.ry}/mód · ${(s.cols*s.cw/1000).toFixed(2)}×${(s.rows*s.ch/1000).toFixed(2)} m${out?' · <span class="warn">fuera del lienzo</span>':""}<br>Datos ${(()=>{const A=assign(),q=portsOf(A,s);if(!q.length)return"—";const gm=wgOf(s);if(gm.length>1)return `unido con ${gm.filter(o=>o!==s).map(o=>esc(o.name)).join(", ")} · ${q.map(x=>A.lab(x)+" ("+x.runN+")").join(", ")}`;return `${q.length} boca${q.length===1?"":"s"} (${q.map(x=>x.n).join("+")})`})()} · Corriente ${(()=>{const m=effPow(s);if(m===null)return"sin consumo";const c=powRuns(s);const ls=[...new Set(c.map(x=>x.line).filter(Boolean))],mx=ls.length?Math.max(...ls.map(l=>l.pct)):0,ov=ls.some(l=>l.over);
-          return `${c.length} línea${c.length===1?"":"s"} (${c.map(x=>x.length).join("+")})${!s.wm?' · <span class="warn">sin W/módulo: no se puede calcular la carga</span>':` · carga máx. <span${ov?' class="warn"':""}>${mx}%${ov?" ¡SOBRECARGA!":""}</span>`}`})()}<br>Peso ${s.kg?`${fmt(kgOf(s))} kg · ${fmt(kgCol(s))} kg por columna`:"sin dato"}</span>
+          return `${c.length} línea${c.length===1?"":"s"} (${c.map(x=>x.length).join("+")})${!s.wm?' · <span class="warn">sin W/módulo: no se puede calcular la carga</span>':` · carga máx. <span${ov?' class="warn"':""}>${mx}%${ov?" ¡SOBRECARGA!":""}</span>`}`})()}<br>Peso ${s.kg?`${fmt(kgOf(s))} kg · ${fmt(kgCol(s))} kg por columna`:"sin dato"}${chainInfo(s)}</span>
       ${mountBox(s)}
       <label class="elsel" style="grid-column:1/-1">Notas${s.note?' <span class="note-on">●</span>':""}<textarea data-k="note" rows="${s.note?2:1}" placeholder="Batch, de otra empresa, observaciones…" aria-label="Notas de ${esc(s.name)}">${esc(s.note||"")}</textarea></label>
       ${wireBox(s)}
@@ -1862,6 +1880,15 @@ function uniteMosaic(s){
   const idx=S.screens.indexOf(f);S.screens=S.screens.filter(t=>!parts.includes(t));S.screens.splice(Math.min(idx,S.screens.length),0,m);
   m.name=uniqueName(f.mos.base,m);sel=new Set([m.id]);commit();toast(`Mosaico unido: ${m.name}`);
 }
+// uniones de la pantalla, cada una con su botón para separarla
+function chainInfo(s){const nm=id=>{const o=S.screens.find(q=>q.id===id);return o?esc(o.name):"?"},out=[];
+  const btn=(a,t)=>` <button data-a="${a}" class="ghost chainx" title="${t}">Separar</button>`;
+  const g=wgOf(s);if(s.wg&&g.length>1)out.push(`Cableado unido con ${g.filter(o=>o!==s).map(o=>esc(o.name)).join(", ")}${btn("cutwg","Quita esta pantalla del cableado unido")}`);
+  if(s.next)out.push(`La boca sigue en ${nm(s.next)}${btn("cutnext","Esta pantalla termina su boca aquí")}`);
+  S.screens.filter(q=>q.next===s.id).forEach(q=>out.push(`Le llega la boca de ${esc(q.name)}${btn("cutprev:"+q.id,"Esta pantalla empieza con su propia boca")}`));
+  if(s.pnext)out.push(`La corriente sigue en ${nm(s.pnext)}${btn("cutpnext","La línea de corriente termina en esta pantalla")}`);
+  S.screens.filter(q=>q.pnext===s.id).forEach(q=>out.push(`Le llega la corriente de ${esc(q.name)}${btn("cutpprev:"+q.id,"Esta pantalla empieza con su propia línea")}`));
+  return out.length?`<span class="chains">${out.map(x=>`<span class="chain">🔗 ${x}</span>`).join("")}</span>`:""}
 function unjoin(s){const g=s.wg;if(!g)return;delete s.wg;const rest=S.screens.filter(q=>q.wg===g);if(rest.length<2)rest.forEach(q=>delete q.wg)}
 function joinWiring(list){
   list=list.filter(Boolean);if(list.length<2)return false;
@@ -2022,6 +2049,10 @@ $("list").addEventListener("click",e=>{
   const card=e.target.closest(".scr");if(!card)return;const s=S.screens.find(t=>t.id===card.dataset.id);
   const a=e.target.closest("button")?.dataset.a;
   if(a==="soreset"){delete s.so;commit();return}
+  if(a==="cutwg"){unjoin(s);toast("Cableado separado.");commit();return}
+  if(a==="cutnext"){delete s.next;delete s.jump;toast("Boca separada: cada pantalla con la suya.");commit();return}
+  if(a==="cutpnext"){delete s.pnext;delete s.pjump;toast("Corriente separada: cada pantalla con sus líneas.");commit();return}
+  if(a&&(a.startsWith("cutprev:")||a.startsWith("cutpprev:"))){const q=S.screens.find(z=>z.id===a.split(":")[1]);if(q){if(a.startsWith("cutprev:")){delete q.next;delete q.jump}else{delete q.pnext;delete q.pjump}}toast("Separadas: cada pantalla va por su cuenta.");commit();return}
   if(a==="wreset"){unjoin(s);delete s.wd;delete s.wp;delete s.pnext;delete s.pjump;commit();return}
   if(a==="msplit"){const d=e.target.closest("details"),v=k=>d.querySelector(`[data-m="${k}"]`).value;openMos.delete(s.id);splitMosaic(s,+v("n"),v("dir"),v("el"),v("sizes"));return}
   if(a==="mless"||a==="mmore"){resizeMosaic(s,a==="mmore"?1:-1);return}
@@ -2351,7 +2382,7 @@ async function exportPdf(){
   const pw=[];S.screens.filter(s=>!effPow(s)).forEach(s=>pw.push([s.name,"—",(PC[s.pc||""]||PC[""]).n,"—","sin consumo","—","—"]));
   powerPlan().lines.forEach(l=>pw.push([l.name,`L${l.i+1}`,l.pcs.map(k=>(PC[k]||PC[""]).n).join(" + "),l.n,`${Math.round(l.w)} W`,`${n2(l.amps)} A`,`${Math.round(l.w/(o.volt*o.amp)*100)}%`]));
   {const br=boxRows();if(br.length){tbl(y3,["Cuadro","Circuito","Fase","Pantalla · línea","Conector","Módulos","Pot. máx","Corriente"],br,{columnStyles:{0:{fontStyle:"bold"},1:{halign:"center",fontStyle:"bold"},5:{halign:"right"},6:{halign:"right"},7:{halign:"right"}}});
-    const P=boxPlan();tbl(doc.lastAutoTable.finalY+4,["Cuadro","Tomas","Potencia",...Array.from({length:P.cfg.ph},(_,f)=>`Fase ${f+1}`)],P.boxes.map(B=>[`${B.i} · ${B.name}`,B.lines.length,`${n2(B.w/1000)} kW`,...B.ph.map(a=>`${n2(a)} / ${P.cfg.a} A${a>P.cfg.a?" !":""}`)]),{columnStyles:{0:{fontStyle:"bold"}}});
+    const P=boxPlan();tbl(doc.lastAutoTable.finalY+4,["Cuadro","Tomas","Potencia",...Array.from({length:P.cfg.ph},(_,f)=>`Fase ${f+1}`),...(P.cfg.ph===3?["Neutro aprox."]:[])],P.boxes.map(B=>[`${B.i} · ${B.name}`,B.lines.length,`${n2(B.w/1000)} kW`,...B.ph.map(a=>`${n2(a)} / ${P.cfg.a} A${a>P.cfg.a?" !":""}`),...(P.cfg.ph===3?[`${n2(neutralA(B.ph))} A`]:[])]),{columnStyles:{0:{fontStyle:"bold"}}});
     y3=doc.lastAutoTable.finalY+5}}
   tbl(y3,["Pantalla","Línea","Conector","Módulos","Pot. máx","Corriente","Carga de la línea"],pw,{columnStyles:{3:{halign:"right"},4:{halign:"right"},5:{halign:"right"},6:{halign:"right"}}});
 
@@ -2471,7 +2502,7 @@ async function exportDocx(){
   const pw=[];S.screens.filter(s=>!effPow(s)).forEach(s=>pw.push([s.name,"—",(PC[s.pc||""]||PC[""]).n,"—","sin consumo","—","—"]));
   powerPlan().lines.forEach(l=>pw.push([l.name,`L${l.i+1}`,l.pcs.map(k=>(PC[k]||PC[""]).n).join(" + "),l.n,`${Math.round(l.w)} W`,`${n2(l.amps)} A`,`${Math.round(l.w/(o.volt*o.amp)*100)}%`]));
   {const br=boxRows();if(br.length){const P=boxPlan();body.push(H2("Cuadros eléctricos"),table(["Cuadro","Circuito","Fase","Pantalla · línea","Conector","Módulos","Pot. máx","Corriente"],br,{right:[5,6,7],bold:[0,1]}),
-    table(["Cuadro","Tomas","Potencia",...Array.from({length:P.cfg.ph},(_,f)=>`Fase ${f+1}`)],P.boxes.map(B=>[`${B.i} · ${B.name}`,B.lines.length,`${n2(B.w/1000)} kW`,...B.ph.map(a=>`${n2(a)} / ${P.cfg.a} A`)]),{bold:[0]}))}}
+    table(["Cuadro","Tomas","Potencia",...Array.from({length:P.cfg.ph},(_,f)=>`Fase ${f+1}`),...(P.cfg.ph===3?["Neutro aprox."]:[])],P.boxes.map(B=>[`${B.i} · ${B.name}`,B.lines.length,`${n2(B.w/1000)} kW`,...B.ph.map(a=>`${n2(a)} / ${P.cfg.a} A`),...(P.cfg.ph===3?[`${n2(neutralA(B.ph))} A`]:[])]),{bold:[0]}))}}
   body.push(table(["Pantalla","Línea","Conector","Módulos","Pot. máx","Corriente","Carga de la línea"],pw,{right:[3,4,5,6]}));
   // material
   body.push(PB(),H1("Material y stock"));
