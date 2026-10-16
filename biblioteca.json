@@ -1,0 +1,1542 @@
+{
+  "app": "pixelmap-led",
+  "kind": "biblioteca-base",
+  "date": "16/10/2026",
+  "stamp": 1792174826023,
+  "by": "takathunder",
+  "modules": [
+    {
+      "qty": 0,
+      "pc": "pc",
+      "stock": true,
+      "id": "yestech-p19",
+      "n": "Yestech P1.9",
+      "w": 500,
+      "h": 500,
+      "x": 256,
+      "y": 256,
+      "wm": 130,
+      "kg": 5.9,
+      "kd": 10,
+      "k": 30,
+      "garraPos": "marco",
+      "bumper": "Yestech barra de volado",
+      "baseO": "Yestech barra suelo",
+      "baseT": "Chapa fina Telesonic Yestech 0,5 m",
+      "garra": "Yestech garra yugo 8s",
+      "perProj": "Yestech llave apriete × 1",
+      "inv": "Módulo yestech p.p. 1,9 (256x256)",
+      "flyMax": 20,
+      "mNote": "Yestech (manual MG6S/MG7S): eslingas verticales (85–95° con la barra) y todas igual de tensas · barras de volado al tresbolillo (cada una coge medio módulo de cada lado) · menos de 8 módulos de alto: 2 conectores C entre módulos; desde 8 (4 m): chapas de unión entre módulos y con la barra · máx. 20 módulos de alto colgados (más de 12 m: consultar al fabricante)."
+    },
+    {
+      "qty": 0,
+      "pc": "t1",
+      "stock": true,
+      "id": "absen-p19",
+      "n": "Absen Indoor P1.9",
+      "w": 500,
+      "h": 500,
+      "x": 256,
+      "y": 256,
+      "wm": 135,
+      "kg": 9.4,
+      "kd": 10,
+      "k": 16,
+      "garraPos": "eje",
+      "bumper": "Absen barra suelo/volado",
+      "baseO": "Absen barra suelo/volado",
+      "baseT": "Absen chapa fina 4 agujeros",
+      "garra": "Absen Garra",
+      "perProj": "",
+      "inv": "Modulo Absen p.p. 1,9 (256x256)"
+    },
+    {
+      "qty": 0,
+      "pc": "t1",
+      "stock": true,
+      "id": "absen-pl25pro",
+      "n": "Absen Indoor P2.5 · Batch 1",
+      "w": 500,
+      "h": 500,
+      "x": 200,
+      "y": 200,
+      "wm": 135,
+      "kg": 9.4,
+      "kd": 16,
+      "k": 16,
+      "garraPos": "eje",
+      "bumper": "Absen barra suelo/volado",
+      "baseO": "Absen barra suelo/volado",
+      "baseT": "Absen chapa fina 4 agujeros",
+      "garra": "Absen Garra",
+      "perProj": "",
+      "inv": "Módulo Absen p.p.2.5 mm (200x200pix)"
+    },
+    {
+      "qty": 0,
+      "pc": "",
+      "stock": true,
+      "id": "yestech-p26",
+      "n": "Yestech P2.6",
+      "w": 500,
+      "h": 500,
+      "x": 192,
+      "y": 192,
+      "wm": 160,
+      "kg": 5.9,
+      "kd": 17,
+      "k": 22,
+      "garraPos": "marco",
+      "bumper": "Yestech barra de volado",
+      "baseO": "Yestech barra suelo",
+      "baseT": "Chapa fina Telesonic Yestech 0,5 m",
+      "garra": "Yestech garra yugo 8s",
+      "perProj": "Yestech llave apriete × 1",
+      "inv": "Modulo Yestech p.p 2,6mm (192x192)",
+      "flyMax": 20,
+      "mNote": "Yestech (manual MG6S/MG7S): eslingas verticales (85–95° con la barra) y todas igual de tensas · barras de volado al tresbolillo (cada una coge medio módulo de cada lado) · menos de 8 módulos de alto: 2 conectores C entre módulos; desde 8 (4 m): chapas de unión entre módulos y con la barra · máx. 20 módulos de alto colgados (más de 12 m: consultar al fabricante)."
+    },
+    {
+      "qty": 0,
+      "pc": "",
+      "stock": true,
+      "id": "digiled-p48",
+      "n": "Digiled P4.8",
+      "w": 500,
+      "h": 500,
+      "x": 104,
+      "y": 104,
+      "wm": 175,
+      "kg": 6.6,
+      "k": 20,
+      "garraPos": "marco",
+      "bumper": "Yestech barra de volado",
+      "baseO": "Yestech barra suelo",
+      "baseT": "Chapa fina Telesonic Yestech 0,5 m",
+      "garra": "Yestech garra yugo 8s",
+      "perProj": "Yestech llave apriete × 1",
+      "inv": "Módulo Digiled p.p 4,8 mm.(104x104pix)",
+      "flyMax": 20,
+      "mNote": "Yestech (manual MG6S/MG7S): eslingas verticales (85–95° con la barra) y todas igual de tensas · barras de volado al tresbolillo (cada una coge medio módulo de cada lado) · menos de 8 módulos de alto: 2 conectores C entre módulos; desde 8 (4 m): chapas de unión entre módulos y con la barra · máx. 20 módulos de alto colgados (más de 12 m: consultar al fabricante)."
+    },
+    {
+      "qty": 0,
+      "pc": "pc",
+      "stock": true,
+      "id": "ledman-p39",
+      "n": "Ledman P3.9",
+      "w": 480,
+      "h": 480,
+      "x": 120,
+      "y": 120,
+      "kg": 8.5,
+      "garraPos": "marco",
+      "bumper": "Bumper Ledman",
+      "baseO": "Base Ledman original",
+      "baseT": "Chapa fina Telesonic Ledman 0,5 m",
+      "garra": "",
+      "perProj": "",
+      "inv": "Módulo Ledman p.p 4 mm."
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "g-p195",
+      "n": "P1.95",
+      "w": 500,
+      "h": 500,
+      "x": 256,
+      "y": 256
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "g-p26",
+      "n": "P2.6",
+      "w": 500,
+      "h": 500,
+      "x": 192,
+      "y": 192
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "g-p297",
+      "n": "P2.97",
+      "w": 500,
+      "h": 500,
+      "x": 168,
+      "y": 168
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "g-p39",
+      "n": "P3.9",
+      "w": 500,
+      "h": 500,
+      "x": 128,
+      "y": 128
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "g-p48",
+      "n": "P4.8",
+      "w": 500,
+      "h": 500,
+      "x": 104,
+      "y": 104
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "g-p26l",
+      "n": "P2.6 (500×1000)",
+      "w": 500,
+      "h": 1000,
+      "x": 192,
+      "y": 384
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "g-p39l",
+      "n": "P3.9 (500×1000)",
+      "w": 500,
+      "h": 1000,
+      "x": 128,
+      "y": 256
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "g-p48l",
+      "n": "P4.8 (500×1000)",
+      "w": 500,
+      "h": 1000,
+      "x": 104,
+      "y": 208
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "g-p25w",
+      "n": "P2.5 16:9",
+      "w": 600,
+      "h": 337.5,
+      "x": 240,
+      "y": 135
+    },
+    {
+      "qty": 0,
+      "id": "yestech-p48",
+      "n": "Yestech P4.8",
+      "w": 500,
+      "h": 500,
+      "x": 104,
+      "y": 104,
+      "kg": 7,
+      "stock": true,
+      "inv": "Módulo Yestech p.p 4,8 N mm. (104x104pix)",
+      "bumper": "Yestech barra de volado",
+      "baseO": "Yestech barra suelo",
+      "baseT": "Chapa fina Telesonic Yestech 0,5 m",
+      "garra": "Yestech garra yugo 8s",
+      "perProj": "Yestech llave apriete × 1",
+      "garraPos": "marco",
+      "flyMax": 20,
+      "mNote": "Yestech (manual MG6S/MG7S): eslingas verticales (85–95° con la barra) y todas igual de tensas · barras de volado al tresbolillo (cada una coge medio módulo de cada lado) · menos de 8 módulos de alto: 2 conectores C entre módulos; desde 8 (4 m): chapas de unión entre módulos y con la barra · máx. 20 módulos de alto colgados (más de 12 m: consultar al fabricante)."
+    },
+    {
+      "qty": 0,
+      "id": "yestech-p48s",
+      "n": "Yestech P4.8 suelo",
+      "w": 500,
+      "h": 500,
+      "x": 104,
+      "y": 104,
+      "kg": 7,
+      "stock": true,
+      "inv": "Módulo Yestech p.p 4,8 mm. SUELO (104x104pix)",
+      "baseO": "Yestech barra suelo",
+      "perProj": "Yestech llave apriete × 1",
+      "garraPos": "marco"
+    },
+    {
+      "qty": 0,
+      "id": "prolights-p26",
+      "n": "ProLights P2.6",
+      "w": 500,
+      "h": 500,
+      "x": 192,
+      "y": 192,
+      "stock": true,
+      "inv": "Módulo ProLIghts p.p.2.6 mm (192x192pix)",
+      "bumper": "Prolight barra de volado/suelo",
+      "baseO": "Prolight barra de volado/suelo",
+      "garra": "Garra Prolights",
+      "garraPos": "marco"
+    }
+  ],
+  "processors": [
+    {
+      "stock": true,
+      "qty": 0,
+      "id": "vx2000p",
+      "n": "NovaStar VX2000 Pro",
+      "p": 20,
+      "c": 13000000,
+      "sc": true,
+      "ly": 12,
+      "inputs": "2× HDMI 2.0, 4× HDMI 1.3, 1× DP 1.2, 1× 12G-SDI, USB 3.0 · loop 12G-SDI, monitor HDMI",
+      "inv": "NOVASTAR VX 2000 PRO"
+    },
+    {
+      "stock": true,
+      "qty": 0,
+      "id": "vx1000",
+      "n": "NovaStar VX1000",
+      "p": 10,
+      "c": 6500000,
+      "sc": true,
+      "ly": 3,
+      "inputs": "2× HDMI 1.4, 2× DVI, 1× 3G-SDI, fibra 10G · loop HDMI, DVI y SDI, monitor HDMI",
+      "inv": "NOVASTAR VX1000"
+    },
+    {
+      "stock": true,
+      "qty": 0,
+      "id": "vx6s",
+      "n": "NovaStar VX6s",
+      "p": 6,
+      "c": 3900000,
+      "sc": true,
+      "ly": 3,
+      "inputs": "2× HDMI 1.3, 2× DVI, 3G-SDI, USB · loop DVI y SDI",
+      "inv": "NOVASTAR VX6S"
+    },
+    {
+      "stock": true,
+      "qty": 0,
+      "id": "vx4s",
+      "n": "NovaStar VX4S",
+      "p": 4,
+      "c": 2300000,
+      "sc": true,
+      "inputs": "1× DP, 1× HDMI, 1× DVI, 1× SDI, 2× VGA, 2× CVBS · loop DVI y SDI",
+      "inv": "NOVASTAR VX4S"
+    },
+    {
+      "stock": true,
+      "qty": 0,
+      "id": "mctrl4k",
+      "n": "NovaStar MCTRL4K",
+      "p": 16,
+      "c": 8294400,
+      "sc": false,
+      "ly": 1,
+      "inW": 3840,
+      "inH": 2160,
+      "inputs": "1× DP 1.2, 1× HDMI 2.0, 2× DVI dual-link · sin loop",
+      "inv": "NOVASTAR MCTRL 4K"
+    },
+    {
+      "stock": true,
+      "qty": 0,
+      "id": "mctrlr5",
+      "n": "NovaStar MCTRL R5",
+      "p": 8,
+      "c": 4147200,
+      "sc": false,
+      "ly": 1,
+      "inW": 3840,
+      "inH": 1080,
+      "inputs": "1× HDMI 1.4, 1× DVI dual-link, 1× 6G-SDI · genlock loop",
+      "inv": "NOVASTAR MCTRL R5 8 bocas"
+    },
+    {
+      "stock": true,
+      "qty": 0,
+      "id": "mctrl660p",
+      "n": "NovaStar MCTRL660 Pro",
+      "p": 6,
+      "c": 2300000,
+      "sc": false,
+      "ly": 1,
+      "inW": 1920,
+      "inH": 1200,
+      "side": 3840,
+      "inputs": "1× HDMI 1.4a, 1× DVI, 1× 3G-SDI · loop de las tres",
+      "inv": "NOVASTAR MCTRL 660 Pro"
+    },
+    {
+      "stock": true,
+      "qty": 0,
+      "id": "mctrl660",
+      "n": "NovaStar MCTRL660",
+      "p": 4,
+      "c": 2300000,
+      "sc": false,
+      "ly": 1,
+      "inW": 1920,
+      "inH": 1200,
+      "side": 3840,
+      "inputs": "1× HDMI 1.3, 1× DVI · loop HDMI/DVI",
+      "inv": "NOVASTAR MCTRL 660"
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "vx400p",
+      "n": "NovaStar VX400 Pro",
+      "p": 4,
+      "c": 2600000,
+      "sc": true,
+      "ly": 6
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "vx600p",
+      "n": "NovaStar VX600 Pro",
+      "p": 6,
+      "c": 3900000,
+      "sc": true,
+      "ly": 6
+    },
+    {
+      "stock": false,
+      "qty": 0,
+      "id": "vx1000p",
+      "n": "NovaStar VX1000 Pro",
+      "p": 10,
+      "c": 6500000,
+      "sc": true,
+      "ly": 6
+    }
+  ],
+  "inventory": [
+    {
+      "n": "Módulo ProLIghts p.p.2.6 mm (192x192pix)",
+      "q": 0,
+      "c": "Módulos LED"
+    },
+    {
+      "n": "Módulo Yestech p.p 4,8 mm. SUELO (104x104pix)",
+      "q": 120,
+      "c": "Módulos LED",
+      "note": "¡Ojo! meter llaves apriete"
+    },
+    {
+      "n": "Módulo Yestech p.p 4,8 N mm. (104x104pix)",
+      "q": 60,
+      "c": "Módulos LED",
+      "note": "¡Ojo! meter llaves apriete"
+    },
+    {
+      "n": "Modulo Yestech p.p 2,6mm (192x192)",
+      "q": 0,
+      "c": "Módulos LED",
+      "note": "¡Ojo! meter llaves apriete"
+    },
+    {
+      "n": "Modulo Yestech p.p 2,6mm (192x192) R-UP triangulo",
+      "q": 4,
+      "c": "Módulos LED",
+      "note": "¡Ojo! meter llaves apriete"
+    },
+    {
+      "n": "Módulo yestech esquina p.p. 1,9 (256x256)",
+      "q": 20,
+      "c": "Módulos LED",
+      "note": "¡Ojo! meter llaves apriete"
+    },
+    {
+      "n": "Modulo Yestech p.p 2,6mm (192x192) L-UP triangulo",
+      "q": 4,
+      "c": "Módulos LED",
+      "note": "¡Ojo! meter llaves apriete"
+    },
+    {
+      "n": "Módulo ProLIghts p.p.2.6 mm N(192x192pix)",
+      "q": 0,
+      "c": "Módulos LED"
+    },
+    {
+      "n": "Módulo Digiled p.p 4,8 mm.(104x104pix)",
+      "q": 160,
+      "c": "Módulos LED",
+      "note": "¡Ojo! meter llaves apriete"
+    },
+    {
+      "n": "Módulo Absen p.p.2.5 mm (200x200pix)",
+      "q": 78,
+      "c": "Módulos LED"
+    },
+    {
+      "n": "Módulo Digiled esquina p.p 4,8 mm.",
+      "q": 12,
+      "c": "Módulos LED",
+      "note": "¡Ojo! meter llaves apriete"
+    },
+    {
+      "n": "Módulo Ledman p.p 4 mm.",
+      "q": 145,
+      "c": "Módulos LED"
+    },
+    {
+      "n": "Módulo ProLIghts esquina L p.p.2.6 mm (192x192pix)",
+      "q": 0,
+      "c": "Módulos LED"
+    },
+    {
+      "n": "Módulo ProLIghts esquina R p.p.2.6 mm(192x192pix)",
+      "q": 0,
+      "c": "Módulos LED"
+    },
+    {
+      "n": "Módulo yestech p.p. 1,9 (256x256)",
+      "q": 278,
+      "c": "Módulos LED",
+      "note": "¡Ojo! meter llaves apriete"
+    },
+    {
+      "n": "Módulo yestech p.p.2.8 mm",
+      "q": 10,
+      "c": "Módulos LED",
+      "note": "¡Ojo! meter llaves apriete"
+    },
+    {
+      "n": "Espuma manipulación LED",
+      "q": 1,
+      "c": "Módulos LED"
+    },
+    {
+      "n": "Modulo Absen p.p. 1,9 (256x256)",
+      "q": 200,
+      "c": "Módulos LED"
+    },
+    {
+      "n": "Mascara 4,8 suelo",
+      "q": null,
+      "c": "Módulos LED"
+    },
+    {
+      "n": "Totem Led Plegable 1,8",
+      "q": 6,
+      "c": "Módulos LED"
+    },
+    {
+      "n": "Absen barra suelo/volado 1 mtr",
+      "q": 18,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Absen barra suelo/volado 0,5 mtr",
+      "q": 30,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Absen Barra de volado de 0,5 m",
+      "q": 24,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Absen Chapa + cuadradillo de 40 de 49 cms",
+      "q": 1,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Absen Chapa + cuadradillo de 40 de 99 cms",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Absen chapa fina 4 agujeros",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Absen Chapa parte baja",
+      "q": 65,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Absen Chapa parte baja led en T",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Absen chapa profunda",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Absen Garra",
+      "q": 32,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Absen Garra DOS CHAPAS",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Acerado 0,5m sin protección de goma",
+      "q": 20,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Acerado 1.5m protegido con goma",
+      "q": 2,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Acerado de 1 mt sección 8mm",
+      "q": 13,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Acerado de 1mt sección 10mm",
+      "q": 3,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Acerado de 2 mts 8mm",
+      "q": 14,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Acerado de 3mts",
+      "q": 21,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Andamio Aluminio",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Bilite de 2000mm",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Chapa union Ledman 2 agujeros",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Chapa union Ledman 4 agujeros",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Crica 10 m",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Crica 5 m",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Doble Garra",
+      "q": 45,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Elevador lijero Fantek T117 (ABS)",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Escalera Colisa 2,7 mts recogida",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Escalera media hasta 2,5 mts",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Eslinga de 1 m",
+      "q": 11,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Eslinga de 1m. Multi cable acerado",
+      "q": 6,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Eslinga de 2 m",
+      "q": 25,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Eslinga de 2 m. Multi cable acerado",
+      "q": 14,
+      "c": "Estructura y volado",
+      "note": "tipo A: 7, tipo B: 7"
+    },
+    {
+      "n": "Eslinga de 2 m. 2TN Multi cable acerado",
+      "q": 20,
+      "c": "Estructura y volado",
+      "note": "tipo C: 20"
+    },
+    {
+      "n": "Garra con cáncamo",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Garra con tornillo largo para 2 x 8s",
+      "q": 11,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Garra con tornillo largo para 3 x 8s",
+      "q": 21,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Garra Ledman corta",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Garra Ledman larga",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Garra Prolights",
+      "q": 38,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Garra simple",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Grillete de 1.5 T Azul",
+      "q": 71,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Grillete de 3,25 T Rojo",
+      "q": 27,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Mini bulones módulos 4,8 suelo",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Pata Tarima regulable",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech Patas estructura 8s",
+      "q": 18,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Pesos de 12.5 kg",
+      "q": 48,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Pesos de 27 kg",
+      "q": 4,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Polipasto",
+      "q": 2,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Prolight barra de volado/suelo 0.5 m",
+      "q": 4,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Prolight barra de volado/suelo 1 m",
+      "q": 8,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Prolight llanta angulo 80 grados",
+      "q": 108,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Prolight llanta angulo 85 grados Prolight",
+      "q": 68,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Prolight llanta angulo 95 grados Prolight",
+      "q": 98,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Soporte 15 módulos led con ruedas",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tarima regulable (2x1m)",
+      "q": 4,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tensor 10mm (LEDS)",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tornillo chapa absen corto",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tornillo chapa absen largo",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tornillos chapas Ledman diametro 8",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tramo Torre Guill Vertical 2 m (Truss de 30)",
+      "q": 2,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tramo Torre Guill Horizontal 1 m (Truss de 40)",
+      "q": 1,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tramo Torre Guill Horizontal 2 m (Truss de 40)",
+      "q": 3,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tramo Final Torre Guill Vertical 1 m (Truss de 30)",
+      "q": 2,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tramo Torre Guill Vertical 3 m (Truss de 30)",
+      "q": 2,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Base Torre Guill 1,2m",
+      "q": 2,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tubo 50mm x 1000mm",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tubo 50mm x 1500mm",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tubo 50mm x 2000mm",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tubo 50mm x 3000mm",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tubo 50mm x 500mm",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tubo monolite 50mm x 2000mm",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Tubo monolite 50mm x 500mm",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Varilla montaje/desmontaje balas de truss",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech estructura 8s",
+      "q": 91,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech barra de volado 0.5 m",
+      "q": 8,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech barra de volado 1 m",
+      "q": 10,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech barra suelo 1 m",
+      "q": 24,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech chapa madera colo negro bajo Led",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech contrajotas 4,8",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech estructura 8s suelo",
+      "q": 154,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech garra yugo 8s",
+      "q": 51,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech llave apriete",
+      "q": 11,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech pieza unión 1,9/2,6/4,8 con angulo variable",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech pieza unión entre cuadrado y triángulo",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech pieza Unión esquinas 1,9mm",
+      "q": 72,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech piezas unión entre cabinets 120 Standar mm 1,9 mm (xx)",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech piezas Unión entre cabinets 150 mm 1,9 mm",
+      "q": 60,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech piezas Unión entre cabinets 180 mm 1,9mm",
+      "q": 66,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech separadores",
+      "q": 2,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech Tornillos Union Estructura 8s",
+      "q": 594,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestech Tubos union Estructura 8s",
+      "q": 272,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Yestch barra refuerzo para estructuras 8s en suelo (2 lasarte)(resto k2000)",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Sargenta",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Truss 30 de 3 m",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Garra Volado LEDMAN",
+      "q": null,
+      "c": "Estructura y volado"
+    },
+    {
+      "n": "Analog WAY Di-Ventix I",
+      "q": 1,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Analog WAY Di-Ventix II",
+      "q": 2,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Analog WAY Pulse sin salida SDI",
+      "q": 2,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Analog WAY Pulse 2 con salida SDI",
+      "q": 1,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Disguise 2X4",
+      "q": 1,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Disguise Solo",
+      "q": 1,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "DVI Scaler Plus",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Escalador ELPRO",
+      "q": 1,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "EXTRON Multipip MGP 464",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "kshow 2 (dos monitores)",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Kshow 1 full",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Licencia Resolume 7",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Licencia Vioso Pixera",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "licencia Watchout 6",
+      "q": 2,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "licencia Watchout 7",
+      "q": 6,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Magnimage EC40",
+      "q": 5,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "MAGNIMAGE EC-90 INPUT 6 HDMI",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "MAGNIMAGE EC-90 INPUT 4XHDMI + 2 DP",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Matriz video compuesto Extron 8x4",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Mesa Video Black Magic",
+      "q": 1,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Mesa video Panasonic",
+      "q": 1,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Servidor Vmix Realización + Streaming nº 1 y 2 Vienen con monitor de control 24\"",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Servidor Vmix Streaming nº3",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Servidor Vioso Pixera",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Watchout Servidor V6 nº1 4xDSP out + in 1xDVI+1xSDI",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Watchout Servidor V6 nº2 4xDSP out + 1 in DVI + 1 in VGA",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Watchout Servidor V6 nº3 4xDSP out + in 1xDVI+1xSDI",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Watchout Servidor V7 nº 4 4xDSP 4k out + in 1xHDMI 4k + in 1xSDI 4k",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Watchout Servidor V7 nº 5 4xDSP 4k out + in 1xHDMI 4k",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Watchout Servidor V7 nº 6 8x Outputs",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Watchout Servidor V7 nº7 4 x DSP out + in 1 x HDMI 4k + in 2 x SDI",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Watchout Wachpax v6 nº8",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "NOVASTAR VX1000",
+      "q": 2,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "NOVASTAR VX6S",
+      "q": 4,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "NOVASTAR NV",
+      "q": 2,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "NOVASTAR VX4S",
+      "q": 4,
+      "c": "Electrónica y señal",
+      "note": "OJO: una se desconfigura al apagarse, plantear con SAI???"
+    },
+    {
+      "n": "NOVASTAR MCTRL 660",
+      "q": 3,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "NOVASTAR MCTRL 660 Pro",
+      "q": 2,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "NOVASTAR MCTRL R5 8 bocas",
+      "q": 4,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "NOVASTAR MCTRL 4K",
+      "q": 4,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Mosaic 4k DVI",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Mosaic 4k HDMI",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "NOVASTAR VX 2000 PRO",
+      "q": 3,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "MATRIZ 8X8 4K LIGHTWARE",
+      "q": null,
+      "c": "Electrónica y señal"
+    },
+    {
+      "n": "Barrilete F.O. sc-sc 2 pelos",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Adaptador 125A a 63A",
+      "q": 1,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Acometida 63A 2m Trifásica",
+      "q": 1,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cuadro Ingerent 32A a 6 schuko con diferencial",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cuadro work 32A a 6 schuko sin diferencial",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Bobina de 2 x F.O.100m",
+      "q": null,
+      "c": "Cableado y corriente",
+      "note": "OJO latiguillos"
+    },
+    {
+      "n": "Barrilete powercom blanco a azul hembra",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Base múltiple schuko",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Bobina de 3 x F.O.100m",
+      "q": null,
+      "c": "Cableado y corriente",
+      "note": "OJO latiguillos"
+    },
+    {
+      "n": "Bífido Cetac 63A a 2 x 32A",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Bobina F.O. OpticalCON 4 hilos + 2 x adaptador OpticalCON a 4 x SC",
+      "q": 4,
+      "c": "Cableado y corriente",
+      "note": "ojo latiguillos"
+    },
+    {
+      "n": "Bobina de 4 x F.O.100m",
+      "q": null,
+      "c": "Cableado y corriente",
+      "note": "OJO latiguillos"
+    },
+    {
+      "n": "Barrilete UTP neutrik",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Bobina de 1 x F.O.100m",
+      "q": null,
+      "c": "Cableado y corriente",
+      "note": "OJO latiguillos"
+    },
+    {
+      "n": "Barrilete F.O. sc-sc 1 pelo",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cable cetac monofásico de 32A a 3 schukos",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cable S/FTP 10m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cable S/FTP 20m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cable S/FTP 2m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cable S/FTP 32 m para Led",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cable S/FTP 50m",
+      "q": 28,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cable S/FTP 5m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cable UTP latiguillo",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cetak monofasico 32 a cajetin 8 schukos",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cuadro 32A trifasico a 2 socapex Hembra",
+      "q": 4,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cuadro 63A trifásico Ingerent",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cuadro Tortuga 63 trifasico a 2 x 32A diferencial 300Ma",
+      "q": 1,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "F.O. lc-lc 2 mts 2 pelos",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "F.O. sc-lc 2 m 2 pelos",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "F.O. sc-sc 10 m 2 pelos",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "F.O. sc-sc 2 m 2 pelos",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "F.O. sc-sc 2 m 4 pelos",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "F.O. sc-sc 20 m 4 pelos",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "F.O. sc-sc 5 m 2 pelos",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "HDMI 10mts 4k",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "HDMI 20MTS EN FIBRA",
+      "q": 25,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Manguera Cetac 32A Monofásico 10m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Manguera Cetac 32A trifásico 20m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Manguera Cetac 32A trifásico 5m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Manguera socapex 20 mts",
+      "q": 8,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "powercom azul a schuko 10m",
+      "q": 44,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "powercom azul a schuko 5m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "powercom azul azul",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "powercom azul blanco",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "powercom blanco a schuko 10m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "powercom blanco a schuko 5m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "powercom blanco blanco",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "powercom negro a schuko 15m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "powercom negro a schuko 5m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "powercom negro unión",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Pulpo Socapex H a 6 schukos M",
+      "q": 4,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Pulpo Socapex M a 6 schukos H",
+      "q": 10,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "UTP LED 30m con capuchón",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "UTP LED unión",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Manguera Cetac 32A trifásico 15m",
+      "q": 1,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cuadro negro 32A a 32A Cetac azulmonofásico con diferencial",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cuadro trifásico 32 con diferencial Showtec PSA -32A 6S",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cable HDMI 10m",
+      "q": null,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Cetac monofásico de 16A a hembra schuko",
+      "q": 14,
+      "c": "Cableado y corriente"
+    },
+    {
+      "n": "Adaptador Cetac de 16A a 32A 5 mts",
+      "q": null,
+      "c": "Cableado y corriente"
+    }
+  ],
+  "eq": {
+    "e8s": "Yestech estructura 8s suelo",
+    "vaso": "Yestech Tubos union Estructura 8s",
+    "torn": "Yestech Tornillos Union Estructura 8s",
+    "pata": "Yestech Patas estructura 8s",
+    "grillete": "Grillete de 1.5 T Azul",
+    "eslinga": "Acerado de 2 mts 8mm",
+    "cuadro": "Cuadro Ingerent 32A a 6 schuko con diferencial",
+    "acom": "Manguera Cetac 32A trifásico 20m",
+    "mangPc": "powercom azul a schuko 10m",
+    "mangT1": "powercom negro a schuko 15m"
+  }
+}
