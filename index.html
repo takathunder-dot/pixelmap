@@ -204,6 +204,11 @@ input[type=range]{padding:0;accent-color:var(--accent)}
 .mat-h{font-family:var(--f-display);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:6px 12px 8px}
 table.mat td:nth-child(2),table.mat th:nth-child(2),table.mat td:nth-child(4),table.mat th:nth-child(4){text-align:left}
 table.mat td:nth-child(4){white-space:normal;min-width:220px;color:var(--muted)}
+table.prep td:nth-child(1),table.prep th:nth-child(1){text-align:left;white-space:normal;min-width:220px}table.prep td:nth-child(2),table.prep td:nth-child(3){text-align:right;min-width:0;color:inherit}
+table.prep td:nth-child(4){min-width:0;color:inherit;white-space:normal}table.prep td:nth-child(5){color:var(--muted);white-space:normal}table.prep .ok{color:#1f9d55}table.prep .muted{color:var(--muted)}
+.invc{margin:10px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.invr{display:grid;grid-template-columns:1fr 64px 28px;gap:4px;align-items:center;margin:2px 0}.invr input{padding:4px 6px;font-size:12px}.invr .nt{grid-column:1/-1;font-size:11px;color:var(--muted);margin:-2px 0 4px}
+.invr button{padding:2px 6px}
 table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:normal;min-width:220px}table.pt td:nth-child(4),table.pt th:nth-child(4){text-align:right;min-width:0;color:inherit;white-space:nowrap}table.pt tr.warn td{color:var(--danger)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:6px;font-size:13px;z-index:9;max-width:calc(100% - 32px)}
 @media (max-width:860px){
@@ -266,6 +271,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
   <button id="bCsv">Coordenadas .csv</button>
   <button id="bPdf2">Ficha PDF</button>
   <button id="bDocx2" title="Ficha en Word, con todos los textos editables">Ficha Word</button>
+  <button id="bXlsx2" title="Lista de material para almacén, en Excel">Excel almacén</button>
   <button id="bPngBg" class="primary">PNG con fondo</button>
   <button id="bPngT">PNG transparente</button>
 </header>
@@ -276,6 +282,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
     <button role="tab" data-tab="tabProj" class="on">Proyecto</button>
     <button role="tab" data-tab="tabMods">Módulos</button>
     <button role="tab" data-tab="tabProcs">Electrónicas</button>
+    <button role="tab" data-tab="tabInv">Almacén</button>
   </nav>
   <div id="tabMods" class="tabpane" hidden>
     <section>
@@ -294,6 +301,25 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
       <p class="hint" style="margin-top:0">Modelos de procesador con sus bocas y capacidad. Si marcas alguno <strong>En Telesonic</strong>, el modo «Automático» elige solo entre los vuestros.</p>
       <div class="row" style="margin:10px 0"><button class="primary" id="bNewProc">+ Nueva electrónica</button></div>
       <div class="list" id="procLib"></div>
+    </section>
+  </div>
+  <div id="tabInv" class="tabpane" hidden>
+    <section>
+      <h2>Almacén</h2>
+      <p class="hint" style="margin-top:0">Lo que tenéis en almacén y cuántas unidades. La preparación de material de cada proyecto se compara con esta lista y avisa de lo que falta. Cantidad 0 = existe pero no está en el almacén (otro palacio, otro montaje…). Va en la biblioteca base.</p>
+      <div class="row" style="margin:8px 0;gap:6px;flex-wrap:wrap"><input id="invQ" placeholder="Buscar…" style="flex:1;min-width:140px"><button class="primary" id="bInvAdd">+ Artículo</button></div>
+      <div id="invList"></div>
+    </section>
+    <section>
+      <h2>Equivalencias</h2>
+      <p class="hint" style="margin-top:0">Qué artículo del almacén se usa para cada pieza que calcula la herramienta. Los accesorios propios de cada módulo (bumper, garra, bases…) se eligen en su ficha, en Módulos → Accesorios de montaje.</p>
+      <div class="grid2" id="eqList"></div>
+    </section>
+    <section>
+      <h2>Pegar lista</h2>
+      <p class="hint" style="margin-top:0">Pega una columna del Excel del almacén, una línea por artículo con la cantidad entre paréntesis: «Grillete de 1.5 T Azul (71)». Actualiza las cantidades de lo que ya existe y añade lo nuevo.</p>
+      <textarea id="invPaste" rows="4" placeholder="Yestech garra yugo 8s (51)&#10;powercom azul a schuko 10m (44)"></textarea>
+      <div class="row" style="margin-top:6px"><button id="bInvPaste">Importar</button></div>
     </section>
   </div>
   <div id="tabProj" class="tabpane">
@@ -396,6 +422,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
       <label>Circuitos<input id="bxN" type="number" min="1"></label>
       <label>Fases<input id="bxPh" type="number" min="1" max="3"></label>
     </div>
+    <label style="margin-top:6px">Modelo de cuadro (del almacén)<input id="bxM" list="dl-inv" placeholder="p. ej. Cuadro Ingerent 32A a 6 schuko con diferencial"></label>
     <label class="check" style="margin-top:8px"><input type="checkbox" id="oBoxTri">Triángulo de toma en el plano de datos</label>
     <div id="boxInfo" style="margin-top:8px"></div>
     <div class="list" id="boxes"></div>
@@ -489,6 +516,8 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
     <p class="hint" style="padding:0 12px 12px" id="foot"></p>
     <h2 class="mat-h">Bocas de datos · carga</h2>
     <table class="mat pt"><thead><tr><th>Electrónica</th><th>Boca</th><th>Pantallas en la boca</th><th>Módulos</th><th>Píxeles</th><th>Carga</th></tr></thead><tbody id="portTb"></tbody></table>
+    <h2 class="mat-h">Preparación de material · almacén <button id="bXlsx" class="ghost" style="margin-left:8px;font-size:12px;padding:3px 10px">Excel para almacén</button></h2>
+    <table class="mat prep"><thead><tr><th>Elemento</th><th>Cantidad</th><th>En almacén</th><th>Estado</th><th>Para</th></tr></thead><tbody id="prepTb"></tbody></table>
     <h2 class="mat-h">Material y stock</h2>
     <table class="mat"><thead><tr><th>Tipo</th><th>Elemento</th><th>Cantidad</th><th>Detalle</th></tr></thead><tbody id="mat"></tbody></table>
     <p class="hint" style="padding:6px 12px 14px">Cantidades exactas sin repuestos. Las cabeceras de corriente no indican el conector del lado de distribución (Schuko, CEE o multipar), que depende del cuadro.</p>
@@ -683,6 +712,16 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <li>En la <b>⚡ Ficha rápida</b> puedes escribir «volada», «apoyada», «con estructura», «balcón en la base / en la mitad / en el segundo tramo (arriba del primer 8s)», «sobre bumper», «sobre tarima de 1 m», «con patas» o «sin patas».</li>
 </ul></details>
 
+<details><summary>Almacén y Excel para almacén</summary>
+<ul>
+<li>Pestaña <b>Almacén</b>: todo lo que tenéis y cuántas unidades (cargado del Excel de material). Busca, cambia cantidades, añade o quita artículos. Cantidad 0 = existe pero no está en el almacén.</li>
+<li><b>Pegar lista</b>: pega líneas «Nombre (cantidad)» del Excel para actualizar cantidades de golpe.</li>
+<li><b>Equivalencias</b>: qué artículo del almacén se usa para las piezas que calcula la herramienta (8s, vasos, tornillos, patas, grilletes, eslingas, cuadro, acometida, mangueras).</li>
+<li>En cada módulo (Módulos → Accesorios de montaje) eliges su artículo de almacén y sus accesorios con los nombres del almacén. Si el módulo está enlazado, sus unidades salen del Almacén.</li>
+<li><b>Preparación de material · almacén</b> (abajo, bajo la tabla de pantallas): cada pieza con lo que hay en almacén y si FALTAN. Lo mismo va en la ficha PDF/Word.</li>
+<li><b>Excel almacén</b> (arriba): descarga un Excel con tres hojas: Material (lista para marcar con cantidades y faltas), Por pantalla y Cableado y corriente. Es lo que se pasa a almacén.</li>
+<li>Reglas del fabricante en volado (Yestech): máximo de módulos de alto, chapas de unión desde 8 de alto y notas de montaje en la ficha. Se configuran en cada módulo.</li>
+</ul></details>
 <details><summary>Material y stock</summary>
 <p>Debajo del dibujo: líneas de corriente, cabeceras y puentes por tipo de conector, cables de red de cabecera, de respaldo, de salto entre pantallas y puentes entre módulos. Al final, el stock: módulos y electrónicas usados frente a las unidades de Telesonic. Las cantidades son exactas, sin repuestos.</p></details>
 
@@ -702,14 +741,14 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 const PROC_SEED=[
-  {id:"vx2000p",n:"NovaStar VX2000 Pro",p:20,c:13000000,sc:true,ly:12,stock:true,inputs:"2× HDMI 2.0, 4× HDMI 1.3, 1× DP 1.2, 1× 12G-SDI, USB 3.0 · loop 12G-SDI, monitor HDMI"},
-  {id:"vx1000",n:"NovaStar VX1000",p:10,c:6500000,sc:true,ly:3,stock:true,inputs:"2× HDMI 1.4, 2× DVI, 1× 3G-SDI, fibra 10G · loop HDMI, DVI y SDI, monitor HDMI"},
-  {id:"vx6s",n:"NovaStar VX6s",p:6,c:3900000,sc:true,ly:3,stock:true,inputs:"2× HDMI 1.3, 2× DVI, 3G-SDI, USB · loop DVI y SDI"},
-  {id:"vx4s",n:"NovaStar VX4S",p:4,c:2300000,sc:true,stock:true,inputs:"1× DP, 1× HDMI, 1× DVI, 1× SDI, 2× VGA, 2× CVBS · loop DVI y SDI"},
-  {id:"mctrl4k",n:"NovaStar MCTRL4K",p:16,c:8294400,sc:false,ly:1,inW:3840,inH:2160,stock:true,inputs:"1× DP 1.2, 1× HDMI 2.0, 2× DVI dual-link · sin loop"},
-  {id:"mctrlr5",n:"NovaStar MCTRL R5",p:8,c:4147200,sc:false,ly:1,inW:3840,inH:1080,stock:true,inputs:"1× HDMI 1.4, 1× DVI dual-link, 1× 6G-SDI · genlock loop"},
-  {id:"mctrl660p",n:"NovaStar MCTRL660 Pro",p:6,c:2300000,sc:false,ly:1,inW:1920,inH:1200,side:3840,stock:true,inputs:"1× HDMI 1.4a, 1× DVI, 1× 3G-SDI · loop de las tres"},
-  {id:"mctrl660",n:"NovaStar MCTRL660",p:4,c:2300000,sc:false,ly:1,inW:1920,inH:1200,side:3840,stock:true,inputs:"1× HDMI 1.3, 1× DVI · loop HDMI/DVI"},
+  {id:"vx2000p",inv:"NOVASTAR VX 2000 PRO",n:"NovaStar VX2000 Pro",p:20,c:13000000,sc:true,ly:12,stock:true,inputs:"2× HDMI 2.0, 4× HDMI 1.3, 1× DP 1.2, 1× 12G-SDI, USB 3.0 · loop 12G-SDI, monitor HDMI"},
+  {id:"vx1000",inv:"NOVASTAR VX1000",n:"NovaStar VX1000",p:10,c:6500000,sc:true,ly:3,stock:true,inputs:"2× HDMI 1.4, 2× DVI, 1× 3G-SDI, fibra 10G · loop HDMI, DVI y SDI, monitor HDMI"},
+  {id:"vx6s",inv:"NOVASTAR VX6S",n:"NovaStar VX6s",p:6,c:3900000,sc:true,ly:3,stock:true,inputs:"2× HDMI 1.3, 2× DVI, 3G-SDI, USB · loop DVI y SDI"},
+  {id:"vx4s",inv:"NOVASTAR VX4S",n:"NovaStar VX4S",p:4,c:2300000,sc:true,stock:true,inputs:"1× DP, 1× HDMI, 1× DVI, 1× SDI, 2× VGA, 2× CVBS · loop DVI y SDI"},
+  {id:"mctrl4k",inv:"NOVASTAR MCTRL 4K",n:"NovaStar MCTRL4K",p:16,c:8294400,sc:false,ly:1,inW:3840,inH:2160,stock:true,inputs:"1× DP 1.2, 1× HDMI 2.0, 2× DVI dual-link · sin loop"},
+  {id:"mctrlr5",inv:"NOVASTAR MCTRL R5 8 bocas",n:"NovaStar MCTRL R5",p:8,c:4147200,sc:false,ly:1,inW:3840,inH:1080,stock:true,inputs:"1× HDMI 1.4, 1× DVI dual-link, 1× 6G-SDI · genlock loop"},
+  {id:"mctrl660p",inv:"NOVASTAR MCTRL 660 Pro",n:"NovaStar MCTRL660 Pro",p:6,c:2300000,sc:false,ly:1,inW:1920,inH:1200,side:3840,stock:true,inputs:"1× HDMI 1.4a, 1× DVI, 1× 3G-SDI · loop de las tres"},
+  {id:"mctrl660",inv:"NOVASTAR MCTRL 660",n:"NovaStar MCTRL660",p:4,c:2300000,sc:false,ly:1,inW:1920,inH:1200,side:3840,stock:true,inputs:"1× HDMI 1.3, 1× DVI · loop HDMI/DVI"},
   {id:"vx400p",n:"NovaStar VX400 Pro",p:4,c:2600000,sc:true,ly:6},
   {id:"vx600p",n:"NovaStar VX600 Pro",p:6,c:3900000,sc:true,ly:6},
   {id:"vx1000p",n:"NovaStar VX1000 Pro",p:10,c:6500000,sc:true,ly:6}
@@ -724,13 +763,17 @@ const PC={
   otro:{n:"Otro conector",feed:"Cabecera (otro conector)",link:"Puente (otro conector)"}
 };
 const pcOpts=v=>Object.entries(PC).map(([k,p])=>`<option value="${k}"${(v||"")===k?" selected":""}>${p.n}</option>`).join("");
+const YES_NOTE="Yestech (manual MG6S/MG7S): eslingas verticales (85–95° con la barra) y todas igual de tensas · barras de volado al tresbolillo (cada una coge medio módulo de cada lado) · menos de 8 módulos de alto: 2 conectores C entre módulos; desde 8 (4 m): chapas de unión entre módulos y con la barra · máx. 20 módulos de alto colgados (más de 12 m: consultar al fabricante).";
 const PANEL_SEED=[
-  {id:"yestech-p19",n:"Yestech P1.9",w:500,h:500,x:256,y:256,wm:130,kg:6.6,kd:10,k:30,pc:"pc",stock:true,bumper:"Bumper Yestech",baseO:"Base Yestech original",baseT:"Chapa fina Telesonic Yestech 0,5 m",garra:"Yugo",perProj:"",garraPos:"marco"},
-  {id:"absen-p19",n:"Absen Indoor P1.9",w:500,h:500,x:256,y:256,wm:135,kg:9.4,kd:10,k:16,pc:"t1",stock:true,bumper:"Bumper Absen",baseO:"Base Absen original",baseT:"Chapa fina Telesonic Absen 0,5 m",garra:"Garra extensible + chapa de amarre",perProj:"",garraPos:"eje"},
-  {id:"absen-pl25pro",n:"Absen Indoor P2.5 · Batch 1",w:500,h:500,x:200,y:200,wm:135,kg:9.4,kd:16,k:16,pc:"t1",stock:true,bumper:"Bumper Absen",baseO:"Base Absen original",baseT:"Chapa fina Telesonic Absen 0,5 m",garra:"Garra extensible + chapa de amarre",perProj:"",garraPos:"eje"},
-  {id:"yestech-p26",n:"Yestech P2.6",w:500,h:500,x:192,y:192,wm:160,kg:6.7,kd:17,k:22,stock:true,bumper:"Bumper Yestech",baseO:"Base Yestech original",baseT:"Chapa fina Telesonic Yestech 0,5 m",garra:"Yugo",perProj:"",garraPos:"marco"},
-  {id:"digiled-p48",n:"Digiled P4.8",w:500,h:500,x:104,y:104,wm:175,kg:6.6,k:20,stock:true,bumper:"Bumper Digiled",baseO:"Base Digiled original",baseT:"Chapa fina Telesonic Digiled 0,5 m",garra:"Yugo",perProj:"Llave Digiled × 1",garraPos:"marco"},
-  {id:"ledman-p39",n:"Ledman P3.9",w:480,h:480,x:120,y:120,kg:8.5,pc:"pc",stock:true,bumper:"Bumper Ledman",baseO:"Base Ledman original",baseT:"Chapa fina Telesonic Ledman 0,5 m",garra:"",perProj:"",garraPos:"marco"},
+  {id:"yestech-p19",n:"Yestech P1.9",w:500,h:500,x:256,y:256,wm:130,kg:5.9,kd:10,k:30,pc:"pc",stock:true,inv:"Módulo yestech p.p. 1,9 (256x256)",bumper:"Yestech barra de volado",baseO:"Yestech barra suelo",baseT:"Chapa fina Telesonic Yestech 0,5 m",garra:"Yestech garra yugo 8s",perProj:"Yestech llave apriete × 1",garraPos:"marco",flyMax:20,plateN:8,plate:"Chapa de unión entre módulos Yestech",mNote:YES_NOTE},
+  {id:"absen-p19",n:"Absen Indoor P1.9",w:500,h:500,x:256,y:256,wm:135,kg:9.4,kd:10,k:16,pc:"t1",stock:true,inv:"Modulo Absen p.p. 1,9 (256x256)",bumper:"Absen barra suelo/volado",baseO:"Absen barra suelo/volado",baseT:"Absen chapa fina 4 agujeros",garra:"Absen Garra",perProj:"",garraPos:"eje"},
+  {id:"absen-pl25pro",n:"Absen Indoor P2.5 · Batch 1",w:500,h:500,x:200,y:200,wm:135,kg:9.4,kd:16,k:16,pc:"t1",stock:true,inv:"Módulo Absen p.p.2.5 mm (200x200pix)",bumper:"Absen barra suelo/volado",baseO:"Absen barra suelo/volado",baseT:"Absen chapa fina 4 agujeros",garra:"Absen Garra",perProj:"",garraPos:"eje"},
+  {id:"yestech-p26",n:"Yestech P2.6",w:500,h:500,x:192,y:192,wm:160,kg:5.9,kd:17,k:22,stock:true,inv:"Modulo Yestech p.p 2,6mm (192x192)",bumper:"Yestech barra de volado",baseO:"Yestech barra suelo",baseT:"Chapa fina Telesonic Yestech 0,5 m",garra:"Yestech garra yugo 8s",perProj:"Yestech llave apriete × 1",garraPos:"marco",flyMax:20,plateN:8,plate:"Chapa de unión entre módulos Yestech",mNote:YES_NOTE},
+  {id:"yestech-p48",n:"Yestech P4.8",w:500,h:500,x:104,y:104,kg:7,stock:true,inv:"Módulo Yestech p.p 4,8 N mm. (104x104pix)",bumper:"Yestech barra de volado",baseO:"Yestech barra suelo",baseT:"Chapa fina Telesonic Yestech 0,5 m",garra:"Yestech garra yugo 8s",perProj:"Yestech llave apriete × 1",garraPos:"marco",flyMax:20,plateN:8,plate:"Chapa de unión entre módulos Yestech",mNote:YES_NOTE},
+  {id:"yestech-p48s",n:"Yestech P4.8 suelo",w:500,h:500,x:104,y:104,kg:7,stock:true,inv:"Módulo Yestech p.p 4,8 mm. SUELO (104x104pix)",baseO:"Yestech barra suelo",perProj:"Yestech llave apriete × 1",garraPos:"marco"},
+  {id:"digiled-p48",n:"Digiled P4.8",w:500,h:500,x:104,y:104,wm:175,kg:6.6,k:20,stock:true,inv:"Módulo Digiled p.p 4,8 mm.(104x104pix)",bumper:"Bumper Digiled",baseO:"Base Digiled original",baseT:"Chapa fina Telesonic Digiled 0,5 m",garra:"Yestech garra yugo 8s",perProj:"Yestech llave apriete × 1",garraPos:"marco"},
+  {id:"prolights-p26",n:"ProLights P2.6",w:500,h:500,x:192,y:192,stock:true,inv:"Módulo ProLIghts p.p.2.6 mm (192x192pix)",bumper:"Prolight barra de volado/suelo",baseO:"Prolight barra de volado/suelo",garra:"Garra Prolights",garraPos:"marco"},
+  {id:"ledman-p39",n:"Ledman P3.9",w:480,h:480,x:120,y:120,kg:8.5,pc:"pc",stock:true,inv:"Módulo Ledman p.p 4 mm.",bumper:"Bumper Ledman",baseO:"Base Ledman original",baseT:"Chapa fina Telesonic Ledman 0,5 m",garra:"",perProj:"",garraPos:"marco"},
   {id:"g-p195",n:"P1.95",w:500,h:500,x:256,y:256},
   {id:"g-p26",n:"P2.6",w:500,h:500,x:192,y:192},
   {id:"g-p297",n:"P2.97",w:500,h:500,x:168,y:168},
@@ -741,9 +784,30 @@ const PANEL_SEED=[
   {id:"g-p48l",n:"P4.8 (500×1000)",w:500,h:1000,x:104,y:208},
   {id:"g-p25w",n:"P2.5 16:9",w:600,h:337.5,x:240,y:135}
 ];
+// almacén (inventario de Telesonic) y equivalencias pieza calculada → artículo del almacén
+const INV_SEED=[{"n":"Módulo ProLIghts p.p.2.6 mm (192x192pix)","q":0,"c":"Módulos LED"},{"n":"Módulo Yestech p.p 4,8 mm. SUELO (104x104pix)","q":120,"c":"Módulos LED","note":"¡Ojo! meter llaves apriete"},{"n":"Módulo Yestech p.p 4,8 N mm. (104x104pix)","q":60,"c":"Módulos LED","note":"¡Ojo! meter llaves apriete"},{"n":"Modulo Yestech p.p 2,6mm (192x192)","q":0,"c":"Módulos LED","note":"¡Ojo! meter llaves apriete"},{"n":"Modulo Yestech p.p 2,6mm (192x192) R-UP triangulo","q":4,"c":"Módulos LED","note":"¡Ojo! meter llaves apriete"},{"n":"Módulo yestech esquina p.p. 1,9 (256x256)","q":20,"c":"Módulos LED","note":"¡Ojo! meter llaves apriete"},{"n":"Modulo Yestech p.p 2,6mm (192x192) L-UP triangulo","q":4,"c":"Módulos LED","note":"¡Ojo! meter llaves apriete"},{"n":"Módulo ProLIghts p.p.2.6 mm N(192x192pix)","q":0,"c":"Módulos LED"},{"n":"Módulo Digiled p.p 4,8 mm.(104x104pix)","q":160,"c":"Módulos LED","note":"¡Ojo! meter llaves apriete"},{"n":"Módulo Absen p.p.2.5 mm (200x200pix)","q":78,"c":"Módulos LED"},{"n":"Módulo Digiled esquina p.p 4,8 mm.","q":12,"c":"Módulos LED","note":"¡Ojo! meter llaves apriete"},{"n":"Módulo Ledman p.p 4 mm.","q":145,"c":"Módulos LED"},{"n":"Módulo ProLIghts esquina L p.p.2.6 mm (192x192pix)","q":0,"c":"Módulos LED"},{"n":"Módulo ProLIghts esquina R p.p.2.6 mm(192x192pix)","q":0,"c":"Módulos LED"},{"n":"Módulo yestech p.p. 1,9 (256x256)","q":278,"c":"Módulos LED","note":"¡Ojo! meter llaves apriete"},{"n":"Módulo yestech p.p.2.8 mm","q":10,"c":"Módulos LED","note":"¡Ojo! meter llaves apriete"},{"n":"Espuma manipulación LED","q":1,"c":"Módulos LED"},{"n":"Modulo Absen p.p. 1,9 (256x256)","q":200,"c":"Módulos LED"},{"n":"Mascara 4,8 suelo","q":null,"c":"Módulos LED"},{"n":"Totem Led Plegable 1,8","q":6,"c":"Módulos LED"},{"n":"Absen barra suelo/volado 1 mtr","q":18,"c":"Estructura y volado"},{"n":"Absen barra suelo/volado 0,5 mtr","q":30,"c":"Estructura y volado"},{"n":"Absen Barra de volado de 0,5 m","q":24,"c":"Estructura y volado"},{"n":"Absen Chapa + cuadradillo de 40 de 49 cms","q":1,"c":"Estructura y volado"},{"n":"Absen Chapa + cuadradillo de 40 de 99 cms","q":null,"c":"Estructura y volado"},{"n":"Absen chapa fina 4 agujeros","q":null,"c":"Estructura y volado"},{"n":"Absen Chapa parte baja","q":65,"c":"Estructura y volado"},{"n":"Absen Chapa parte baja led en T","q":null,"c":"Estructura y volado"},{"n":"Absen chapa profunda","q":null,"c":"Estructura y volado"},{"n":"Absen Garra","q":32,"c":"Estructura y volado"},{"n":"Absen Garra DOS CHAPAS","q":null,"c":"Estructura y volado"},{"n":"Acerado 0,5m sin protección de goma","q":20,"c":"Estructura y volado"},{"n":"Acerado 1.5m protegido con goma","q":2,"c":"Estructura y volado"},{"n":"Acerado de 1 mt sección 8mm","q":13,"c":"Estructura y volado"},{"n":"Acerado de 1mt sección 10mm","q":3,"c":"Estructura y volado"},{"n":"Acerado de 2 mts 8mm","q":14,"c":"Estructura y volado"},{"n":"Acerado de 3mts","q":21,"c":"Estructura y volado"},{"n":"Andamio Aluminio","q":null,"c":"Estructura y volado"},{"n":"Bilite de 2000mm","q":null,"c":"Estructura y volado"},{"n":"Chapa union Ledman 2 agujeros","q":null,"c":"Estructura y volado"},{"n":"Chapa union Ledman 4 agujeros","q":null,"c":"Estructura y volado"},{"n":"Crica 10 m","q":null,"c":"Estructura y volado"},{"n":"Crica 5 m","q":null,"c":"Estructura y volado"},{"n":"Doble Garra","q":45,"c":"Estructura y volado"},{"n":"Elevador lijero Fantek T117 (ABS)","q":null,"c":"Estructura y volado"},{"n":"Escalera Colisa 2,7 mts recogida","q":null,"c":"Estructura y volado"},{"n":"Escalera media hasta 2,5 mts","q":null,"c":"Estructura y volado"},{"n":"Eslinga de 1 m","q":11,"c":"Estructura y volado"},{"n":"Eslinga de 1m. Multi cable acerado","q":6,"c":"Estructura y volado"},{"n":"Eslinga de 2 m","q":25,"c":"Estructura y volado"},{"n":"Eslinga de 2 m. Multi cable acerado","q":14,"c":"Estructura y volado","note":"tipo A: 7, tipo B: 7"},{"n":"Eslinga de 2 m. 2TN Multi cable acerado","q":20,"c":"Estructura y volado","note":"tipo C: 20"},{"n":"Garra con cáncamo","q":null,"c":"Estructura y volado"},{"n":"Garra con tornillo largo para 2 x 8s","q":11,"c":"Estructura y volado"},{"n":"Garra con tornillo largo para 3 x 8s","q":21,"c":"Estructura y volado"},{"n":"Garra Ledman corta","q":null,"c":"Estructura y volado"},{"n":"Garra Ledman larga","q":null,"c":"Estructura y volado"},{"n":"Garra Prolights","q":38,"c":"Estructura y volado"},{"n":"Garra simple","q":null,"c":"Estructura y volado"},{"n":"Grillete de 1.5 T Azul","q":71,"c":"Estructura y volado"},{"n":"Grillete de 3,25 T Rojo","q":27,"c":"Estructura y volado"},{"n":"Mini bulones módulos 4,8 suelo","q":null,"c":"Estructura y volado"},{"n":"Pata Tarima regulable","q":null,"c":"Estructura y volado"},{"n":"Yestech Patas estructura 8s","q":18,"c":"Estructura y volado"},{"n":"Pesos de 12.5 kg","q":48,"c":"Estructura y volado"},{"n":"Pesos de 27 kg","q":4,"c":"Estructura y volado"},{"n":"Polipasto","q":2,"c":"Estructura y volado"},{"n":"Prolight barra de volado/suelo 0.5 m","q":4,"c":"Estructura y volado"},{"n":"Prolight barra de volado/suelo 1 m","q":8,"c":"Estructura y volado"},{"n":"Prolight llanta angulo 80 grados","q":108,"c":"Estructura y volado"},{"n":"Prolight llanta angulo 85 grados Prolight","q":68,"c":"Estructura y volado"},{"n":"Prolight llanta angulo 95 grados Prolight","q":98,"c":"Estructura y volado"},{"n":"Soporte 15 módulos led con ruedas","q":null,"c":"Estructura y volado"},{"n":"Tarima regulable (2x1m)","q":4,"c":"Estructura y volado"},{"n":"Tensor 10mm (LEDS)","q":null,"c":"Estructura y volado"},{"n":"Tornillo chapa absen corto","q":null,"c":"Estructura y volado"},{"n":"Tornillo chapa absen largo","q":null,"c":"Estructura y volado"},{"n":"Tornillos chapas Ledman diametro 8","q":null,"c":"Estructura y volado"},{"n":"Tramo Torre Guill Vertical 2 m (Truss de 30)","q":2,"c":"Estructura y volado"},{"n":"Tramo Torre Guill Horizontal 1 m (Truss de 40)","q":1,"c":"Estructura y volado"},{"n":"Tramo Torre Guill Horizontal 2 m (Truss de 40)","q":3,"c":"Estructura y volado"},{"n":"Tramo Final Torre Guill Vertical 1 m (Truss de 30)","q":2,"c":"Estructura y volado"},{"n":"Tramo Torre Guill Vertical 3 m (Truss de 30)","q":2,"c":"Estructura y volado"},{"n":"Base Torre Guill 1,2m","q":2,"c":"Estructura y volado"},{"n":"Tubo 50mm x 1000mm","q":null,"c":"Estructura y volado"},{"n":"Tubo 50mm x 1500mm","q":null,"c":"Estructura y volado"},{"n":"Tubo 50mm x 2000mm","q":null,"c":"Estructura y volado"},{"n":"Tubo 50mm x 3000mm","q":null,"c":"Estructura y volado"},{"n":"Tubo 50mm x 500mm","q":null,"c":"Estructura y volado"},{"n":"Tubo monolite 50mm x 2000mm","q":null,"c":"Estructura y volado"},{"n":"Tubo monolite 50mm x 500mm","q":null,"c":"Estructura y volado"},{"n":"Varilla montaje/desmontaje balas de truss","q":null,"c":"Estructura y volado"},{"n":"Yestech estructura 8s","q":91,"c":"Estructura y volado"},{"n":"Yestech barra de volado 0.5 m","q":8,"c":"Estructura y volado"},{"n":"Yestech barra de volado 1 m","q":10,"c":"Estructura y volado"},{"n":"Yestech barra suelo 1 m","q":24,"c":"Estructura y volado"},{"n":"Yestech chapa madera colo negro bajo Led","q":null,"c":"Estructura y volado"},{"n":"Yestech contrajotas 4,8","q":null,"c":"Estructura y volado"},{"n":"Yestech estructura 8s suelo","q":154,"c":"Estructura y volado"},{"n":"Yestech garra yugo 8s","q":51,"c":"Estructura y volado"},{"n":"Yestech llave apriete","q":11,"c":"Estructura y volado"},{"n":"Yestech pieza unión 1,9/2,6/4,8 con angulo variable","q":null,"c":"Estructura y volado"},{"n":"Yestech pieza unión entre cuadrado y triángulo","q":null,"c":"Estructura y volado"},{"n":"Yestech pieza Unión esquinas 1,9mm","q":72,"c":"Estructura y volado"},{"n":"Yestech piezas unión entre cabinets 120 Standar mm 1,9 mm (xx)","q":null,"c":"Estructura y volado"},{"n":"Yestech piezas Unión entre cabinets 150 mm 1,9 mm","q":60,"c":"Estructura y volado"},{"n":"Yestech piezas Unión entre cabinets 180 mm 1,9mm","q":66,"c":"Estructura y volado"},{"n":"Yestech separadores","q":2,"c":"Estructura y volado"},{"n":"Yestech Tornillos Union Estructura 8s","q":594,"c":"Estructura y volado"},{"n":"Yestech Tubos union Estructura 8s","q":272,"c":"Estructura y volado"},{"n":"Yestch barra refuerzo para estructuras 8s en suelo (2 lasarte)(resto k2000)","q":null,"c":"Estructura y volado"},{"n":"Sargenta","q":null,"c":"Estructura y volado"},{"n":"Truss 30 de 3 m","q":null,"c":"Estructura y volado"},{"n":"Garra Volado LEDMAN","q":null,"c":"Estructura y volado"},{"n":"Analog WAY Di-Ventix I","q":1,"c":"Electrónica y señal"},{"n":"Analog WAY Di-Ventix II","q":2,"c":"Electrónica y señal"},{"n":"Analog WAY Pulse sin salida SDI","q":2,"c":"Electrónica y señal"},{"n":"Analog WAY Pulse 2 con salida SDI","q":1,"c":"Electrónica y señal"},{"n":"Disguise 2X4","q":1,"c":"Electrónica y señal"},{"n":"Disguise Solo","q":1,"c":"Electrónica y señal"},{"n":"DVI Scaler Plus","q":null,"c":"Electrónica y señal"},{"n":"Escalador ELPRO","q":1,"c":"Electrónica y señal"},{"n":"EXTRON Multipip MGP 464","q":null,"c":"Electrónica y señal"},{"n":"kshow 2 (dos monitores)","q":null,"c":"Electrónica y señal"},{"n":"Kshow 1 full","q":null,"c":"Electrónica y señal"},{"n":"Licencia Resolume 7","q":null,"c":"Electrónica y señal"},{"n":"Licencia Vioso Pixera","q":null,"c":"Electrónica y señal"},{"n":"licencia Watchout 6","q":2,"c":"Electrónica y señal"},{"n":"licencia Watchout 7","q":6,"c":"Electrónica y señal"},{"n":"Magnimage EC40","q":5,"c":"Electrónica y señal"},{"n":"MAGNIMAGE EC-90 INPUT 6 HDMI","q":null,"c":"Electrónica y señal"},{"n":"MAGNIMAGE EC-90 INPUT 4XHDMI + 2 DP","q":null,"c":"Electrónica y señal"},{"n":"Matriz video compuesto Extron 8x4","q":null,"c":"Electrónica y señal"},{"n":"Mesa Video Black Magic","q":1,"c":"Electrónica y señal"},{"n":"Mesa video Panasonic","q":1,"c":"Electrónica y señal"},{"n":"Servidor Vmix Realización + Streaming nº 1 y 2 Vienen con monitor de control 24\"","q":null,"c":"Electrónica y señal"},{"n":"Servidor Vmix Streaming nº3","q":null,"c":"Electrónica y señal"},{"n":"Servidor Vioso Pixera","q":null,"c":"Electrónica y señal"},{"n":"Watchout Servidor V6 nº1 4xDSP out + in 1xDVI+1xSDI","q":null,"c":"Electrónica y señal"},{"n":"Watchout Servidor V6 nº2 4xDSP out + 1 in DVI + 1 in VGA","q":null,"c":"Electrónica y señal"},{"n":"Watchout Servidor V6 nº3 4xDSP out + in 1xDVI+1xSDI","q":null,"c":"Electrónica y señal"},{"n":"Watchout Servidor V7 nº 4 4xDSP 4k out + in 1xHDMI 4k + in 1xSDI 4k","q":null,"c":"Electrónica y señal"},{"n":"Watchout Servidor V7 nº 5 4xDSP 4k out + in 1xHDMI 4k","q":null,"c":"Electrónica y señal"},{"n":"Watchout Servidor V7 nº 6 8x Outputs","q":null,"c":"Electrónica y señal"},{"n":"Watchout Servidor V7 nº7 4 x DSP out + in 1 x HDMI 4k + in 2 x SDI","q":null,"c":"Electrónica y señal"},{"n":"Watchout Wachpax v6 nº8","q":null,"c":"Electrónica y señal"},{"n":"NOVASTAR VX1000","q":2,"c":"Electrónica y señal"},{"n":"NOVASTAR VX6S","q":4,"c":"Electrónica y señal"},{"n":"NOVASTAR NV","q":2,"c":"Electrónica y señal"},{"n":"NOVASTAR VX4S","q":4,"c":"Electrónica y señal","note":"OJO: una se desconfigura al apagarse, plantear con SAI???"},{"n":"NOVASTAR MCTRL 660","q":3,"c":"Electrónica y señal"},{"n":"NOVASTAR MCTRL 660 Pro","q":2,"c":"Electrónica y señal"},{"n":"NOVASTAR MCTRL R5 8 bocas","q":4,"c":"Electrónica y señal"},{"n":"NOVASTAR MCTRL 4K","q":4,"c":"Electrónica y señal"},{"n":"Mosaic 4k DVI","q":null,"c":"Electrónica y señal"},{"n":"Mosaic 4k HDMI","q":null,"c":"Electrónica y señal"},{"n":"NOVASTAR VX 2000 PRO","q":3,"c":"Electrónica y señal"},{"n":"MATRIZ 8X8 4K LIGHTWARE","q":null,"c":"Electrónica y señal"},{"n":"Barrilete F.O. sc-sc 2 pelos","q":null,"c":"Cableado y corriente"},{"n":"Adaptador 125A a 63A","q":1,"c":"Cableado y corriente"},{"n":"Acometida 63A 2m Trifásica","q":1,"c":"Cableado y corriente"},{"n":"Cuadro Ingerent 32A a 6 schuko con diferencial","q":null,"c":"Cableado y corriente"},{"n":"Cuadro work 32A a 6 schuko sin diferencial","q":null,"c":"Cableado y corriente"},{"n":"Bobina de 2 x F.O.100m","q":null,"c":"Cableado y corriente","note":"OJO latiguillos"},{"n":"Barrilete powercom blanco a azul hembra","q":null,"c":"Cableado y corriente"},{"n":"Base múltiple schuko","q":null,"c":"Cableado y corriente"},{"n":"Bobina de 3 x F.O.100m","q":null,"c":"Cableado y corriente","note":"OJO latiguillos"},{"n":"Bífido Cetac 63A a 2 x 32A","q":null,"c":"Cableado y corriente"},{"n":"Bobina F.O. OpticalCON 4 hilos + 2 x adaptador OpticalCON a 4 x SC","q":4,"c":"Cableado y corriente","note":"ojo latiguillos"},{"n":"Bobina de 4 x F.O.100m","q":null,"c":"Cableado y corriente","note":"OJO latiguillos"},{"n":"Barrilete UTP neutrik","q":null,"c":"Cableado y corriente"},{"n":"Bobina de 1 x F.O.100m","q":null,"c":"Cableado y corriente","note":"OJO latiguillos"},{"n":"Barrilete F.O. sc-sc 1 pelo","q":null,"c":"Cableado y corriente"},{"n":"Cable cetac monofásico de 32A a 3 schukos","q":null,"c":"Cableado y corriente"},{"n":"Cable S/FTP 10m","q":null,"c":"Cableado y corriente"},{"n":"Cable S/FTP 20m","q":null,"c":"Cableado y corriente"},{"n":"Cable S/FTP 2m","q":null,"c":"Cableado y corriente"},{"n":"Cable S/FTP 32 m para Led","q":null,"c":"Cableado y corriente"},{"n":"Cable S/FTP 50m","q":28,"c":"Cableado y corriente"},{"n":"Cable S/FTP 5m","q":null,"c":"Cableado y corriente"},{"n":"Cable UTP latiguillo","q":null,"c":"Cableado y corriente"},{"n":"Cetak monofasico 32 a cajetin 8 schukos","q":null,"c":"Cableado y corriente"},{"n":"Cuadro 32A trifasico a 2 socapex Hembra","q":4,"c":"Cableado y corriente"},{"n":"Cuadro 63A trifásico Ingerent","q":null,"c":"Cableado y corriente"},{"n":"Cuadro Tortuga 63 trifasico a 2 x 32A diferencial 300Ma","q":1,"c":"Cableado y corriente"},{"n":"F.O. lc-lc 2 mts 2 pelos","q":null,"c":"Cableado y corriente"},{"n":"F.O. sc-lc 2 m 2 pelos","q":null,"c":"Cableado y corriente"},{"n":"F.O. sc-sc 10 m 2 pelos","q":null,"c":"Cableado y corriente"},{"n":"F.O. sc-sc 2 m 2 pelos","q":null,"c":"Cableado y corriente"},{"n":"F.O. sc-sc 2 m 4 pelos","q":null,"c":"Cableado y corriente"},{"n":"F.O. sc-sc 20 m 4 pelos","q":null,"c":"Cableado y corriente"},{"n":"F.O. sc-sc 5 m 2 pelos","q":null,"c":"Cableado y corriente"},{"n":"HDMI 10mts 4k","q":null,"c":"Cableado y corriente"},{"n":"HDMI 20MTS EN FIBRA","q":25,"c":"Cableado y corriente"},{"n":"Manguera Cetac 32A Monofásico 10m","q":null,"c":"Cableado y corriente"},{"n":"Manguera Cetac 32A trifásico 20m","q":null,"c":"Cableado y corriente"},{"n":"Manguera Cetac 32A trifásico 5m","q":null,"c":"Cableado y corriente"},{"n":"Manguera socapex 20 mts","q":8,"c":"Cableado y corriente"},{"n":"powercom azul a schuko 10m","q":44,"c":"Cableado y corriente"},{"n":"powercom azul a schuko 5m","q":null,"c":"Cableado y corriente"},{"n":"powercom azul azul","q":null,"c":"Cableado y corriente"},{"n":"powercom azul blanco","q":null,"c":"Cableado y corriente"},{"n":"powercom blanco a schuko 10m","q":null,"c":"Cableado y corriente"},{"n":"powercom blanco a schuko 5m","q":null,"c":"Cableado y corriente"},{"n":"powercom blanco blanco","q":null,"c":"Cableado y corriente"},{"n":"powercom negro a schuko 15m","q":null,"c":"Cableado y corriente"},{"n":"powercom negro a schuko 5m","q":null,"c":"Cableado y corriente"},{"n":"powercom negro unión","q":null,"c":"Cableado y corriente"},{"n":"Pulpo Socapex H a 6 schukos M","q":4,"c":"Cableado y corriente"},{"n":"Pulpo Socapex M a 6 schukos H","q":10,"c":"Cableado y corriente"},{"n":"UTP LED 30m con capuchón","q":null,"c":"Cableado y corriente"},{"n":"UTP LED unión","q":null,"c":"Cableado y corriente"},{"n":"Manguera Cetac 32A trifásico 15m","q":1,"c":"Cableado y corriente"},{"n":"Cuadro negro 32A a 32A Cetac azulmonofásico con diferencial","q":null,"c":"Cableado y corriente"},{"n":"Cuadro trifásico 32 con diferencial Showtec PSA -32A 6S","q":null,"c":"Cableado y corriente"},{"n":"Cable HDMI 10m","q":null,"c":"Cableado y corriente"},{"n":"Cetac monofásico de 16A a hembra schuko","q":14,"c":"Cableado y corriente"},{"n":"Adaptador Cetac de 16A a 32A 5 mts","q":null,"c":"Cableado y corriente"}];
+const EQ_SEED={e8s:"Yestech estructura 8s suelo",vaso:"Yestech Tubos union Estructura 8s",torn:"Yestech Tornillos Union Estructura 8s",pata:"Yestech Patas estructura 8s",grillete:"Grillete de 1.5 T Azul",eslinga:"Acerado de 2 mts 8mm",cuadro:"Cuadro Ingerent 32A a 6 schuko con diferencial",acom:"Manguera Cetac 32A trifásico 20m",mangPc:"powercom azul a schuko 10m",mangT1:"powercom negro a schuko 15m"};
+const EQ_LABEL={e8s:["8s (verticales y horizontales)","8s"],vaso:["Vaso de empalme de 8s","Vaso"],torn:["Tornillo de 8s (vasos y uniones)","Tornillo de 8s"],pata:["Pata de 8s (+0,26 m)","Pata de 8s"],grillete:["Grillete de volado","Grillete"],eslinga:["Eslinga de volado (2 m acerada)","Eslinga acerada 2 m"],cuadro:["Cuadro eléctrico","Cuadro eléctrico"],acom:["Acometida al cuadro","Acometida a cuadro"],mangPc:["Manguera powerCON azul → Schuko","Manguera powerCON azul → Schuko"],mangT1:["Manguera powerCON TRUE1 → Schuko","Manguera powerCON TRUE1 → Schuko"]};
+let INV=[],EQ={};
+const invNorm=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/(\d),(\d)/g,"$1.$2").replace(/(\d)\s*(metros?|mtrs?|mts?|m)\b/g,"$1 m").replace(/[^a-z0-9.]+/g," ").replace(/\s+/g," ").trim();
+const invFind=n=>{const k=invNorm(n);return k?INV.find(i=>invNorm(i.n)===k)||null:null};
+const eqn=k=>(EQ[k]||"").trim()||(EQ_LABEL[k]||[k,k])[1];
+function saveInv(){try{localStorage.setItem("pixelmap-inv",JSON.stringify(INV));localStorage.setItem("pixelmap-inv-eq",JSON.stringify(EQ))}catch(e){}}
+function loadInv(){try{const a=JSON.parse(localStorage.getItem("pixelmap-inv")||"null");if(Array.isArray(a))INV=a}catch(e){}
+  if(!INV.length)INV=INV_SEED.map(i=>Object.assign({},i));
+  try{const e=JSON.parse(localStorage.getItem("pixelmap-inv-eq")||"null");if(e&&typeof e==="object")EQ=e}catch(e){}
+  Object.keys(EQ_SEED).forEach(k=>{if(EQ[k]===undefined)EQ[k]=EQ_SEED[k]})}
+// unidades disponibles de un artículo de la biblioteca: si está enlazado al almacén, manda el almacén
+const qtyOf=p=>{const i=p&&p.inv?invFind(p.inv):null;return i&&i.q!=null?i.q:(p&&p.qty)||0};
+// estado de stock de una línea de material
+function invState(n,q,inv){const it=invFind(inv||n);if(q===null)return{have:it?it.q:null,txt:"cantidad a decidir",cls:""};
+  if(!it)return{have:null,txt:"no está en la lista del almacén",cls:"muted"};
+  if(it.q==null)return{have:null,txt:"en almacén (sin cantidad)",cls:""};
+  if(q>it.q)return{have:it.q,txt:`FALTAN ${q-it.q}${it.q===0?" (0 en almacén: puede estar en otro sitio)":""}`,cls:"warn"};
+  return{have:it.q,txt:"OK",cls:"ok"}}
 let LIB=[];
 const uid=p=>p+Math.random().toString(36).slice(2,8);
-function loadLib(){
+function loadLib(){loadInv();
   try{const t=localStorage.getItem("pixelmap-lib-mod");if(t){const a=JSON.parse(t);if(Array.isArray(a))LIB=a}}catch(e){}
   if(!LIB.length){LIB=PANEL_SEED.map(p=>Object.assign({stock:false,qty:0},p));
     try{const t=localStorage.getItem("pixelmap-panels");if(t)JSON.parse(t).forEach(p=>{if(p&&p.n)LIB.push(Object.assign({stock:false,qty:0},p,{id:uid("m")}))})}catch(e){}}
@@ -759,6 +823,13 @@ function loadLib(){
       ["sc","inW","inH"].forEach(k=>{if(p[k]===undefined&&sd[k]!==undefined)p[k]=sd[k]});if(sd.stock)p.stock=true});
     const ord=PROC_SEED.map(s=>s.id);PROCLIB.sort((a,b)=>(ord.indexOf(a.id)<0?99:ord.indexOf(a.id))-(ord.indexOf(b.id)<0?99:ord.indexOf(b.id)));
     try{localStorage.setItem("pixelmap-lib-ver","8")}catch(e){}saveLib()}
+  if(ver<13){const OLD={bumper:/^Bumper (Yestech|Absen)$/,baseO:/^Base (Yestech|Absen) original$/,baseT:/^Chapa fina Telesonic Absen/,garra:/^(Yugo|Garra extensible \+ chapa de amarre)$/,perProj:/^(Llave Digiled × 1)?$/};
+    PANEL_SEED.forEach(sd=>{let q=LIB.find(z=>z.id===sd.id);if(!q){LIB.push(Object.assign({qty:0},sd));return}
+      ["inv","flyMax","plateN","plate","mNote"].forEach(k=>{if(q[k]===undefined&&sd[k]!==undefined)q[k]=sd[k]});
+      Object.entries(OLD).forEach(([k,re])=>{if(sd[k]!==undefined&&(q[k]===undefined||re.test(q[k]||"")))q[k]=sd[k]});
+      if(/^yestech/.test(sd.id)&&(q.kg===6.6||q.kg===6.7))q.kg=sd.kg});
+    PROC_SEED.forEach(sd=>{const q=PROCLIB.find(z=>z.id===sd.id);if(q&&!q.inv&&sd.inv)q.inv=sd.inv});
+    try{localStorage.setItem("pixelmap-lib-ver","13")}catch(e){}saveLib()}
   if(ver<12){PANEL_SEED.forEach(sd=>{const q=LIB.find(z=>z.id===sd.id);if(q&&q.garraPos===undefined&&sd.garraPos)q.garraPos=sd.garraPos});try{localStorage.setItem("pixelmap-lib-ver","12")}catch(e){}saveLib()}
   if(ver<11){PANEL_SEED.forEach(sd=>{const q=LIB.find(z=>z.id===sd.id);if(q)["bumper","baseO","baseT","garra","perProj"].forEach(k=>{if(q[k]===undefined&&sd[k]!==undefined)q[k]=sd[k]})});try{localStorage.setItem("pixelmap-lib-ver","11")}catch(e){}saveLib()}
   if(ver<10){const d=LIB.find(z=>z.id==="digiled-p48");if(d&&!d.wm)d.wm=175;try{localStorage.setItem("pixelmap-lib-ver","10")}catch(e){}saveLib()}
@@ -924,7 +995,7 @@ function material(){
   const JS=assign().elecs.flatMap(x=>x.jumps);
   if(JS.length){const lens=JS.map(j=>j.m?`${j.m} m`:"¿m?");rows.push(["Datos","Cable de red de salto entre pantallas",JS.length,`${JS.map(j=>`${j.from.name} → ${j.to.name}`).join(", ")} · ${lens.join(", ")}`])}
   if(mods-ports-JS.length>0)rows.push(["Datos","Puente de red entre módulos",mods-ports-JS.length,"RJ45 / etherCON"]);
-  {const P=boxPlan();if(P.boxes.length){rows.push(["Corriente",`Cuadro eléctrico ${P.cfg.a} A · ${P.cfg.n} circuitos${P.cfg.ph===3?" (trifásico)":""}`,P.boxes.length,P.boxes.map(B=>`${B.i}: ${B.name} (${B.lines.length} tomas${B.over?", SOBRECARGA":""})`).join("; ")]);
+  {const P=boxPlan();if(P.boxes.length){rows.push(["Corriente",`${P.cfg.model||"Cuadro eléctrico"} · ${P.cfg.a} A · ${P.cfg.n} circuitos${P.cfg.ph===3?" (trifásico)":""}`,P.boxes.length,P.boxes.map(B=>`${B.i}: ${B.name} (${B.lines.length} tomas${B.over?", SOBRECARGA":""})`).join("; ")]);
     rows.push(["Corriente",`Acometida a cuadro ${P.cfg.a} A${P.cfg.ph===3?" CEE 5P":" CEE 3P"}`,P.boxes.length,"Una por cuadro"]);
     if(P.shared.length)rows.push(["Corriente","Derivación / ladrón en circuito doblado",P.shared.length,P.shared.map(C=>`${C.k} → ${C.ls.length} tomas (${fmt(C.amps)} A${C.over?` ¡más de ${S.opts.amp} A!`:""})`).join("; ")])}}
   const srcs={};assign().elecs.filter(x=>x.screens.length).forEach(x=>(x.E.ins||[]).filter(q=>q.src).forEach(q=>{const k=q.src.toLowerCase();(srcs[k]=srcs[k]||{n:q.src,to:[]}).to.push(`${x.letter} ${x.E.name}${q.use?" ("+q.use+")":""}`)}));
@@ -1186,7 +1257,7 @@ function drawTri(ctx,x,y,r,txt,col){ctx.save();ctx.beginPath();ctx.moveTo(x,y-r)
 function drawPowerTris(ctx,s){if(S.opts.boxTri===false)return;const P=boxPlan(),u=Math.min(s.rx,s.ry),r=u*.2;
   P.lines.filter(l=>l.s===s).forEach(l=>{const[c,rr]=l.cells[0];if(!c&&c!==0)return;drawTri(ctx,s.x+c*s.rx+s.rx-r*1.15,s.y+rr*s.ry+r*1.25,r,l.tag)})}
 function renderBoxes(){
-  const P=boxPlan(),cfg=P.cfg,o=S.opts;$("bxA").value=cfg.a;$("bxN").value=cfg.n;$("bxPh").value=cfg.ph;$("oBoxTri").checked=o.boxTri!==false;
+  const P=boxPlan(),cfg=P.cfg,o=S.opts;$("bxA").value=cfg.a;$("bxN").value=cfg.n;$("bxPh").value=cfg.ph;$("bxM").value=cfg.model||"";$("bxM").placeholder=eqn("cuadro");$("oBoxTri").checked=o.boxTri!==false;
   const noW=P.lines.filter(l=>!l.w).map(l=>l.name);
   // destino: lista simple de circuitos; si ya hay algo, se indica y al elegirlo se comparte (doblado)
   const opts=l=>{let h="";for(let b=1;b<=P.boxes.length+1;b++){h+=`<optgroup label="${b>P.boxes.length?`Cuadro ${b} (nuevo)`:esc(`${b} · ${boxName(b)}`)}">`;
@@ -1217,6 +1288,7 @@ $("boxes").addEventListener("change",e=>{const x=e.target.dataset.x;if(!x)return
     toast(shared?`Circuito ${b}.${c} doblado: ${fmt(tot)} A${tot>S.opts.amp?` · ¡más de ${S.opts.amp} A!`:""} · Ctrl+Z para deshacer`:`Toma movida a ${b}.${c} · Ctrl+Z para deshacer`);commit()}});
 $("bxAuto").onclick=()=>{S.pa={};S.boxes=[];commit();toast("Tomas repartidas de nuevo en orden")};
 $("bxAdd").onclick=()=>{boxNames().push(`Cuadro ${boxNames().length+1}`);commit()};
+$("bxM").onchange=()=>{const v=$("bxM").value.trim();S.opts.box=Object.assign(boxCfg(),{model:v});if(!v)delete S.opts.box.model;commit()};
 ["bxA","bxN","bxPh"].forEach(id=>$(id).onchange=()=>{S.opts.box=Object.assign(boxCfg(),{a:Math.max(1,+$("bxA").value||32),n:Math.max(1,+$("bxN").value|0||6),ph:Math.max(1,Math.min(3,+$("bxPh").value|0||3))});commit()});
 $("oBoxTri").onchange=()=>{S.opts.boxTri=$("oBoxTri").checked;commit()};
 function boxRows(){const P=boxPlan();return P.lines.slice().sort((a,b)=>a.b-b.b||a.c-b.c).map(l=>[`${l.b} · ${boxName(l.b)}`,`${l.c}${l.sub}${l.sub?" (doblado)":""}`,`F${l.f}`,`${l.name} · L${l.i+1}`,l.pl.pcs.map(k=>(PC[k]||PC[""]).n).join(" + "),l.n,`${Math.round(l.w)} W`,`${fmt(l.amps)} A`])}
@@ -1258,7 +1330,7 @@ initFold();
 /* ---------- bibliotecas ---------- */
 function showTab(id){document.querySelectorAll(".tabpane").forEach(el=>el.hidden=el.id!==id);
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===id));
-  if(id!=="tabProj")renderLib();document.querySelector("aside").scrollTop=0}
+  if(id==="tabInv")renderInv();else if(id!=="tabProj")renderLib();document.querySelector("aside").scrollTop=0}
 document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("button[data-tab]");if(b)showTab(b.dataset.tab)});
 function usage(){
   const mods={},procs={},A=assign();
@@ -1267,7 +1339,7 @@ function usage(){
   return{mods,procs};
 }
 let armed=null;
-function renderLib(){
+function renderLib(){invDatalist();
   const U=usage(),only=$("fModStock").checked;
   const provs=[...new Set([...LIB,...PROCLIB].map(p=>p.prov).filter(Boolean))].sort();
   {const fp=$("fModProv"),cur=fp.value;fp.innerHTML=`<option value="">Todos los proveedores</option><option value="__tls">Telesonic</option>`+provs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");fp.value=[...fp.options].some(o=>o.value===cur)?cur:"";
@@ -1286,17 +1358,22 @@ function renderLib(){
     <label>Máx. por línea (corriente)<input type="number" min="0" data-f="k" value="${p.k||""}" placeholder="calculado"></label>
     <label class="full" style="grid-column:1/-1">Conector<select data-f="pc">${pcOpts(p.pc)}</select></label>
     <details class="acc" style="grid-column:1/-1"${p.bumper||p.perMod||p.perProj?"":""}><summary>Accesorios de montaje</summary><div class="grid2">
-      <label>Bumper (volada)<input data-f="bumper" value="${esc(p.bumper||"")}" placeholder="Bumper …"></label>
-      <label>Garra a estructura<input data-f="garra" value="${esc(p.garra||"")}" placeholder="Yugo / garra + chapa"></label>
+      <label class="full" style="grid-column:1/-1">Artículo del almacén (stock)<input data-f="inv" list="dl-inv" value="${esc(p.inv||"")}" placeholder="Módulo … tal como está en Almacén"></label>
+      <label>Bumper (volada)<input data-f="bumper" list="dl-inv" value="${esc(p.bumper||"")}" placeholder="Bumper …"></label>
+      <label>Garra a estructura<input data-f="garra" list="dl-inv" value="${esc(p.garra||"")}" placeholder="Yugo / garra + chapa"></label>
       <label class="full" style="grid-column:1/-1">La garra se amarra en<select data-f="garraPos"><option value="eje"${(p.garraPos||"eje")==="eje"?" selected":""}>El eje del módulo (verticales a 0,25 m del borde · Absen)</option><option value="marco"${p.garraPos==="marco"?" selected":""}>El marco entre módulos (verticales desde el borde · Yestech, Digiled)</option></select></label>
-      <label>Base original<input data-f="baseO" value="${esc(p.baseO||"")}" placeholder="Base original"></label>
-      <label>Base Telesonic 0,5 m<input data-f="baseT" value="${esc(p.baseT||"")}" placeholder="Chapa fina 0,5 m"></label>
+      <label>Base original<input data-f="baseO" list="dl-inv" value="${esc(p.baseO||"")}" placeholder="Base original"></label>
+      <label>Base Telesonic 0,5 m<input data-f="baseT" list="dl-inv" value="${esc(p.baseT||"")}" placeholder="Chapa fina 0,5 m"></label>
       <label class="full" style="grid-column:1/-1">Por módulo (una línea cada uno: «nombre × cantidad»)<textarea data-f="perMod" rows="2" placeholder="Latiguillo de red × 1&#10;Puente powerCON × 1">${esc(p.perMod||"")}</textarea></label>
       <label class="full" style="grid-column:1/-1">Por proyecto (aunque haya varias pantallas)<textarea data-f="perProj" rows="1" placeholder="Llave especial × 1">${esc(p.perProj||"")}</textarea></label>
+      <label>Máx. módulos de alto colgados<input type="number" min="0" data-f="flyMax" value="${p.flyMax||""}" placeholder="sin límite"></label>
+      <label>Chapas de unión desde (módulos de alto)<input type="number" min="0" data-f="plateN" value="${p.plateN||""}" placeholder="no hacen falta"></label>
+      <label class="full" style="grid-column:1/-1">Nombre de la chapa de unión<input data-f="plate" list="dl-inv" value="${esc(p.plate||"")}" placeholder="Chapa de unión entre módulos"></label>
+      <label class="full" style="grid-column:1/-1">Notas de montaje del fabricante (salen en la ficha)<textarea data-f="mNote" rows="2" placeholder="Eslingas verticales…">${esc(p.mNote||"")}</textarea></label>
     </div></details>
     <label class="check"><input type="checkbox" data-f="stock"${p.stock?" checked":""}>En Telesonic</label>
     ${p.stock?"":`<label>Proveedor habitual<input data-f="prov" list="dl-prov" value="${esc(p.prov||"")}" placeholder="p. ej. Fluge"></label>`}
-    <label>Unidades en almacén<input type="number" min="0" data-f="qty" value="${p.qty||""}"${p.stock?"":" disabled"}></label>
+    ${p.inv&&invFind(p.inv)?`<label>Unidades en almacén<input type="number" value="${qtyOf(p)}" disabled title="Viene de la pestaña Almacén"><span class="hint" style="margin:0;font-size:11px">del Almacén</span></label>`:`<label>Unidades en almacén<input type="number" min="0" data-f="qty" value="${p.qty||""}"${p.stock?"":" disabled"}></label>`}
     <div class="info">P${(p.w/p.x).toFixed(2).replace(".",",")} · ${fmt(maxData({rx:p.x,ry:p.y,kd:p.kd}))} mód/boca · ${(()=>{const q={wm:p.wm,k:p.k},m=maxPow(q);return m===null?"sin consumo":`${m} mód/línea${p.k?"":` (${S.opts.fac}% de ${S.opts.amp} A)`}${powWarn(q)?` <span class="warn">⚠ ${p.k}×${p.wm} W = ${fmt(p.k*p.wm)} W supera ${S.opts.amp} A a ${S.opts.volt} V</span>`:""}`})()}${used?` · <span${low?' class="warn"':""}>en proyecto: ${used}${p.stock&&p.qty?` / ${p.qty}`:""}</span>`:""}</div>
     <div class="acts"><button data-a="use">Usar en pantalla nueva</button><button data-a="dup">Duplicar</button><button data-a="del" class="ghost danger">${armed===p.id?"¿Seguro? Pulsa otra vez":"Eliminar"}</button></div></div>`}).join("")||`<p class="hint">No hay módulos${only?" marcados como Telesonic":""}.</p>`;
   $("procLib").innerHTML=PROCLIB.map(p=>{const used=U.procs[p.id]||0,low=p.stock&&p.qty>0&&used>p.qty;
@@ -1311,7 +1388,8 @@ function renderLib(){
     <label>Lado máx. de entrada (px)<input type="number" min="0" data-f="side" value="${p.side||""}" placeholder="${p.sc?"no aplica":"opcional"}"></label>
     <label class="check"><input type="checkbox" data-f="stock"${p.stock?" checked":""}>En Telesonic</label>
     ${p.stock?"":`<label>Proveedor habitual<input data-f="prov" list="dl-prov" value="${esc(p.prov||"")}" placeholder="p. ej. Fluge"></label>`}
-    <label>Unidades<input type="number" min="0" data-f="qty" value="${p.qty||""}"${p.stock?"":" disabled"}></label>
+    ${p.inv&&invFind(p.inv)?`<label>Unidades<input type="number" value="${qtyOf(p)}" disabled title="Viene de la pestaña Almacén"><span class="hint" style="margin:0;font-size:11px">del Almacén</span></label>`:`<label>Unidades<input type="number" min="0" data-f="qty" value="${p.qty||""}"${p.stock?"":" disabled"}></label>`}
+    <label class="full" style="grid-column:1/-1">Artículo del almacén (stock)<input data-f="inv" list="dl-inv" value="${esc(p.inv||"")}" placeholder="NOVASTAR … tal como está en Almacén"></label>
     <div class="info">${p.sc?"Escala la señal de entrada":"Sin escalador: entrada 1:1"} · ${fmt(p.c/p.p/1000)} kpx por boca de media${used?` · <span${low?' class="warn"':""}>en proyecto: ${used}${p.stock&&p.qty?` / ${p.qty}`:""}</span>`:""}</div>
     <div class="acts"><button data-a="dup">Duplicar</button><button data-a="del" class="ghost danger">${armed===p.id?"¿Seguro? Pulsa otra vez":"Eliminar"}</button></div></div>`}).join("");
 }
@@ -1319,7 +1397,7 @@ function libChanged(){saveLib();buildPanelSelect($("panel").value);commit()}
 $("fModStock").onchange=renderLib;$("fModProv").onchange=renderLib;
 $("modLib").addEventListener("change",e=>{const card=e.target.closest(".lib"),f=e.target.dataset.f;if(!card||!f)return;const p=LIB.find(z=>z.id===card.dataset.id);
   if(f==="n")p.n=e.target.value.trim()||p.n;else if(f==="pc")p.pc=e.target.value;else if(f==="stock")p.stock=e.target.checked;
-  else if(["bumper","garra","baseO","baseT","perMod","perProj","garraPos"].includes(f)){p[f]=e.target.value.trim()}
+  else if(["bumper","garra","baseO","baseT","perMod","perProj","garraPos","inv","plate","mNote"].includes(f)){p[f]=e.target.value.trim()}
   else if(f==="prov"){const v=e.target.value.trim();if(v)p.prov=v;else delete p.prov}
   else{const v=+e.target.value||0;if(["w","h","x","y"].includes(f)&&!(v>0)){toast("Medidas y resolución deben ser mayores que 0.");renderLib();return}p[f]=["x","y","k","kd","qty"].includes(f)?Math.round(v):v}
   S.screens.forEach(s=>{if(s.mid===p.id){s.pn=p.n;s.cw=p.w;s.ch=p.h;s.rx=p.x;s.ry=p.y;s.wm=p.wm||0;s.kg=p.kg||0;s.k=p.k||0;s.kd=p.kd||0;s.pc=p.pc||""}});
@@ -1332,7 +1410,7 @@ $("modLib").addEventListener("click",e=>{const b=e.target.closest("button[data-a
 $("bNewMod").onclick=()=>{const p={id:uid("m"),n:"Nuevo módulo",w:500,h:500,x:200,y:200,wm:0,kg:0,k:0,pc:"",stock:true,qty:0};LIB.unshift(p);$("fModStock").checked=false;libChanged();renderLib();
   const el=document.querySelector(`#modLib [data-id="${p.id}"] input[data-f="n"]`);if(el){el.focus();el.select()}};
 $("procLib").addEventListener("change",e=>{const card=e.target.closest(".lib"),f=e.target.dataset.f;if(!card||!f)return;const p=PROCLIB.find(z=>z.id===card.dataset.id);
-  if(f==="n")p.n=e.target.value.trim()||p.n;else if(f==="stock")p.stock=e.target.checked;else if(f==="prov"){const v=e.target.value.trim();if(v)p.prov=v;else delete p.prov}else if(f==="sc")p.sc=e.target.checked;else if(f==="inputs")p.inputs=e.target.value.trim();else if(f==="side")p.side=Math.max(0,+e.target.value|0);
+  if(f==="n")p.n=e.target.value.trim()||p.n;else if(f==="stock")p.stock=e.target.checked;else if(f==="prov"){const v=e.target.value.trim();if(v)p.prov=v;else delete p.prov}else if(f==="inv"){const v=e.target.value.trim();if(v)p.inv=v;else delete p.inv}else if(f==="sc")p.sc=e.target.checked;else if(f==="inputs")p.inputs=e.target.value.trim();else if(f==="side")p.side=Math.max(0,+e.target.value|0);
   else if(f==="in"){const m=e.target.value.match(/(\d+)\s*[x×*]\s*(\d+)/i);if(m){p.inW=+m[1];p.inH=+m[2]}else{p.inW=0;p.inH=0}}
   else if(f==="c")p.c=Math.max(10000,Math.round((+e.target.value||0)*1e6));else if(f==="p")p.p=Math.max(1,+e.target.value|0);else p[f]=Math.max(0,+e.target.value|0);
   if(p)p.edT=Date.now();libChanged();renderLib()});
@@ -1354,9 +1432,9 @@ function batchRows(){
 }
 function stockRows(){
   const U=usage(),rows=[];
-  const st=(p,n,unit)=>p.stock?(p.qty?(n>p.qty?`FALTAN ${n-p.qty} ${unit}`:"Hay suficientes en Telesonic"):"En Telesonic (sin cantidad indicada)"):p.prov?`Alquiler · ${p.prov}`:"No es de Telesonic: alquiler";
-  Object.entries(U.mods).forEach(([id,n])=>{const p=panelOf(id);if(p)rows.push(["Stock",p.n,`${n}${p.stock&&p.qty?` / ${p.qty}`:""}`,st(p,n,"módulos")])});
-  Object.entries(U.procs).forEach(([id,n])=>{const p=procOf(id);if(p)rows.push(["Stock",p.n,`${n}${p.stock&&p.qty?` / ${p.qty}`:""}`,st(p,n,"unidades")])});
+  const st=(p,n,unit)=>{const q=qtyOf(p);return p.stock?(q||(p.inv&&invFind(p.inv))?(n>q?`FALTAN ${n-q} ${unit}${q===0?" (0 en almacén: puede estar en otro sitio)":""}`:"Hay suficientes en Telesonic"):"En Telesonic (sin cantidad indicada)"):p.prov?`Alquiler · ${p.prov}`:"No es de Telesonic: alquiler"};
+  Object.entries(U.mods).forEach(([id,n])=>{const p=panelOf(id);if(p)rows.push(["Stock",p.n,`${n}${p.stock&&(qtyOf(p)||p.inv)?` / ${qtyOf(p)}`:""}`,st(p,n,"módulos")])});
+  Object.entries(U.procs).forEach(([id,n])=>{const p=procOf(id);if(p)rows.push(["Stock",p.n,`${n}${p.stock&&(qtyOf(p)||p.inv)?` / ${qtyOf(p)}`:""}`,st(p,n,"unidades")])});
   return rows.concat(batchRows());
 }
 
@@ -1370,6 +1448,8 @@ function mergeBase(b){
   let nm=0,np=0;
   (b.modules||[]).forEach(m=>{if(!m||!m.id)return;const i=LIB.findIndex(z=>z.id===m.id),it=Object.assign({},strip(m),{base:true});if(i>=0){if(!keepLocal(LIB[i],b))LIB[i]=it;else LIB[i].base=true}else LIB.push(it);nm++});
   (b.processors||[]).forEach(m=>{if(!m||!m.id)return;const i=PROCLIB.findIndex(z=>z.id===m.id),it=Object.assign({},strip(m),{base:true});if(i>=0){if(!keepLocal(PROCLIB[i],b))PROCLIB[i]=it;else PROCLIB[i].base=true}else PROCLIB.push(it);np++});
+  if(Array.isArray(b.inventory)){b.inventory.forEach(i=>{if(!i||!i.n)return;const ex=invFind(i.n);if(ex)Object.assign(ex,i);else INV.push(Object.assign({},i))})}
+  if(b.eq&&typeof b.eq==="object")Object.assign(EQ,b.eq);saveInv();
   BASE_INFO={nm,np,ver:b.version||"",date:b.date||"",by:b.by||""};saveLib();buildPanelSelect($("panel").value);renderBaseInfo();commit();
 }
 function renderBaseInfo(){$("baseInfo").textContent=BASE_INFO?`Cargada: ${BASE_INFO.nm} módulos y ${BASE_INFO.np} electrónicas${BASE_INFO.date?` · ${BASE_INFO.date}`:""}${BASE_INFO.by?` · ${BASE_INFO.by}`:""}.`:"Sin biblioteca base cargada."}
@@ -1378,7 +1458,7 @@ function loadBase(){if(window.claude||!location.protocol.startsWith("http"))retu
 $("bBaseExport").onclick=()=>{
   const now=new Date(),d=`${String(now.getDate()).padStart(2,"0")}/${String(now.getMonth()+1).padStart(2,"0")}/${now.getFullYear()}`;
   const clean=a=>a.map(o=>{const c=Object.assign({},o);delete c.base;delete c.edT;return c});
-  offer("biblioteca.json",JSON.stringify({app:"pixelmap-led",kind:"biblioteca-base",date:d,stamp:now.getTime(),by:"takathunder",modules:clean(LIB),processors:clean(PROCLIB)},null,2));
+  offer("biblioteca.json",JSON.stringify({app:"pixelmap-led",kind:"biblioteca-base",date:d,stamp:now.getTime(),by:"takathunder",modules:clean(LIB),processors:clean(PROCLIB),inventory:INV,eq:EQ},null,2));
 };
 
 /* ---------- persistencia ---------- */
@@ -1406,7 +1486,7 @@ function initForm(){
   $("oDir").onchange=()=>{o.dir=$("oDir").value;commit()};$("oZig").onchange=()=>{o.zig=$("oZig").value;commit()};$("oPowF").onchange=()=>{o.powMode=$("oPowF").value;delete o.powFollow;commit()};$("oRed").onchange=()=>{o.red=$("oRed").value;commit()};$("oView").onchange=()=>{o.view=$("oView").value;commit()};$("oStart").onchange=()=>{o.start=$("oStart").value;commit()};
   $("oWire").onchange=()=>{o.wiring=$("oWire").value;commit()};
   [["mProject","project"],["mPlace","place"],["mDate","date"],["mResp","resp"],["mVer","ver"]].forEach(([id,k])=>{$(id).oninput=()=>{S.meta[k]=$(id).value;save()}});
-  $("bPdf").onclick=$("bPdf2").onclick=exportPdf;$("bDocx").onclick=$("bDocx2").onclick=exportDocx;
+  $("bPdf").onclick=$("bPdf2").onclick=exportPdf;$("bXlsx").onclick=$("bXlsx2").onclick=exportXlsx;$("bDocx").onclick=$("bDocx2").onclick=exportDocx;
   $("bDocLogo").onclick=()=>$("docLogoFile").click();
   $("docLogoFile").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const url=URL.createObjectURL(f),im=new Image();
     im.onload=()=>{const k=Math.min(1,1000/Math.max(im.naturalWidth||1000,im.naturalHeight||1000)),c=document.createElement("canvas");c.width=Math.max(1,Math.round((im.naturalWidth||1000)*k));c.height=Math.max(1,Math.round((im.naturalHeight||300)*k));
@@ -1939,36 +2019,43 @@ function structPlan(s){const P=physOf(s),md=panelOf(P.top.mid)||{},onFrame=md.ga
   return{man,warn,auto:{nV:nVa,off:offA,h:ha,lv:lva},gm,onFrame,h,nV,levels,balc,bal,sup,pata,e,top,horiz,vert,eights:horiz+vert,joints,vasos:2*joints,tornV:2*joints,unions,tornU:2*unions,garras:nV*gm.length,bases:pata?nV:0,off,right,wM:P.wM,hM:P.hM,over4:sup!=="tarima"&&h+pata>4,tar,garra:mod.garra||"Garra a estructura",bumper:mod.bumper||"Bumper"}}
 function prepScreen(s){
   const P=physOf(s);if(P.head!==s)return null; // la compuesta se cuenta en su primera parte
-  const items=[],add=(n,q,d="")=>{if(q>0)items.push({n,q,d})},m=s.mount||"",top=panelOf(P.top.mid)||{},bot=panelOf(P.bot.mid)||{};
-  P.g.forEach(t=>{const mod=panelOf(t.mid);add(`Módulo ${t.pn||"LED"}`,t.cols*t.rows,`${t.cols}×${t.rows}${batchOf(t)?" · batch "+batchOf(t):""}`);
+  const items=[],warn=[],add=(n,q,d="",inv)=>{if(!(q>0))return;const ex=items.find(i=>i.n===n&&i.q!==null);if(ex){ex.q+=q;if(d&&!ex.d.includes(d))ex.d=ex.d?ex.d+" + "+d:d;return}items.push({n,q,d,inv})},m=s.mount||"",top=panelOf(P.top.mid)||{},bot=panelOf(P.bot.mid)||{};
+  P.g.forEach(t=>{const mod=panelOf(t.mid);add(`Módulo ${t.pn||"LED"}`,t.cols*t.rows,`${t.cols}×${t.rows}${batchOf(t)?" · batch "+batchOf(t):""}`,mod&&mod.inv);
     if(mod)parseItems(mod.perMod).forEach(it=>add(it.n,it.q*t.cols*t.rows,"por módulo"))});
   if(m==="fly"){const p=pieces(P.wM),pts=p.a*2+p.b,nm=top.bumper||"Bumper";
-    add(`${nm} 1 m`,p.a,`${fmt(P.wM)} m de ancho`);add(`${nm} 0,5 m`,p.b,"");add("Grillete",pts,`${pts} puntos de volado`);add("Eslinga acerada 2 m",pts,"una por punto")}
+    add(`${nm} 1 m`,p.a,`${fmt(P.wM)} m de ancho`);add(`${nm} 0,5 m`,p.b,"");add(eqn("grillete"),pts,`${pts} puntos de volado`);add(eqn("eslinga"),pts,"una por punto");
+    // reglas del fabricante para volado
+    const rowsH=Math.round(P.hM*1000/((P.top.ch)||500));
+    if(top.flyMax&&rowsH>top.flyMax)warn.push(`${rowsH} módulos de alto colgados: el fabricante admite ${top.flyMax} como máximo`);
+    if(top.plateN&&rowsH>=top.plateN){const cols=Math.round(P.wM*1000/((P.top.cw)||500));add(top.plate||"Chapa de unión entre módulos",Math.max(0,cols-1)*rowsH,`desde ${top.plateN} módulos de alto (${fmt(P.hM)} m)`)}}
   if(m==="ground"){const t=s.base||"orig";
     if(t==="orig"){const p=pieces(P.wM),nm=bot.baseO||"Base original";add(`${nm} 1 m`,p.a,`${fmt(P.wM)} m de ancho`);add(`${nm} 0,5 m`,p.b,"")}
     else if(t==="tls")add(bot.baseT||"Chapa fina Telesonic 0,5 m",Math.round(P.wM*2),`${fmt(P.wM)} m de ancho`);
     items.push({n:top.garra||"Garra a estructura",q:null,d:"cantidad según el planteamiento del montaje"})}
   let st=null;if(m==="struct"){st=structPlan(s);
-    add("8s (vertical)",st.vert,`${st.nV} verticales × ${st.h} m`);add("8s (horizontal)",st.horiz,`${st.nV-1} × ${st.levels.length+(st.balc?1:0)} niveles${st.balc?" (con balcón)":""}`);
+    add(eqn("e8s"),st.vert,`verticales: ${st.nV} × ${st.h} m`);add(eqn("e8s"),st.horiz,`horizontales: ${st.nV-1} × ${st.levels.length+(st.balc?1:0)} niveles${st.balc?" (con balcón)":""}`);
     if(st.sup==="bumper"){const p=pieces(P.wM);add(`${st.bumper} 1 m`,p.a,"pantalla apoyada en su bumper");add(`${st.bumper} 0,5 m`,p.b,"")}
-    add("Vaso",st.vasos,"2 por empalme vertical");add("Tornillo de vaso",st.tornV,"2 por empalme");add("Tornillo de unión",st.tornU,`2 por unión (${st.unions})`);
-    add(st.garra,st.garras,`una por metro con pantalla en cada vertical (${st.gm.length} × ${st.nV})`);if(st.bases)add("Pata de 8s (+0,26 m)",st.bases,"una por vertical")}
+    add(eqn("vaso"),st.vasos,"2 por empalme vertical");add(eqn("torn"),st.tornV,"2 por empalme");add(eqn("torn"),st.tornU,`2 por unión (${st.unions})`);
+    add(st.garra,st.garras,`una por metro con pantalla en cada vertical (${st.gm.length} × ${st.nV})`);if(st.bases)add(eqn("pata"),st.bases,"una por vertical (+0,26 m)")}
   parseItems(s.xtra).forEach(it=>add(it.n,it.q,"extra"));
   const tbd=m==="ground"?[(top.garra||"Garra a estructura")]:[];
-  return{s,P,items:items.filter(i=>i.q===null||i.q>0),st,mount:m,tbd};
+  const notes=[...new Set(P.g.map(t=>(panelOf(t.mid)||{}).mNote).filter(Boolean))];
+  return{s,P,items:items.filter(i=>i.q===null||i.q>0),st,mount:m,tbd,warn,notes:m==="fly"?notes:[]};
 }
 function prepProject(){const A=assign(),o=S.opts,out=[],add=(n,q,d="")=>{if(q>0)out.push({n,q,d})},usedMods=new Set(S.screens.map(s=>s.mid).filter(Boolean));
-  usedMods.forEach(id=>{const p=panelOf(id);if(p)parseItems(p.perProj).forEach(it=>add(it.n,it.q,`por proyecto · ${p.n}`))});
+  usedMods.forEach(id=>{const p=panelOf(id);if(p)parseItems(p.perProj).forEach(it=>{const ex=out.find(o=>invNorm(o.n)===invNorm(it.n));if(ex){ex.q=Math.max(ex.q,it.q);ex.d+=` · ${p.n}`}else add(it.n,it.q,`por proyecto · ${p.n}`)})});
   const PP=powerPlan();const byPc={};PP.lines.forEach(l=>{const k=(l.segs[0].s.pc)||"";byPc[k]=(byPc[k]||0)+1});
-  Object.entries(byPc).forEach(([k,n])=>add(k?`Manguera ${(PC[k]||PC[""]).n.replace(/ \(.*\)/,"")} → Schuko`:"Manguera de corriente → Schuko (conector a indicar)",n,"una por toma · metros: ____"));
+  Object.entries(byPc).forEach(([k,n])=>add(k==="pc"?eqn("mangPc"):k==="t1"?eqn("mangT1"):k?`Manguera ${(PC[k]||PC[""]).n.replace(/ \(.*\)/,"")} → Schuko`:"Manguera de corriente → Schuko (conector a indicar)",n,"una por toma · metros: ____"));
   const ports=A.elecs.reduce((a,x)=>a+x.main,0);add("Tirada de señal (red) a pantalla",ports,"una por boca · metros: ____");
   if(o.red&&o.red!=="none")add("Tirada de señal de respaldo",ports,"metros: ____");
-  A.elecs.filter(x=>x.screens.length).forEach(x=>add(`Electrónica ${short(x.spec.n)}`,1,`${x.letter} · ${x.E.name}`));
-  scalers().forEach(X=>add(`Procesador ${X.model||X.name}`,1,X.name));
-  const BP=boxPlan();if(BP.boxes.length)add(`Cuadro ${BP.cfg.a} A · ${BP.cfg.n} circuitos`,BP.boxes.length,BP.boxes.map(B=>B.name).join(", "));
+  {const byE=new Map();A.elecs.filter(x=>x.screens.length).forEach(x=>{const k=x.spec.id||x.spec.n;if(!byE.has(k))byE.set(k,{x,n:0,l:[]});const e=byE.get(k);e.n++;e.l.push(`${x.letter} · ${x.E.name}`)});
+    byE.forEach(e=>{const it={n:`Electrónica ${short(e.x.spec.n)}`,q:e.n,d:e.l.join(", "),inv:e.x.spec.inv};out.push(it)})}
+  scalers().forEach(X=>out.push({n:`Procesador ${X.model||X.name}`,q:1,d:X.name,inv:X.model||X.name}));
+  const BP=boxPlan();if(BP.boxes.length){add(BP.cfg.model||eqn("cuadro"),BP.boxes.length,`${BP.cfg.a} A · ${BP.cfg.n} circuitos · ${BP.boxes.map(B=>B.name).join(", ")}`);add(eqn("acom"),BP.boxes.length,"una por cuadro · metros: ____")}
   return out}
-function prepTotals(){const m=new Map(),put=(n,q)=>{if(q===null){if(!m.has(n))m.set(n,null);return}if(q>0)m.set(n,(m.get(n)||0)+q)};
-  S.screens.forEach(s=>{const r=prepScreen(s);if(r)r.items.forEach(i=>put(i.n,i.q))});prepProject().forEach(i=>put(i.n,i.q));return[...m.entries()]}
+function prepTotals(){const m=new Map(),inv=new Map(),who=new Map(),put=(n,q,i,w)=>{if(i)inv.set(n,i);if(w){if(!who.has(n))who.set(n,new Set());who.get(n).add(w)}if(q===null){if(!m.has(n))m.set(n,null);return}if(q>0)m.set(n,(m.get(n)||0)+q)};
+  S.screens.forEach(s=>{const r=prepScreen(s);if(r)r.items.forEach(i=>put(i.n,i.q,i.inv,r.P.g.length>1?r.P.head.name.replace(/ · .*$/,""):s.name))});prepProject().forEach(i=>put(i.n,i.q,i.inv,"proyecto"));
+  return[...m.entries()].map(([n,q])=>[n,q,inv.get(n),[...(who.get(n)||[])].join(", ")])}
 // dibujo de la estructura (alzado frontal)
 function structImage(s){const st=structPlan(s),P=physOf(s),k=110,pad=70,W0=Math.round(st.wM*k),topM=Math.max(st.top,st.pata+st.h),H0=Math.round(topM*k),c=document.createElement("canvas");
   c.width=W0+pad*2+150;c.height=H0+pad*2+30;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);
@@ -2017,6 +2104,8 @@ function mountBox(s){if(s.cmp&&physOf(s).head!==s)return `<p class="hint" style=
     ${m==="struct"&&s.sup==="tarima"?`<label>Altura de la tarima (m)<input type="number" min="0.1" step="0.05" data-k="tar" value="${s.tar||""}" placeholder="1"></label><span class="hint" style="margin:0;font-size:11px">El peso va en la tarima: sin límite de 4 m</span>`:""}
     </div>
     ${r&&r.items.length?`<div class="wnote">${r.items.filter(i=>!/^Módulo /.test(i.n)).map(i=>`${i.q===null?"¿?":i.q+"×"} ${esc(i.n)}`).join(" · ")}</div>`:""}
+    ${r&&r.warn.length?`<div class="wnote warn">${r.warn.map(esc).join(" · ")}</div>`:""}
+    ${r&&r.notes.length?`<div class="wnote">${r.notes.map(esc).join("<br>")}</div>`:""}
     ${st?`<details class="sod"${s.so?" open":""}><summary>Ajustar estructura a mano${st.man?' <span class="badge">MANUAL</span>':""}</summary><div class="grid2">
       <label>Verticales<input type="number" min="2" data-k="so.nV" value="${s.so&&s.so.nV||""}" placeholder="auto: ${st.auto.nV}"></label>
       <label>1ª vertical desde la izq. (m)<input type="number" min="0" step="0.05" data-k="so.off" value="${s.so&&s.so.off!=null?s.so.off:""}" placeholder="auto: ${fmt(st.auto.off)}"></label>
@@ -2120,7 +2209,54 @@ function renderPorts(){const A=assign(),rows=portRows(A);
 const m2Of=s=>s.cols*s.cw/1000*s.rows*s.ch/1000;
 const fmt=v=>v.toLocaleString("es-ES",{maximumFractionDigits:2});
 function renderProc(){renderElecs();renderScalers();renderBoxes();const v=$("sElec").value;$("sElec").innerHTML=elecOpts(v||S.elecs[S.elecs.length-1].id,true)}
-function renderMat(){$("mat").innerHTML=S.screens.length?material().map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td><td><strong>${r[2]}</strong></td><td>${esc(r[3])}</td></tr>`).join(""):`<tr><td colspan="4" style="text-align:left;color:var(--muted)">Sin pantallas.</td></tr>`}
+function renderPrep(){const T=$("prepTb");if(!T)return;const R=S.screens.length?prepTotals():[];
+  T.innerHTML=R.length?R.map(([n,q,inv,w])=>{const s=invState(n,q,inv);return `<tr><td>${esc(n)}</td><td><strong>${q===null?"¿?":q}</strong></td><td>${s.have==null?"—":s.have}</td><td class="${s.cls}">${esc(s.txt)}</td><td>${esc(w||"")}</td></tr>`}).join(""):`<tr><td colspan="5" style="text-align:left;color:var(--muted)">Indica el montaje de las pantallas (volada, apoyada o con estructura) para preparar el material.</td></tr>`}
+/* ---------- almacén ---------- */
+function invDatalist(){let dl=document.getElementById("dl-inv");if(!dl){dl=document.createElement("datalist");dl.id="dl-inv";document.body.appendChild(dl)}dl.innerHTML=INV.map(i=>`<option value="${esc(i.n)}">`).join("")}
+function renderInv(){invDatalist();const q=invNorm($("invQ").value),cats=[...new Set(INV.map(i=>i.c||"Otros"))];
+  $("invList").innerHTML=cats.map(c=>{const L=INV.map((i,k)=>({i,k})).filter(({i})=>(i.c||"Otros")===c&&(!q||invNorm(i.n).includes(q)));if(!L.length)return"";
+    return `<div class="invc">${esc(c)} (${L.length})</div>`+L.map(({i,k})=>`<div class="invr" data-k="${k}"><input data-v="n" value="${esc(i.n)}" title="${esc(i.n)}" aria-label="Artículo"><input data-v="q" type="number" min="0" value="${i.q==null?"":i.q}" placeholder="?" aria-label="Unidades"><button data-v="del" class="ghost danger" title="Quitar">✕</button>${i.note?`<div class="nt">${esc(i.note)}</div>`:""}</div>`).join("")}).join("")||`<p class="hint">Nada coincide.</p>`;
+  $("eqList").innerHTML=Object.keys(EQ_SEED).map(k=>`<label class="full" style="grid-column:1/-1">${EQ_LABEL[k][0]}<input data-eq="${k}" list="dl-inv" value="${esc(EQ[k]||"")}" placeholder="${esc(EQ_LABEL[k][1])}"></label>`).join("")}
+function invChanged(){saveInv();invDatalist();commit()}
+$("invQ").oninput=renderInv;
+$("invList").addEventListener("change",e=>{const r=e.target.closest(".invr");if(!r)return;const it=INV[+r.dataset.k],v=e.target.dataset.v;if(!it)return;
+  if(v==="n"){const x=e.target.value.trim();if(x)it.n=x}else if(v==="q"){const x=e.target.value.trim();it.q=x===""?null:Math.max(0,Math.round(+x||0))}invChanged()});
+$("invList").addEventListener("click",e=>{const b=e.target.closest("button[data-v=del]");if(!b)return;const k=+b.closest(".invr").dataset.k,it=INV[k];INV.splice(k,1);invChanged();renderInv();toast(`Quitado del almacén: ${it.n}`)});
+$("bInvAdd").onclick=()=>{INV.unshift({n:"Nuevo artículo",q:0,c:"Otros"});invChanged();$("invQ").value="";renderInv();const el=document.querySelector('#invList .invr[data-k="0"] input');if(el){el.focus();el.select()}};
+$("eqList").addEventListener("change",e=>{const k=e.target.dataset.eq;if(!k)return;EQ[k]=e.target.value.trim();invChanged()});
+$("bInvPaste").onclick=()=>{let up=0,nw=0;$("invPaste").value.split(/\n/).map(l=>l.trim()).filter(Boolean).forEach(l=>{const qs=[...l.matchAll(/\((\d+)\)/g)].map(m=>+m[1]),n=l.replace(/\s*\(\d+\)/g,"").replace(/\s+/g," ").trim();if(!n)return;
+    const q=qs.length?qs.reduce((a,b)=>a+b,0):null,ex=invFind(n);if(ex){if(q!=null)ex.q=q;up++}else{INV.push({n,q,c:"Otros"});nw++}});
+  $("invPaste").value="";invChanged();renderInv();toast(`Almacén: ${up} actualizados, ${nw} nuevos`)};
+/* ---------- Excel para almacén (xlsx hecho a mano con JSZip) ---------- */
+function xlsxBlob(sheets){const X=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,"");
+  const col=i=>{let s="";i++;while(i){const m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=Math.floor((i-1)/26)}return s};
+  const sheetXml=sh=>{const rows=sh.rows.map((r,ri)=>`<row r="${ri+1}">${r.map((c,ci)=>{if(c==null||c==="")return"";const ref=col(ci)+(ri+1),st=sh.style?sh.style(ri,ci,c):0;
+      return typeof c==="number"?`<c r="${ref}" s="${st}"><v>${c}</v></c>`:`<c r="${ref}" t="inlineStr" s="${st}"><is><t xml:space="preserve">${X(c)}</t></is></c>`}).join("")}</row>`).join("");
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>${sh.freeze?`<sheetViews><sheetView workbookViewId="0"><pane ySplit="${sh.freeze}" topLeftCell="A${sh.freeze+1}" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>`:""}<cols>${sh.widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join("")}</cols><sheetData>${rows}</sheetData><pageMargins left="0.4" right="0.4" top="0.5" bottom="0.5" header="0.3" footer="0.3"/><pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>`};
+  const z=new JSZip();
+  z.file("[Content_Types].xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((s,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`);
+  z.file("_rels/.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`);
+  z.file("xl/workbook.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheets.map((s,i)=>`<sheet name="${X(s.name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join("")}</sheets></workbook>`);
+  z.file("xl/_rels/workbook.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((s,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join("")}<Relationship Id="rId${sheets.length+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`);
+  // estilos: 0 normal · 1 cabecera · 2 título · 3 aviso rojo · 4 ok verde · 5 casilla · 6 número negrita
+  z.file("xl/styles.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="5"><font><sz val="10"/><name val="Arial"/></font><font><b/><sz val="10"/><color rgb="FFFFFFFF"/><name val="Arial"/></font><font><b/><sz val="14"/><color rgb="FF065678"/><name val="Arial"/></font><font><b/><sz val="10"/><color rgb="FFC62828"/><name val="Arial"/></font><font><b/><sz val="10"/><name val="Arial"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF065678"/></patternFill></fill></fills><borders count="2"><border/><border><left style="thin"><color rgb="FFCDD2DA"/></left><right style="thin"><color rgb="FFCDD2DA"/></right><top style="thin"><color rgb="FFCDD2DA"/></top><bottom style="thin"><color rgb="FFCDD2DA"/></bottom></border></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="8"><xf borderId="1" applyBorder="1"><alignment wrapText="1" vertical="top"/></xf><xf fontId="1" fillId="2" borderId="1" applyFont="1" applyFill="1" applyBorder="1"/><xf fontId="2" applyFont="1"/><xf fontId="3" borderId="1" applyFont="1" applyBorder="1"><alignment wrapText="1" vertical="top"/></xf><xf fontId="4" borderId="1" applyFont="1" applyBorder="1"><alignment vertical="top"/></xf><xf borderId="1" applyBorder="1"><alignment horizontal="center" vertical="top"/></xf><xf fontId="4" borderId="1" applyFont="1" applyBorder="1"><alignment horizontal="right" vertical="top"/></xf><xf fontId="4" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`);
+  sheets.forEach((s,i)=>z.file(`xl/worksheets/sheet${i+1}.xml`,sheetXml(s)));
+  return z.generateAsync({type:"blob",mimeType:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})}
+async function exportXlsx(){if(!S.screens.length){toast("No hay pantallas.");return}if(!window.JSZip){toast("No se ha podido cargar el generador. Recarga la página.");return}
+  const m=S.meta||{},tot=prepTotals(),head=[["Material para almacén · "+(m.project||"Proyecto sin nombre")],["",`Lugar: ${m.place||"—"}`,"","",`Fecha: ${m.date||"—"}`],["",`Responsable: ${m.resp||"—"}`,"","",`Versión: ${m.ver||"—"}`],[]];
+  const H=["✓","Elemento","Cantidad","En almacén","Estado","Para"],hr=head.length;
+  const rows=tot.map(([n,q,inv,w])=>{const s=invState(n,q,inv);return["☐",n,q===null?"____":q,s.have==null?"":s.have,s.txt,w||""]});
+  const st1=(ri,ci,c)=>ri===0?2:ri===hr?1:ri<hr?7:ci===0?5:ci===2?6:ci===4?(/^FALTAN/.test(String(c))?3:String(c)==="OK"?4:0):0;
+  const R=S.screens.map(prepScreen).filter(Boolean),sc=[["Pantalla","Montaje","Elemento","Cantidad","Detalle"]];
+  R.forEach(r=>r.items.forEach(i=>sc.push([r.P.g.map(x=>x.name).join(" + "),MOUNT[r.mount]||"",i.n,i.q===null?"____":i.q,i.d||""])));
+  prepProject().forEach(i=>sc.push(["Proyecto","",i.n,i.q===null?"____":i.q,i.d||""]));
+  const cab=[["Tipo","Elemento","Cantidad","Detalle"]].concat(material().filter(r=>r[0]!=="Stock").map(r=>[r[0],r[1],typeof r[2]==="number"?r[2]:String(r[2]),r[3]]));
+  const blob=await xlsxBlob([
+    {name:"Material",rows:head.concat([H],rows),widths:[5,52,10,11,30,70],freeze:hr+1,style:st1},
+    {name:"Por pantalla",rows:sc,widths:[28,22,52,10,44],freeze:1,style:(ri,ci)=>ri===0?1:ci===3?6:0},
+    {name:"Cableado y corriente",rows:cab,widths:[12,52,10,60],freeze:1,style:(ri,ci)=>ri===0?1:ci===2?6:0}]);
+  offer(`material_${slugify(m.project||"pixelmap")}.xlsx`,blob)}
+function renderMat(){renderPrep();$("mat").innerHTML=S.screens.length?material().map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td><td><strong>${r[2]}</strong></td><td>${esc(r[3])}</td></tr>`).join(""):`<tr><td colspan="4" style="text-align:left;color:var(--muted)">Sin pantallas.</td></tr>`}
 function renderAll(){render();renderList();renderTable();renderPorts();renderProc();renderMat();renderTpl();
   const o=S.opts;$("foot").textContent=`Puertos calculados a ${o.pxPort.toLocaleString("es-ES")} px por puerto Gigabit. Líneas de corriente a ${o.volt} V · ${o.amp} A usando el ${o.fac}% (${fmt(o.volt*o.amp*o.fac/100)} W por línea) con el consumo máximo de cada módulo. La fila de total en «Mód/línea» muestra la corriente total a ${o.volt} V. Comprueba siempre con la ficha del fabricante y el procesador real.`}
 const STD=[[1280,720,"HD 720p"],[1920,1080,"Full HD"],[1920,1200,"WUXGA"],[2560,1440,"QHD"],[3840,1080,"Dual Full HD"],[3840,2160,"4K UHD"],[4096,2160,"4K DCI"],[7680,2160,"Dual 4K"],[7680,4320,"8K UHD"]];
@@ -2410,12 +2546,13 @@ async function exportPdf(){
         tbl(y,["","Elemento","Cant.","Detalle"],r.items.map(i=>["[  ]",SAFE(i.n),qs(i.q),SAFE(i.d)]),Object.assign({},blk,{margin:{left:MG+155,right:MG,top:22}}));
         y=Math.max(y+img.h*k,doc.lastAutoTable.finalY)+4;
         if(r.st.over4){doc.setFontSize(8);doc.setTextColor(200,40,40);doc.text("Estructura de más de 4 m: revisar homologación.",MG,y);y+=5}}
-      else{tbl(y,["","Elemento","Cant.","Detalle"],r.items.map(i=>["[  ]",SAFE(i.n),qs(i.q),SAFE(i.d)]),blk);y=doc.lastAutoTable.finalY+7}});
+      else{tbl(y,["","Elemento","Cant.","Detalle"],r.items.map(i=>["[  ]",SAFE(i.n),qs(i.q),SAFE(i.d)]),blk);y=doc.lastAutoTable.finalY+7}
+      r.warn.concat(r.notes).forEach((tx,k)=>{const L=doc.splitTextToSize(SAFE(tx),PW-2*MG);if(y+L.length*4>PH-14){doc.addPage();head("PREPARACIÓN DE MATERIAL");y=24}doc.setFont("helvetica",k<r.warn.length?"bold":"normal");doc.setFontSize(8);doc.setTextColor(...(k<r.warn.length?[200,40,40]:[60,66,77]));doc.text(L,MG,y);y+=L.length*3.6+3})});
     const pj=prepProject();if(pj.length){if(y>PH-40){doc.addPage();head("PREPARACIÓN DE MATERIAL");y=24}
       doc.setFont("helvetica","bold");doc.setFontSize(10.5);doc.setTextColor(...NAVY);doc.text("Proyecto · electrónica, señal y corriente",MG,y);y+=3;
       tbl(y,["","Elemento","Cant.","Detalle"],pj.map(i=>["[  ]",SAFE(i.n),qs(i.q),SAFE(i.d)]),blk);y=doc.lastAutoTable.finalY+7}
     doc.addPage();head("PREPARACIÓN DE MATERIAL · TOTAL");
-    tbl(24,["","Elemento","Cantidad"],prepTotals().map(([n,q])=>["[  ]",SAFE(n),qs(q)]),Object.assign({},blk,{columnStyles:{0:{cellWidth:9,halign:"center"},2:{halign:"right",fontStyle:"bold",cellWidth:30}}}));
+    tbl(24,["","Elemento","Cantidad","Almacén","Estado"],prepTotals().map(([n,q,inv])=>{const s=invState(n,q,inv);return["[  ]",SAFE(n),qs(q),s.have==null?"-":String(s.have),SAFE(s.txt)]}),Object.assign({},blk,{columnStyles:{0:{cellWidth:9,halign:"center"},2:{halign:"right",fontStyle:"bold",cellWidth:22},3:{halign:"right",cellWidth:20},4:{cellWidth:60}},didParseCell:d=>{if(d.section==="body"&&d.column.index===4&&/^FALTAN/.test(d.cell.raw)){d.cell.styles.textColor=[200,40,40];d.cell.styles.fontStyle="bold"}}}));
     let yy2=doc.lastAutoTable.finalY+6;if(yy2>PH-24){doc.addPage();head("PREPARACIÓN DE MATERIAL · TOTAL");yy2=26}doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(93,102,117);
     doc.text(doc.splitTextToSize("Puntos de volado: uno por cada 0,5 m de ancho (2 por bumper de 1 m, 1 por bumper de 0,5 m); se recomienda llevar todos los grilletes y eslingas. Estructura de 8s: verticales cada metro, horizontales con huecos de 1,5 a 2 m, nunca por encima de la pantalla. Las cantidades marcadas ____ se deciden según el planteamiento del montaje.",PW-2*MG),MG,yy2)}
 
@@ -2517,9 +2654,10 @@ async function exportDocx(){
     body.push(PB(),H1("Preparación de material"));
     R.forEach(r=>{body.push(H2(`${r.P.g.map(t=>t.name).join(" + ")} · ${fmt(r.P.wM)} × ${fmt(r.P.hM)} m · ${MOUNT[r.mount]}`));
       if(r.st){const im=structImage(r.s);body.push(img({data:im.data,w:im.w,h:im.h},700,300));if(r.st.over4)body.push(P("Estructura de más de 4 m: revisar homologación.",{color:"C62828",bold:true}))}
-      body.push(table(["☐","Elemento","Cant.","Detalle"],r.items.map(i=>["☐",i.n,qs(i.q),i.d]),{widths:[5,45,10,40],right:[2],bold:[2]}))});
+      body.push(table(["☐","Elemento","Cant.","Detalle"],r.items.map(i=>["☐",i.n,qs(i.q),i.d]),{widths:[5,45,10,40],right:[2],bold:[2]}));
+      r.warn.forEach(w=>body.push(P(w,{color:"C62828",bold:true})));r.notes.forEach(n=>body.push(P(n,{size:16,color:GREY})))});
     const pj=prepProject();if(pj.length)body.push(H2("Proyecto · electrónica, señal y corriente"),table(["☐","Elemento","Cant.","Detalle"],pj.map(i=>["☐",i.n,qs(i.q),i.d]),{widths:[5,45,10,40],right:[2],bold:[2]}));
-    body.push(H2("Total"),table(["☐","Elemento","Cantidad"],prepTotals().map(([n,q])=>["☐",n,qs(q)]),{widths:[5,75,20],right:[2],bold:[2]}))}
+    body.push(H2("Total"),table(["☐","Elemento","Cantidad","Almacén","Estado"],prepTotals().map(([n,q,inv])=>{const s=invState(n,q,inv);return["☐",n,qs(q),s.have==null?"—":String(s.have),s.txt]}),{widths:[5,45,10,10,30],right:[2,3],bold:[2]}))}
   body.push(H2("Observaciones"),P("Escribe aquí cualquier observación del montaje.",{color:GREY,italics:true}));
   // documento
   const hdr=new Header({children:[new Paragraph({alignment:AlignmentType.RIGHT,border:{bottom:{color:TEAL,size:6,style:BorderStyle.SINGLE,space:2}},children:[T("FICHA TÉCNICA · PANTALLAS LED",{bold:true,size:16,color:NAVY}),T("   "+[m.project||"Proyecto sin nombre",m.place,dateTxt].filter(Boolean).join("  ·  "),{size:16,color:GREY})]})]});
