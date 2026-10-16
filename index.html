@@ -615,6 +615,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <li><b>Mover una electrónica entera</b>: arrastra su etiqueta de color (arriba a la izquierda del recuadro discontinuo), haz <b>doble clic</b> en una de sus pantallas o pulsa <b>Seleccionar sus pantallas</b> en su tarjeta (6 · Electrónicas) y luego arrastra o usa las flechas.</li>
 <li><b>Llevar a 0,0</b> coloca la selección en el origen; <b>Ajustar vista</b> encaja el zoom.</li>
 <li>Una <b>pantalla compuesta</b> se dibuja como un solo test pattern: mismo color, una sola diagonal, círculo y rótulo para todo el conjunto (resolución total y «10×2 + 10×1»); solo cambia la proporción de los módulos de la franja.</li>
+<li>Un <b>mosaico</b> también se dibuja como un solo test pattern (mismo color, diagonales y círculo de la pantalla entera), pero cada zona conserva su rótulo con su nombre y resolución, porque va a su electrónica.</li>
 <li><b>4 · Dibujo</b>: nombre y resolución, nº de módulo, diagonales, círculo, coordenadas, fondo, patrón y <b>logo</b> sobre cada pantalla.</li>
 </ul></details>
 
@@ -1538,12 +1539,12 @@ function drawPowTag(ctx,x,y,sw,sh){const fs=Math.max(10,Math.min(sw,sh)*.07),tx=
     ctx.fillStyle="#ffc400";ctx.fillRect(x+sw-tw*1.12-fs*.9,y+fs*.3,tw*1.12+fs*.6,fs*1.3);ctx.fillStyle="#111";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tx,x+sw-tw*.56-fs*.6,y+fs*.97,tw*1.1);ctx.restore()}
 // pantalla compuesta: un solo test pattern (diagonales, círculo, logo, rótulo y borde exterior) sobre el conjunto
 const hueOf=s=>{const G=cmpGroup(s);return (G?G.g[0]:s).c%HUES.length};
-function cmpGroup(s){if(!s.cmp)return null;const g=S.screens.filter(t=>t.cmp&&t.cmp.g===s.cmp.g);if(g.length<2)return null;
+function cmpGroup(s){if(!s.cmp&&!s.mos)return null;const mos=!s.cmp,key=mos?"m"+s.mos.g:"c"+s.cmp.g,g=mos?S.screens.filter(t=>t.mos&&t.mos.g===s.mos.g):S.screens.filter(t=>t.cmp&&t.cmp.g===s.cmp.g);if(g.length<2)return null;
   const x0=Math.min(...g.map(t=>t.x)),y0=Math.min(...g.map(t=>t.y)),x1=Math.max(...g.map(t=>t.x+W(t))),y1=Math.max(...g.map(t=>t.y+H(t)));
-  const head=g.find(t=>!/ · /.test(t.name))||g[0];return{g,head,x0,y0,w:x1-x0,h:y1-y0}}
+  const head=mos?g.slice().sort((a,b)=>a.mos.i-b.mos.i)[0]:g.find(t=>!/ · /.test(t.name))||g[0];return{g,head,x0,y0,w:x1-x0,h:y1-y0,mos,key}}
 function drawScreens(ctx){const done=new Set();
   S.screens.forEach((s,i)=>{const G=cmpGroup(s);if(!G){drawScreen(ctx,s,i);return}
-    if(done.has(s.cmp.g))return;done.add(s.cmp.g);drawGroup(ctx,G)})}
+    if(done.has(G.key))return;done.add(G.key);drawGroup(ctx,G)})}
 function drawGroup(ctx,G){const o=S.opts,{g,x0,y0,w,h}=G;
   g.forEach(s=>drawScreen(ctx,s,S.screens.indexOf(s),null,G));
   ctx.save();ctx.beginPath();g.forEach(s=>ctx.rect(s.x,s.y,W(s),H(s)));ctx.clip();drawOverlay(ctx,x0,y0,w,h);ctx.restore();
@@ -1558,6 +1559,8 @@ function drawGroup(ctx,G){const o=S.opts,{g,x0,y0,w,h}=G;
   ctx.stroke();
   if(pw)drawPowTag(ctx,x0,y0,w,h);
   if(o.wiring!=="none")g.forEach(s=>{drawWiring(ctx,s);if(o.wiring==="data")drawPowerTris(ctx,s)});
+  // mosaico: un solo test pattern, pero cada zona conserva su rótulo (va a su electrónica)
+  if(o.labels&&G.mos){g.forEach(s=>{const sw=W(s),sh=H(s),nm=s.cols*s.rows,lines=o.lean?[s.name,`${sw} × ${sh} px`]:[s.name,`${sw} × ${sh} px`,`${s.cols}×${s.rows} (${nm} módulo${nm===1?"":"s"})`];if(!o.lean&&o.coords)lines.push(`X ${s.x}  Y ${s.y}`);drawLabels(ctx,s.x,s.y,sw,sh,lines,s.note)});return}
   if(o.labels){const nm=g.reduce((a,s)=>a+s.cols*s.rows,0),nmTxt=g.map(s=>`${s.cols}×${s.rows}`).join(" + ")+` (${nm} módulos)`;
     const lines=o.lean?[G.head.name,`${w} × ${h} px`]:[G.head.name,`${w} × ${h} px`,nmTxt];if(!o.lean&&o.coords)lines.push(`X ${x0}  Y ${y0}`);
     drawLabels(ctx,x0,y0,w,h,lines,g.map(s=>s.note).filter(Boolean).join(" · "))}}
