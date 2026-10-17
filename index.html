@@ -266,9 +266,9 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
   <button id="bQuick" class="primary" title="Describe el montaje con texto y crea el proyecto">⚡ Ficha rápida</button>
   <button id="bHelp" class="ghost" title="Cómo funciona la herramienta" aria-haspopup="dialog">? Ayuda</button>
   <button id="bNew" class="ghost" title="Empezar un mapa vacío">Nuevo</button>
-  <button id="bImport" class="ghost">Abrir .json</button>
+  <button id="bImport" class="ghost" title="Abre un proyecto guardado (.json)">Importar proyecto</button>
   <input id="fileIn" type="file" accept=".json,application/json" hidden>
-  <button id="bJson">Guardar .json</button>
+  <button id="bJson" title="Guarda el proyecto en un archivo .json para abrirlo luego o pasarlo a un compañero">Exportar proyecto</button>
   <button id="bCsv">Coordenadas .csv</button>
   <button id="bPdf2">Ficha PDF</button>
   <button id="bDocx2" title="Ficha en Word, con todos los textos editables">Ficha Word</button>
@@ -576,7 +576,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <li>En <b>6 · Electrónicas</b> revisa qué procesador propone y cuántas bocas usa. Añade más electrónicas si hace falta.</li>
 <li>Ajusta casos especiales en la tarjeta de cada pantalla: <i>Cableado de esta pantalla</i>, <i>Mosaico</i> o <i>Pantalla compuesta</i>.</li>
 <li>Revisa abajo la tabla de pantallas y <b>Material y stock</b>.</li>
-<li>Descarga la <b>Ficha PDF</b>, los <b>PNG</b> y la <b>plantilla de señal</b>. Guarda el proyecto con <b>Guardar .json</b>.</li>
+<li>Descarga la <b>Ficha PDF</b>, los <b>PNG</b> y la <b>plantilla de señal</b>. Guarda el proyecto con <b>Exportar proyecto</b>.</li>
 </ol></details>
 
 <details><summary>Moverse por los ajustes</summary>
@@ -592,7 +592,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <details><summary>Barra superior</summary>
 <ul>
 <li><b>Nuevo</b>: vacía el proyecto (las bibliotecas no se tocan).</li>
-<li><b>Guardar .json / Abrir .json</b>: guarda o abre un proyecto completo. Es la forma de pasarlo a otro equipo o compañero.</li>
+<li><b>Exportar proyecto / Importar proyecto</b>: guarda o abre un proyecto completo. Es la forma de pasarlo a otro equipo o compañero.</li>
 <li><b>Coordenadas .csv</b>: posición y tamaño de cada pantalla para el servidor de medios.</li>
 <li><b>⚡ Ficha rápida</b>: crea el proyecto a partir de una descripción en texto.</li>
 <li><b>? Ayuda</b>: esta guía.</li>
@@ -736,7 +736,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 
 <details><summary>Dónde se guardan los datos</summary>
 <ul>
-<li>El proyecto, las bibliotecas y los logos se guardan <b>en este navegador</b>. En otro dispositivo no aparecen: usa <b>Guardar .json</b> y <b>Abrir .json</b>.</li>
+<li>El proyecto, las bibliotecas y los logos se guardan <b>en este navegador</b>. En otro dispositivo no aparecen: usa <b>Exportar proyecto</b> e <b>Importar proyecto</b>.</li>
 <li>Instalada como app (Añadir a pantalla de inicio) funciona sin conexión.</li>
 <li>Comprueba siempre los datos con la ficha del fabricante y el procesador real.</li>
 </ul></details>
@@ -1249,7 +1249,7 @@ function renderScalers(){
           ${w?`<span class="warn" style="grid-column:1/-1;font-size:12px">${esc(w)}</span>`:""}</div>`}).join("")}
         <button data-b="outAdd" class="ghost" style="font-size:12px;padding:4px 8px">+ Añadir salida</button></div>
     </div></div>`).join("")+(L.length?"":`<p class="hint" style="margin:0">Sin procesadores de señal. Añade uno si la señal pasa por un escalador (por ejemplo una Magnimage EC40) antes de las NovaStar.</p>`);
-  let dl=document.getElementById("dl-scm");if(!dl){dl=document.createElement("datalist");dl.id="dl-scm";document.body.appendChild(dl)}dl.innerHTML=SC_MODELS.map(v=>`<option value="${esc(v)}">`).join("");
+  let dl=document.getElementById("dl-scm");if(!dl){dl=document.createElement("datalist");dl.id="dl-scm";document.body.appendChild(dl)}dl.innerHTML=[...new Set(SRCLIB.filter(s=>s.k==="pix").map(s=>s.n).concat(SC_MODELS))].map(v=>`<option value="${esc(v)}">`).join("");
 }
 $("scalers").addEventListener("change",e=>{const card=e.target.closest(".sc");if(!card)return;const X=scalers().find(z=>z.id===card.dataset.id),g=e.target.dataset.g;if(!X||!g)return;
   let v=e.target.value.trim();
@@ -2852,7 +2852,7 @@ $("fileIn").onchange=async e=>{const f=e.target.files[0];if(!f)return;
     if(Array.isArray(o.processors))o.processors.forEach(p=>{if(p&&p.id&&!PROCLIB.some(m=>m.id===p.id))PROCLIB.push(p)});
     if(Array.isArray(o.panels))o.panels.forEach(p=>{if(p&&p.n&&!LIB.some(m=>m.n.toLowerCase()===p.n.toLowerCase()))LIB.push(Object.assign({stock:false,qty:0},p,{id:uid("m")}))});
     saveLib();buildPanelSelect($("panel").value);renderLib();sel.clear();syncStage();syncOpts();fit();commit();toast(`Abierto: ${f.name}`)}
-  catch(err){toast("Ese archivo no es un pixel map válido (.json exportado desde aquí).")}
+  catch(err){toast("Ese archivo no es un proyecto válido (usa un .json hecho con «Exportar proyecto»).")}
   e.target.value=""};
 
 let tt;function toast(m){const t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2600)}
