@@ -692,7 +692,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <li><b>4K es 4K a 60 Hz.</b> Cada electrónica tiene su <b>entrada máxima a 60 Hz</b> (Electrónicas → biblioteca). La VX1000, VX6s, VX4S y MCTRL660 no admiten 4K 60 (su HDMI solo llega a 4K 30); la VX1000 Pro, VX2000 Pro y MCTRL4K sí. Si la señal de entrada de una electrónica es 4K (o la zona que le llega a medida es tan grande), el modo Automático solo elige electrónicas que la admitan a 60 Hz, y si la pones a mano sale en rojo «no admite 3840×2160 a 60 Hz» con las alternativas.</li>
 <li><b>Señal más pequeña que la pantalla</b> (lo típico en tele: llega Full HD y la pantalla es mayor): eso es escalar, y una VX1000 lo hace bien. El modo Automático elige una electrónica con escalador y la tarjeta indica «escala desde 1920×1080». Solo sale en rojo si la electrónica elegida no escala.</li>
 <li><b>Cableado de señal.</b> En cada electrónica: <b>Ubicación</b> (junto a la pantalla o en control) y <b>Distancia a la pantalla</b> (5 m por defecto). Las tiradas de S/FTP se miden sin diagonales: desde la mitad de la pantalla, en horizontal hasta la columna y subiendo hasta la fila (+1 m de holgura). Todas las principales de una pantalla van con la misma medida y todas las de respaldo con la suya (5, 10, 20, 25, 35 o 50 m); en rojo, lo estimado tirada a tirada por si no hay de esa medida. Lo normal es hasta 20 m; 35 o 50 m solo con 1 o 2 líneas (aviso naranja); con más líneas, aviso rojo: electrónica junto a la pantalla y señal por fibra.</li>
-<li><b>Enlace desde control.</b> Con la <b>distancia de control a las pantallas</b> (arriba en este apartado, o una propia en cada electrónica), cada salida usada del servidor que va a una electrónica junto a la pantalla lleva: hasta 10 m, HDMI 10 m 4K; hasta 20 m, HDMI 20 m en fibra; más de 20 m, Lightware. Con Watchout, Disguise o vMix por HDMI (gestión de EDID): HDMI 220 Pro → UBEX → OPTX 100 → OPT 90. Sin ellos: OPTX 100 → OPT 90 → OPT 110. Bobinas OpticalCON con Watchout o Disguise; SC en el resto. Si llega 4K 60, nunca el OPT 110. Bobinas de 100 m repartidas por hilos (UBEX 4, OPTX/220 Pro 2, OPT 1), con sus latiguillos SC–SC o SC → LT, barriletes y los latiguillos de red de control. Si la señal viene de tele (señal estándar) no se calcula enlace: os la sirven. Por transmisor se manda siempre señal estándar, nada de EDID a medida: hasta 1920×1200 en HD y, por encima, 4K 60 con la zona en ventana (la electrónica se elige para esa señal). Con el servidor junto a la electrónica (en control o a 10 m o menos) sí se saca la zona a medida. Respaldo con electrónica espejo: la señal se duplica con un distribuidor 1→2 por señal, salvo la que llega por HDMI 220 Pro (su receptor da dos salidas), que pasa a ser el primero cuando la señal es 4K. En el material, cada electrónica cuenta ×2 y sale un switch de datos para trabajar principal y espejo juntas, con sus latiguillos (menos con la MCTRL660, que no se controla por Ethernet; la 660 Pro sí). Los nombres de todo esto se cambian en Almacén → equivalencias.</li>
+<li><b>Enlace desde control.</b> Con la <b>distancia de control a las pantallas</b> (arriba en este apartado, o una propia en cada electrónica), cada salida usada del servidor que va a una electrónica junto a la pantalla lleva: hasta 10 m, HDMI 10 m 4K; hasta 20 m, HDMI 20 m en fibra; más de 20 m, Lightware. Con Watchout, Disguise o vMix por HDMI (gestión de EDID): HDMI 220 Pro → UBEX → OPTX 100 → OPT 90. Sin ellos: OPTX 100 → OPT 90 → OPT 110. Bobinas OpticalCON con Watchout o Disguise; SC en el resto. Si llega 4K 60, nunca el OPT 110. Bobinas de 100 m repartidas por hilos (UBEX 4, OPTX/220 Pro 2, OPT 1), con sus latiguillos SC–SC o SC → LT, barriletes y los latiguillos de red de control. Si la señal viene de tele (señal estándar) no se calcula enlace: os la sirven. Por transmisor se manda siempre señal estándar, nada de EDID a medida: hasta 1920×1200 en HD y, por encima, 4K 60 con la zona en ventana (la electrónica se elige para esa señal). Con el servidor junto a la electrónica (en control o a 10 m o menos) sí se saca la zona a medida. Respaldo con electrónica espejo: la señal se duplica con un distribuidor 1→2 por señal, salvo la que llega por HDMI 220 Pro (su receptor da dos salidas), que pasa a ser el primero cuando la señal es 4K. Si con el respaldo en la misma electrónica no cabe en una sin escalador pero la principal sí, se proponen 2 electrónicas (principal + espejo), que es respaldo de verdad; en «Respaldo» de cada electrónica puedes elegir la misma electrónica (p. ej. una VX2000 Pro, más rápida de montar). En el material, cada electrónica con espejo cuenta ×2 y sale un switch de datos para trabajar principal y espejo juntas, con sus latiguillos (menos con la MCTRL660, que no se controla por Ethernet; la 660 Pro sí). Los nombres de todo esto se cambian en Almacén → equivalencias.</li>
 <li><b>Le llega desde</b> (en cada electrónica): la máquina que la alimenta. Con «+ Watchout 7…» se crea la máquina en el proyecto (WO7-1, EC40-1… se puede renombrar, p. ej. «Servidor nº4») y aparece en <b>6b</b> con sus salidas ya asignadas a cada electrónica; las demás electrónicas que alimente la eligen en «Equipos de este proyecto». En 6b ves cuántas salidas de cada máquina se usan y avisa si no le llegan; el material cuenta las máquinas de cada tipo. Los <b>servidores y procesadores</b> (Watchout, Disguise, Magnimage EC40/EC90, Pulse, Di-Ventix) sacan la señal a medida del pixel map, así que el modo Automático elige una NovaStar <b>sin escalador</b> que admita la zona (MCTRL660 → R5 → 4K…); solo si ninguna la admite propone una con escalador. La <b>señal estándar</b> (vMix, ATEM, cámara, realización, PC) va siempre con escalador. Si alguien pone una con escalador a un equipo a medida, sale el aviso «Escalador innecesario». Encima de las electrónicas ves cuántas salidas de cada equipo de señal se usan y cuántos equipos hacen falta; los equipos se editan en la pestaña Electrónicas → Equipos de señal.</li>
 <li><b>Procesadores de señal</b> (apartado <b>6b</b>, debajo de las electrónicas): para un escalador antes de las NovaStar, por ejemplo una Magnimage EC40 que recibe 2 señales y alimenta a 3 electrónicas sin escalador. Pon sus entradas con su fuente y, en cada <b>salida</b>, a qué electrónica LED va, por qué entrada y con qué resolución (<b>= zona</b> copia la zona de entrada de esa electrónica). La electrónica LED muestra «← EC40 · Salida 1» como fuente, avisa si la zona no cabe en esa resolución, y la ficha y el material lo recogen.</li>
 <li><b>Notas de montaje</b> en cada electrónica y procesador de señal (por ejemplo «solo 1 SDI: llevar conversor SDI → HDMI para ETB»). Salen en la ficha PDF y Word, en la página de datos y en la de material, junto a las notas de las pantallas.</li>
@@ -1125,7 +1125,8 @@ function assignRaw(){
     UN.sort((a,b)=>oi(a)-oi(b)||pos(a)-pos(b));
     const uInfo=[];UN.forEach(U=>{const f=runs.length+1;runs.push(...U.runs);uInfo.push({key:U.key,name:U.list.map(s=>s.name).join(U.key[0]==="g"?" + ":" → "),p0:f,p1:runs.length})});
     runs.forEach(r=>px+=r.px);
-    let spec,auto=E.model==="auto";const red=S.opts.red||"none",nP=runs.length,need=red==="same"?nP*2:nP;
+    // respaldo: el del proyecto, o el propio de esta electrónica (misma electrónica / electrónica espejo)
+    let spec,auto=E.model==="auto";const gRed=S.opts.red||"none";let red=gRed!=="none"&&(E.red==="same"||E.red==="mirror")?E.red:gRed,mirAuto=false,sameAlt=null;const nP=runs.length;let need=red==="same"?nP*2:nP;
     // ¿qué le llega? un servidor o procesador ya saca la señal a medida → sin escalador (salvo que la zona no quepa en ninguna); señal estándar → con escalador
     const feed=feedKind(E),bw=scr.length?x1-x0:0,bh=scr.length?y1-y0:0;
     // por transmisor desde control se manda señal estándar (nada de EDID a medida): hasta 1920×1200 en HD, por encima 4K 60 con la zona en ventana
@@ -1147,7 +1148,10 @@ function assignRaw(){
       // pix: si ninguna sin escalador admite la zona, se acepta una con escalador (y se avisa)
       if(!spec&&wantSc===false){spec=pick(m=>!!m.sc&&acc60(m));scForced=!!spec}
       if(!spec){let pool=PROCLIB.filter(okSc);if(!pool.length)pool=PROCLIB;spec=pool.reduce((a,b)=>b.p>a.p?b:a,pool[0])}
-      if(wantSc===false&&spec&&spec.sc)scForced=true}
+      if(wantSc===false&&spec&&spec.sc)scForced=true;
+      // respaldo de verdad: si con el respaldo en la misma electrónica no cabe en una sin escalador, pero la principal sí, se proponen 2 (principal + espejo)
+      if(scForced&&red==="same"&&!E.red){const n2=need;need=nP;const two=pick(okSc);
+        if(two){sameAlt=spec;red="mirror";spec=two;scForced=false;mirAuto=true}else need=n2}}
     else if(E.model==="custom")spec={id:"custom",n:"Personalizada",p:Math.max(1,E.p|0),c:Math.max(1000,+E.c)};
     else spec=procOf(E.model)||PROCLIB[0];
     let load=0;
@@ -1168,7 +1172,7 @@ function assignRaw(){
         if(minNeed<need)altMin=zoneOk.filter(m=>m.p>=minNeed&&m.c>=px).sort((a,b)=>(b.stock?1:0)-(a.stock?1:0)||a.p-b.p)[0]||null}
       else scWhy="zone"}
     const altNoSc=PROCLIB.filter(m=>!m.sc&&m.p>=need&&m.c>=px&&fitsIn(m)&&acc60(m)),overkill=feed==="pix"&&!!spec.sc&&!scForced&&altNoSc.length>0;
-    out.push({E,idx,letter:LET[idx%26],color:ELC[idx%ELC.length],spec,auto,screens:scr,units:uInfo,ports:need,main:nP,red,px,bbox,jumps,feed,txSig,scForced,scWhy,scBig,minNeed,altMin,overkill,sig,no60,alt60,altNoSc:altNoSc.sort((a,b)=>(b.stock?1:0)-(a.stock?1:0)||a.p-b.p)[0]||null,
+    out.push({E,idx,letter:LET[idx%26],color:ELC[idx%ELC.length],spec,auto,screens:scr,units:uInfo,ports:need,main:nP,red,px,bbox,jumps,feed,txSig,mirAuto,sameAlt,scForced,scWhy,scBig,minNeed,altMin,overkill,sig,no60,alt60,altNoSc:altNoSc.sort((a,b)=>(b.stock?1:0)-(a.stock?1:0)||a.p-b.p)[0]||null,
       over:need>spec.p||px>spec.c,inOver:upsc&&!spec.sc,upsc,
       noSc:!spec.sc,inBudget:spec.inW?spec.inW*spec.inH:0,inArea:bbox?bbox.w*bbox.h:0,
       scOver:!!(bbox&&!spec.sc&&spec.inW&&bbox.w*bbox.h>spec.inW*spec.inH),
@@ -1178,7 +1182,7 @@ function assignRaw(){
   S.screens.forEach(s=>{if(!map.has(s.id))map.set(s.id,[])});
   const used=out.filter(x=>x.screens.length).length,multi=S.elecs.length>1&&used>1;
   const lab=a=>(multi?out[a.e].letter:"P")+a.p+(a.over?"!":"");
-  const labB=a=>!a.b?"":(multi?out[a.e].letter:"P")+a.b+(S.opts.red==="mirror"?"R":"")+(a.over?"!":"");
+  const labB=a=>!a.b?"":(multi?out[a.e].letter:"P")+a.b+(out[a.e].red==="mirror"?"R":"")+(a.over?"!":"");
   return{map,elecs:out,used,multi,lab,labB};
 }
 let ELBL=[];
@@ -1229,6 +1233,7 @@ function renderElecs(){
         ${E.loc==="control"?`<label title="Distancia de control a la pantalla: es la tirada de S/FTP">Distancia a la pantalla (m)<input type="number" min="0" data-f="cd" value="${E.cd||""}" placeholder="${S.opts.ctrl?S.opts.ctrl+" (proyecto)":"indícala"}"></label>`:
           `<label title="De la electrónica (en la mitad de la pantalla, a pie de pantalla) a la pantalla">Distancia a la pantalla (m)<input type="number" min="0" step="0.5" data-f="dist" value="${E.dist||""}" placeholder="5"></label>
         <label class="full" style="grid-column:1/-1" title="Para el enlace de señal desde el servidor">Distancia desde control (m)<input type="number" min="0" data-f="cd" value="${E.cd||""}" placeholder="${S.opts.ctrl?S.opts.ctrl+" (la del proyecto)":"la del proyecto (sin indicar)"}"></label>`}
+        ${(S.opts.red||"none")!=="none"?`<label class="full" style="grid-column:1/-1" title="Con 2 electrónicas el respaldo es de verdad: si falla una, queda la otra">Respaldo<select data-f="red"><option value="">Automático (2 electrónicas si no cabe en una sin escalador)</option><option value="same"${E.red==="same"?" selected":""}>En la misma electrónica (dobla bocas)</option><option value="mirror"${E.red==="mirror"?" selected":""}>2 electrónicas: principal + espejo</option></select></label>`:""}
         <label class="full" style="grid-column:1/-1">Escalador<select data-f="scaler"><option value="any"${!E.scaler||E.scaler==="any"?" selected":""}>Indiferente</option><option value="yes"${E.scaler==="yes"?" selected":""}>Necesito escalador</option><option value="no"${E.scaler==="no"?" selected":""}>Sin escalador (1:1)</option></select></label>
         <div class="ins" style="grid-column:1/-1">${(()=>{const L=E.ins&&E.ins.length?E.ins:[{}],ly=x.spec.ly||0,n=(E.ins||[]).filter(q=>q.use||q.src).length+feedsOf(E).length;
           const fd=feedsOf(E);return fd.map(f=>`<div class="feed">← <b>${esc(f.src)}</b>${f.use?` → ${esc(f.use)}`:""}${f.res?` · ${f.res}`:""}</div>`).join("")+`<div class="hint" style="margin:4px 0">Entradas${ly?` · capas ${n} de ${ly}`:""}${ly&&n>ly?' <span class="warn">más entradas que capas</span>':""}</div>`+
@@ -1247,6 +1252,7 @@ function renderElecs(){
         ${x.txSig?`<br>Le llega por transmisor desde control: señal estándar <strong>${x.txSig.w}×${x.txSig.h}${x.txSig.w>=3840?" (4K 60)":""}</strong> con la zona de ${b.w}×${b.h} en ventana (por transmisor, nada de EDID a medida)`:""}
         ${x.no60?`<br><span class="warn">⚠ La ${esc(short(x.spec.n))} no admite ${x.sig.w}×${x.sig.h} a 60 Hz${x.spec.i60?` (a 60 Hz como mucho ${x.spec.i60[3]||x.spec.i60[0]}×${x.spec.i60[4]||x.spec.i60[1]}${x.spec.i60[2]<8e6&&x.sig.w>=3840?"; su 4K es a 30 Hz":""})`:""}.${x.alt60.length?` Usa ${x.alt60.map(m=>esc(short(m.n))).join(", ")}.`:""}</span>`:""}
         ${x.overkill?`<br><span class="warnO">⚠ Escalador innecesario: ya le llega la señal a medida. Basta una ${esc(short(x.altNoSc.n))} sin escalador${x.altNoSc.stock?" (la tenéis)":""}.</span>`:""}
+        ${x.mirAuto?`<br><span class="warnO">Respaldo de verdad: 2 ${esc(short(x.spec.n))} (principal + espejo): si falla una, queda la otra.${x.sameAlt?` Si vas justo de tiempo de montaje, una ${esc(short(x.sameAlt.n))} con el respaldo en la misma electrónica (Respaldo → En la misma electrónica).`:""}</span>`:""}
         ${x.scForced?`<br><span class="warnO">${x.scWhy==="ports"?`La zona de ${b.w}×${b.h} sí entra sin escalador, pero ${x.scBig.p<x.ports?`hacen falta ${x.ports} bocas${x.red==="same"?` (${x.main} + ${x.main} respaldo)`:""} y la mayor sin escalador es la ${esc(short(x.scBig.n))} con ${x.scBig.p}`:`son ${fmt(x.px/1e6)} Mpx y la ${esc(short(x.scBig.n))} llega a ${fmt(x.scBig.c/1e6)}`}: por eso sale una con escalador.${x.red==="same"&&x.scBig.p>=x.main&&x.scBig.c>=x.px?` Para tener respaldo: una ${esc(short(x.spec.n))} o 2 ${esc(short(x.scBig.n))}, una como espejo (5 · Redundancia → electrónica espejo; la señal se duplica con un distribuidor, o con el HDMI 220 Pro si llega por fibra).`:""}${x.altMin?` Con las bocas llenas serían ${x.minNeed}: cambia el recorrido (p. ej. por filas) o quita «Repartir por columnas/filas completas» en 5 y entra en una ${esc(short(x.altMin.n))} sin escalador.`:" Otra opción es repartir la pantalla en dos electrónicas sin escalador."}`:`La zona de ${b.w}×${b.h} no cabe en la entrada de ninguna sin escalador: se propone una con escalador. Otra opción es repartir la pantalla en más electrónicas.`}</span>`:""}
         ${x.feed==="std"&&!x.spec.sc?`<br><span class="warn">Le llega señal estándar (16:9) y esta electrónica no escala: hace falta una con escalador.</span>`:""}
         ${x.over?`<br><span class="warn">No cabe en una ${esc(short(x.spec.n))}: reparte pantallas en otra electrónica.</span>`:""}
@@ -1265,6 +1271,7 @@ $("elecs").addEventListener("change",e=>{const card=e.target.closest(".el");if(!
     if(v)E.ins[k][g]=v;else delete E.ins[k][g]}
   else if(f==="model")E.model=e.target.value;
   else if(f==="scaler")E.scaler=e.target.value;
+  else if(f==="red"){if(e.target.value)E.red=e.target.value;else delete E.red}
   else if(f==="loc"){if(e.target.value)E.loc=e.target.value;else delete E.loc}
   else if(f==="dist"||f==="cd"){const v=+e.target.value;if(v>0)E[f]=v;else delete E[f]}
   else if(f==="feed"){const v=e.target.value;if(v.startsWith("new:")){const X=newInst(v.slice(4));E.feed=X.id;toast(`${X.name} añadido en 6b · elígelo también en otras electrónicas que alimente`)}else if(v)E.feed=v;else delete E.feed}
@@ -2233,7 +2240,7 @@ function cablePlanRaw(A){
   const avail=T=>T.sig>1?txQty(T)*T.sig-slot[T.id]:txQty(T)-used[T.id];
   [...links].sort((a,b)=>(b.edid-a.edid)||(b.need4k-a.need4k)).forEach(L=>{if(L.kind!=="lw")return;
     // respaldo con electrónica espejo y 4K: primero el HDMI 220 Pro, que da la señal duplicada en el receptor (sin distribuidor)
-    const mir=S.opts.red==="mirror"&&L.need4k;
+    const mir=L.x.red==="mirror"&&L.need4k;
     const order=(L.edid||mir?["hdmi220","ubex","optx100","opt90","opt110"]:["optx100","opt90","opt110"]).map(id=>TXS.find(T=>T.id===id)).filter(T=>T&&(!L.need4k||T.k4));
     let T=order.find(T=>avail(T)>0)||order[0];L.over=avail(T)<=0;L.T=T;
     if(T.sig>1){slot[T.id]++;used[T.id]=Math.ceil(slot[T.id]/T.sig)}else used[T.id]++});
@@ -2247,15 +2254,15 @@ function cablePlanRaw(A){
       if(L.T.dvi)LE.warn.push(`${L.T.n}: llega por DVI, máx. 1920×1200`)}
     if(L.kind!=="hdmi10"&&L.x.spec.id==="vx1000")LE.warn.push("La VX1000 da problemas en la entrada con HDMI por fibra y con fibra óptica")});
   // respaldo con electrónica espejo: la señal se duplica con un distribuidor, salvo la que llega por HDMI 220 Pro (su receptor ya da 2 salidas)
-  if(S.opts.red==="mirror")A.elecs.forEach(x=>{if(!x.screens.length)return;const LL=links.filter(L=>L.E===x.E),n220=LL.filter(L=>L.T&&L.T.id==="hdmi220").length;
+  A.elecs.forEach(x=>{if(!x.screens.length||x.red!=="mirror")return;const LL=links.filter(L=>L.E===x.E),n220=LL.filter(L=>L.T&&L.T.id==="hdmi220").length;
     const nSig=LL.length||Math.max(1,(x.E.ins||[]).filter(q=>q.src||q.use).length+feedsOf(x.E).length),nDa=nSig-n220;
     if(nDa>0){add(proj,eqn("da"),nDa,`respaldo con electrónica espejo · ${x.letter} ${x.E.name}`);EL(x.E.id).link.push(`respaldo espejo: ${nDa} distribuidor${nDa>1?"es":""} 1→2 para duplicar la señal`)}
     if(n220)EL(x.E.id).link.push(`respaldo espejo: la 2ª salida del receptor HDMI 220 Pro alimenta la electrónica espejo (sin distribuidor)`)});
   // respaldo con electrónica espejo: principal y espejo se trabajan juntas por red → switch de datos (la MCTRL660 no se controla por Ethernet; la 660 Pro sí)
-  if(S.opts.red==="mirror"){const net=A.elecs.filter(x=>x.screens.length&&x.spec.id!=="mctrl660");
+  {const net=A.elecs.filter(x=>x.screens.length&&x.red==="mirror"&&x.spec.id!=="mctrl660");
     if(net.length){add(proj,eqn("sw"),1,`respaldo con electrónica espejo: ${net.map(x=>x.letter).join(", ")} principal + espejo por red para trabajarlas juntas`);add(proj,eqn("latRed"),net.length*2+1,"switch: uno por electrónica (principal y espejo) + uno al ordenador de control");
       net.forEach(x=>EL(x.E.id).link.push("respaldo espejo: principal y espejo al switch de datos para trabajarlas juntas"))}
-    A.elecs.filter(x=>x.screens.length&&x.spec.id==="mctrl660").forEach(x=>EL(x.E.id).link.push("respaldo espejo: la MCTRL660 (no la Pro) no se controla por Ethernet, sin switch"))}
+    A.elecs.filter(x=>x.screens.length&&x.red==="mirror"&&x.spec.id==="mctrl660").forEach(x=>EL(x.E.id).link.push("respaldo espejo: la MCTRL660 (no la Pro) no se controla por Ethernet, sin switch"))}
   TXS.forEach(T=>{if(used[T.id])add(proj,eqn("lw_"+T.id),used[T.id],T.id==="ubex"?`${slot.ubex} señal${slot.ubex>1?"es":""} (2 por pareja)`:`pareja TX + RX${T.net?" · crea red: controla la electrónica desde control":""}`)});
   // fibra: OpticalCON con Watchout o Disguise; SC en el resto. Bobinas de 100 m y hasta 4 hilos, repartidas por hilos (UBEX 4, OPTX/220 Pro 2, OPT 1)
   const groups=new Map();
@@ -2304,8 +2311,8 @@ function prepProject(){const A=assign(),o=S.opts,out=[],add=(n,q,d="")=>{if(q>0)
   const PP=powerPlan();const byPc={};PP.lines.forEach(l=>{const k=(l.segs[0].s.pc)||"";byPc[k]=(byPc[k]||0)+1});
   Object.entries(byPc).forEach(([k,n])=>add(k==="pc"?eqn("mangPc"):k==="t1"?eqn("mangT1"):k?`Manguera ${(PC[k]||PC[""]).n.replace(/ \(.*\)/,"")} → Schuko`:"Manguera de corriente → Schuko (conector a indicar)",n,"una por toma · metros: ____"));
   cablePlan().proj.forEach(i=>out.push(Object.assign({},i)));
-  {const byE=new Map();A.elecs.filter(x=>x.screens.length).forEach(x=>{const k=x.spec.id||x.spec.n;if(!byE.has(k))byE.set(k,{x,n:0,l:[]});const e=byE.get(k);e.n++;e.l.push(`${x.letter} · ${x.E.name}`)});
-    byE.forEach(e=>{const mir=o.red==="mirror",it={n:`Electrónica ${short(e.x.spec.n)}`,q:e.n*(mir?2:1),d:e.l.join(", ")+(mir?" · ×2: principal + espejo de respaldo":""),inv:e.x.spec.inv};out.push(it)})}
+  {const byE=new Map();A.elecs.filter(x=>x.screens.length).forEach(x=>{const k=x.spec.id||x.spec.n;if(!byE.has(k))byE.set(k,{x,n:0,l:[]});const e=byE.get(k);e.n+=x.red==="mirror"?2:1;e.l.push(`${x.letter} · ${x.E.name}${x.red==="mirror"?" (×2: principal + espejo)":""}`)});
+    byE.forEach(e=>{const it={n:`Electrónica ${short(e.x.spec.n)}`,q:e.n,d:e.l.join(", "),inv:e.x.spec.inv};out.push(it)})}
   scalers().filter(X=>!instType(X)).forEach(X=>out.push({n:`Procesador ${X.model||X.name}`,q:1,d:X.name,inv:X.model||X.name}));
   srcTypeUse(A).forEach(m=>{if(m.s.id==="std"||m.s.k==="unk")return;out.push({n:`Equipo de señal ${m.s.n}`,q:m.n,d:m.names.join(", "),inv:m.s.inv})});
   {const PU=new Map();srcUse(A).filter(u=>u.s.perUnit&&u.who.length).forEach(u=>{const k=u.s.perUnit;if(!PU.has(k))PU.set(k,{q:0,w:[],note:u.s.unitNote});const e=PU.get(k);e.q++;e.w.push(u.X.name)});
