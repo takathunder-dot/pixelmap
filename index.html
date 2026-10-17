@@ -82,7 +82,8 @@ textarea{font-family:var(--f-body);resize:vertical;min-height:34px;line-height:1
 .scr .ed input{padding:5px 6px;font-size:12px}
 .scr .acts{display:flex;gap:4px}
 .scr .acts button{padding:4px 7px;font-size:12px}
-.warn{color:var(--danger)}
+.warn{color:var(--danger)}.warnO{color:#d97706;font-weight:600}
+.srcsum{font-size:12px;margin:0 0 8px;display:flex;flex-direction:column;gap:2px}.srcsum b{font-weight:700}
 .chains{display:flex;flex-direction:column;gap:3px;margin-top:5px}.chain{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--fg)}
 button.chainx{font-size:11px;padding:2px 8px;margin:0}
 .main{display:flex;flex-direction:column;min-width:0;min-height:0}
@@ -302,6 +303,12 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
       <div class="row" style="margin:10px 0"><button class="primary" id="bNewProc">+ Nueva electrónica</button></div>
       <div class="list" id="procLib"></div>
     </section>
+    <section>
+      <h2>Equipos de señal</h2>
+      <p class="hint" style="margin-top:0">Lo que alimenta a las electrónicas LED. <strong>A medida</strong> (servidores, procesadores): sacan la señal ya mapeada, así que la NovaStar va <strong>sin escalador</strong>. <strong>Estándar</strong> (vMix, ATEM, cámara, PC): 16:9 sin mapear, la NovaStar necesita escalador. Se elige en cada electrónica, en «Le llega desde».</p>
+      <div class="row" style="margin:10px 0"><button class="primary" id="bNewSrc">+ Nuevo equipo de señal</button></div>
+      <div class="list" id="srcLib"></div>
+    </section>
   </div>
   <div id="tabInv" class="tabpane" hidden>
     <section>
@@ -432,6 +439,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 
   <section>
     <h2><span>6</span>Electrónicas <span id="eCount"></span></h2>
+    <div class="srcsum" id="srcSum"></div>
     <div class="list" id="elecs"></div>
     <div class="row" style="margin-top:10px"><button id="bAddE">+ Añadir electrónica</button></div>
     <p class="hint">Asigna cada pantalla a una electrónica desde su tarjeta en «Pantallas». Con modelo «Automático» se elige el más pequeño que cubre las bocas y los píxeles. El recuadro discontinuo del lienzo es la zona que esa electrónica tiene que recibir: cuanto más juntas estén sus pantallas, menor resolución de entrada. Con varias electrónicas, las bocas se marcan con letra y número: B3 es la electrónica B, boca 3.</p>
@@ -657,7 +665,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <li><b>Recorrido, inicio y forma</b> generales (columnas o filas, esquina, serpiente o zigzag). <b>Esquinas vistas</b> desde delante o desde detrás (como se cablea).</li>
 <li><b>Redundancia</b>: en la misma electrónica (dobla bocas: 4 líneas = 8 bocas) o con electrónica espejo.</li>
 <li><b>Líneas de corriente</b> (por defecto «columnas enteras»): cada línea coge columnas completas, todas nacen desde el mismo borde y se reparten por igual, sin pasar del máximo del módulo ni de lo que admite la línea (V × A × %). Con el máximo por línea de la tarjeta fuerzas otro reparto (p. ej. 12 = 2 columnas de 6). La otra opción, «siguen el recorrido de datos», corta al llegar al máximo.</li>
-<li><b>Bocas de datos</b>: con columnas enteras por boca, todas nacen desde el mismo borde (la serpiente solo va dentro de cada boca).</li>
+<li><b>Bocas de datos</b>: se usan las mismas bocas que llenándolas al máximo, pero la carga se reparte por igual (una pantalla de 6 columnas en 2 bocas va 3 + 3, no 5 + 1), así no cambia la electrónica. Con columnas enteras por boca, todas nacen desde el mismo borde (la serpiente solo va dentro de cada boca). Si una pantalla tiene un máximo por boca propio en «Cableado de esta pantalla», se respeta exacto.</li>
 <li><b>Dibujar</b>: líneas de datos (P1, P2… con respaldo en el último módulo) o líneas de corriente. El plano de corriente se ve distinto para no confundirlo: damero gris, borde amarillo, rótulo «CORRIENTE» y triángulos con cuadro.circuito.</li>
 </ul></details>
 
@@ -679,6 +687,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <li><b>Entrada máx.</b>: limita la zona de entrada a una resolución (por ejemplo 1920×1080).</li>
 <li><b>Entradas</b>: en electrónicas con capas (VX6s y VX1000: 3; VX Pro: 6; VX2000 Pro: 12; MCTRL: 1) puedes añadir varias entradas con <b>+ Añadir entrada</b>, cada una con su fuente y, si quieres, su uso (fondo, PIP, marcador…). El número de capas se edita en la pestaña Electrónicas.</li>
 <li><b>Entrada usada y Fuente / señal</b>: qué entrada de la electrónica usas (te sugiere las que tiene, p. ej. 3G-SDI) y de dónde viene la señal (p. ej. «SDI 1 · ETB»). Las fuentes que ya has escrito aparecen como sugerencia para no repetirlas con otro nombre, y en <b>Material y stock</b> sale cada fuente con cuántas electrónicas la usan: si son varias, indica «Repartir 1 → N (splitter / DA)». Sale en la ficha PDF y Word, en la tabla de electrónicas y en «Señal por electrónica».</li>
+<li><b>Le llega desde</b> (en cada electrónica): el equipo que la alimenta. Los <b>servidores y procesadores</b> (Watchout, Disguise, Magnimage EC40/EC90, Pulse, Di-Ventix) sacan la señal a medida del pixel map, así que el modo Automático elige una NovaStar <b>sin escalador</b> que admita la zona (MCTRL660 → R5 → 4K…); solo si ninguna la admite propone una con escalador. La <b>señal estándar</b> (vMix, ATEM, cámara, realización, PC) va siempre con escalador. Si alguien pone una con escalador a un equipo a medida, sale el aviso «Escalador innecesario». Encima de las electrónicas ves cuántas salidas de cada equipo de señal se usan y cuántos equipos hacen falta; los equipos se editan en la pestaña Electrónicas → Equipos de señal.</li>
 <li><b>Procesadores de señal</b> (apartado <b>6b</b>, debajo de las electrónicas): para un escalador antes de las NovaStar, por ejemplo una Magnimage EC40 que recibe 2 señales y alimenta a 3 electrónicas sin escalador. Pon sus entradas con su fuente y, en cada <b>salida</b>, a qué electrónica LED va, por qué entrada y con qué resolución (<b>= zona</b> copia la zona de entrada de esa electrónica). La electrónica LED muestra «← EC40 · Salida 1» como fuente, avisa si la zona no cabe en esa resolución, y la ficha y el material lo recogen.</li>
 <li><b>Notas de montaje</b> en cada electrónica y procesador de señal (por ejemplo «solo 1 SDI: llevar conversor SDI → HDMI para ETB»). Salen en la ficha PDF y Word, en la página de datos y en la de material, junto a las notas de las pantallas.</li>
 <li><b>Orden de bocas</b>: con ↑ ↓ eliges qué pantalla va en la boca 1, 2, 3… Las pantallas unidas o encadenadas se mueven en bloque. <b>Orden automático</b> vuelve al orden de la lista.</li>
@@ -789,6 +798,23 @@ const INV_SEED=[{"n":"Módulo ProLIghts p.p.2.6 mm (192x192pix)","q":0,"c":"Mód
 const EQ_SEED={e8s:"Yestech estructura 8s suelo",vaso:"Yestech Tubos union Estructura 8s",torn:"Yestech Tornillos Union Estructura 8s",pata:"Yestech Patas estructura 8s",grillete:"Grillete de 1.5 T Azul",eslinga:"Acerado de 2 mts 8mm",cuadro:"Cuadro Ingerent 32A a 6 schuko con diferencial",acom:"Manguera Cetac 32A trifásico 20m",mangPc:"powercom azul a schuko 10m",mangT1:"powercom negro a schuko 15m"};
 const EQ_LABEL={e8s:["8s (verticales y horizontales)","8s"],vaso:["Vaso de empalme de 8s","Vaso"],torn:["Tornillo de 8s (vasos y uniones)","Tornillo de 8s"],pata:["Pata de 8s (+0,26 m)","Pata de 8s"],grillete:["Grillete de volado","Grillete"],eslinga:["Eslinga de volado (2 m acerada)","Eslinga acerada 2 m"],cuadro:["Cuadro eléctrico","Cuadro eléctrico"],acom:["Acometida al cuadro","Acometida a cuadro"],mangPc:["Manguera powerCON azul → Schuko","Manguera powerCON azul → Schuko"],mangT1:["Manguera powerCON TRUE1 → Schuko","Manguera powerCON TRUE1 → Schuko"]};
 let INV=[],EQ={};
+// equipos de señal que alimentan a las electrónicas LED: «pix» sacan la señal a medida del pixel map (no hace falta escalador en la NovaStar); «std» dan formatos estándar 16:9 (sí hace falta)
+const SRC_SEED=[
+  {id:"wo7",n:"Watchout 7 · servidor",k:"pix",o:4,w:3840,h:2160,qty:4,note:"Servidores nº4 a nº7"},
+  {id:"wo6",n:"Watchout 6 · servidor",k:"pix",o:4,w:1920,h:1200,qty:4,note:"Servidores nº1 a nº3 y Watchpax nº8 · sin 4K"},
+  {id:"d3solo",n:"Disguise Solo",k:"pix",o:2,w:3840,h:2160,qty:1},
+  {id:"d3x4",n:"Disguise 2×4",k:"pix",o:2,w:3840,h:2160,qty:1},
+  {id:"ec90",n:"Magnimage EC90",k:"pix",o:4,w:4092,h:2600,qty:2,note:"2 principales + 2 auxiliares (cada una doble, misma imagen) · a medida hasta 4092 × 2600"},
+  {id:"ec40m",n:"Magnimage EC40 · mosaico",k:"pix",o:8,w:3840,h:1200,a:4147200,qty:5,inv:"Magnimage EC40",note:"8 salidas hasta 3840×1080 / 1920×1200 · 16K×2K en total"},
+  {id:"ec40s",n:"Magnimage EC40 · switcher",k:"pix",o:4,w:3840,h:1200,a:4147200,qty:5,inv:"Magnimage EC40",note:"4 salidas de programa con previo, programa y fundidos"},
+  {id:"pulse",n:"Analog Way Pulse",k:"pix",o:1,w:2048,h:1200,a:2304000,qty:3,note:"1 salida principal (+ previo) · hasta 1920×1200 / 2048×1080"},
+  {id:"diventix",n:"Analog Way Di-Ventix II",k:"pix",o:1,w:2048,h:1200,a:2304000,qty:3,note:"1 salida principal (+ previo) · hasta 1920×1200 / 2048×1080"},
+  {id:"std",n:"Señal estándar (vMix, ATEM, cámara, realización, PC)",k:"std",o:0,w:1920,h:1080,note:"16:9 sin mapear: la NovaStar necesita escalador"}];
+let SRCLIB=[];
+const srcOf=id=>SRCLIB.find(s=>s.id===id)||null;
+const srcQty=s=>{const i=s&&s.inv?invFind(s.inv):null;return i&&i.q!=null?i.q:(s&&s.qty)||0};
+// salidas de un equipo de señal que ocupa una zona de w × h
+const srcOuts=(s,w,h)=>{if(!s||s.k!=="pix"||!w||!h)return 1;let n=Math.ceil(w/s.w)*Math.ceil(h/s.h);if(s.a)n=Math.max(n,Math.ceil(w*h/s.a));return n};
 const invNorm=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/(\d),(\d)/g,"$1.$2").replace(/(\d)\s*(metros?|mtrs?|mts?|m)\b/g,"$1 m").replace(/[^a-z0-9.]+/g," ").replace(/\s+/g," ").trim();
 const invFind=n=>{const k=invNorm(n);return k?INV.find(i=>invNorm(i.n)===k)||null:null};
 const eqn=k=>(EQ[k]||"").trim()||(EQ_LABEL[k]||[k,k])[1];
@@ -808,6 +834,8 @@ function invState(n,q,inv){const it=invFind(inv||n);if(q===null)return{have:it?i
 let LIB=[];
 const uid=p=>p+Math.random().toString(36).slice(2,8);
 function loadLib(){loadInv();
+  try{const a=JSON.parse(localStorage.getItem("pixelmap-lib-src")||"null");if(Array.isArray(a))SRCLIB=a}catch(e){}
+  if(!SRCLIB.length)SRCLIB=SRC_SEED.map(s=>Object.assign({},s));
   try{const t=localStorage.getItem("pixelmap-lib-mod");if(t){const a=JSON.parse(t);if(Array.isArray(a))LIB=a}}catch(e){}
   if(!LIB.length){LIB=PANEL_SEED.map(p=>Object.assign({stock:false,qty:0},p));
     try{const t=localStorage.getItem("pixelmap-panels");if(t)JSON.parse(t).forEach(p=>{if(p&&p.n)LIB.push(Object.assign({stock:false,qty:0},p,{id:uid("m")}))})}catch(e){}}
@@ -839,7 +867,7 @@ function loadLib(){loadInv();
   if(ver<10){const d=LIB.find(z=>z.id==="digiled-p48");if(d&&!d.wm)d.wm=175;try{localStorage.setItem("pixelmap-lib-ver","10")}catch(e){}saveLib()}
   if(ver<9){PROC_SEED.forEach(sd=>{const q=PROCLIB.find(z=>z.id===sd.id);if(q&&q.ly===undefined&&sd.ly)q.ly=sd.ly});try{localStorage.setItem("pixelmap-lib-ver","9")}catch(e){}saveLib()}
 }
-function saveLib(){try{localStorage.setItem("pixelmap-lib-mod",JSON.stringify(LIB));localStorage.setItem("pixelmap-lib-proc",JSON.stringify(PROCLIB))}catch(e){}}
+function saveLib(){try{localStorage.setItem("pixelmap-lib-mod",JSON.stringify(LIB));localStorage.setItem("pixelmap-lib-proc",JSON.stringify(PROCLIB));localStorage.setItem("pixelmap-lib-src",JSON.stringify(SRCLIB))}catch(e){}}
 const pLabel=p=>`${p.stock?"★ ":p.prov?`[${p.prov}] `:""}${p.n} · ${fmtN(p.w)}×${fmtN(p.h)} mm · ${p.x}×${p.y} px${p.wm?` · ${p.wm} W`:""}`;
 const fmtN=v=>String(v).replace(".",",");
 function panelOf(v){if(!v||v==="custom")return null;return LIB.find(p=>p.id===v)||null}
@@ -900,14 +928,21 @@ function chunks(s,max,kind="data"){
   // con columnas (o filas) enteras por boca, cada boca empieza desde el mismo borde (serpiente solo dentro de la boca)
   const fp=frontPat(patOf(s,kind));
   if(fp.z!=="z"&&size>=len&&size%len===0){const vert=fp.d==="v",right=fp.c.endsWith("r"),bottom=fp.c.startsWith("b"),units=vert?s.cols:s.rows,k=size/len;
-    for(let u0=0;u0<units;u0+=k){const cells=[];
-      for(let j=0;j<k&&u0+j<units;j++){const u=u0+j,fwd=j%2===0;
+    // mismas bocas que llenándolas al máximo, pero repartidas por igual (6 columnas en 2 bocas → 3 + 3, no 5 + 1)
+    const nP=Math.ceil(units/k),per=Array.from({length:nP},(_,i)=>Math.floor(units/nP)+(i<units%nP?1:0));
+    for(let pi=0,u0=0;pi<nP;u0+=per[pi],pi++){const cells=[],kk=per[pi];
+      for(let j=0;j<kk&&u0+j<units;j++){const u=u0+j,fwd=j%2===0;
         for(let q=0;q<len;q++){const qq=fwd?q:len-1-q;
           if(vert)cells.push([right?s.cols-1-u:u,bottom?s.rows-1-qq:qq]);else cells.push([right?s.cols-1-qq:qq,bottom?s.rows-1-u:u])}}
       out.push(cells)}
     return out}
-  for(let i=0;i<seq.length;i+=size)out.push(seq.slice(i,i+size));return out;
+  // tramos iguales: mismas bocas, misma carga en cada una (salvo máximo propio exacto)
+  if(exact){for(let i=0;i<seq.length;i+=size)out.push(seq.slice(i,i+size));return out}
+  return balSlices(seq,size,1);
 }
+// reparte una secuencia en el mínimo de tramos de como mucho «size», lo más iguales posible (en múltiplos de «unit»)
+function balSlices(seq,size,unit){const U=Math.max(1,unit|0),units=Math.ceil(seq.length/U),k=Math.max(1,Math.floor(size/U)),n=Math.ceil(units/k),out=[];let a=0;
+  for(let i=0;i<n;i++){const u=Math.floor(units/n)+(i<units%n?1:0),b=Math.min(seq.length,a+u*U);out.push(seq.slice(a,b));a=b}return out.filter(x=>x.length)}
 // cableado unido: varias pantallas del mismo módulo se cablean como si fueran una
 const wgOf=s=>s.wg?S.screens.filter(q=>q.wg===s.wg):[s];
 function groupSeq(list,kind="data"){
@@ -1022,7 +1057,7 @@ function ensureElecs(){
 }
 const short=n=>n.replace("NovaStar ","");
 let _asK="",_asV=null;
-function assign(){let k;try{k=JSON.stringify([S.screens,S.elecs,S.opts,PROCLIB])}catch(e){k=""}
+function assign(){let k;try{k=JSON.stringify([S.screens,S.elecs,S.opts,PROCLIB,SRCLIB,S.scalers])}catch(e){k=""}
   if(k&&k===_asK&&_asV)return _asV;const v=assignRaw();_asK=k;_asV=v;return v}
 function assignRaw(){
   ensureElecs();
@@ -1035,9 +1070,9 @@ function assignRaw(){
     const UN=[];
     grp.forEach((list,g)=>{if(list.length<2){grp.delete(g);return}const h=list[0],md=effData(h),U={key:"g:"+g,list,runs:[]};UN.push(U);if(!md)return;
       const G=groupSeq(list,"data"),exact=!!(h.wd&&h.wd.n>0),size=!exact&&S.opts.full&&md>=G.len?Math.floor(md/G.len)*G.len:md;
-      for(let i=0;i<G.items.length;i+=size){const run={segs:[],px:0};let seg=null;
-        G.items.slice(i,i+size).forEach(it=>{if(!seg||seg.s!==it.s){seg={s:it.s,cells:[],jp:!!seg};run.segs.push(seg)}seg.cells.push(it.cell);run.px+=it.s.rx*it.s.ry});
-        U.runs.push(run)}});
+      (exact?(()=>{const o=[];for(let i=0;i<G.items.length;i+=size)o.push(G.items.slice(i,i+size));return o})():balSlices(G.items,size,size%G.len===0?G.len:1)).forEach(part=>{const run={segs:[],px:0};let seg=null;
+        part.forEach(it=>{if(!seg||seg.s!==it.s){seg={s:it.s,cells:[],jp:!!seg};run.segs.push(seg)}seg.cells.push(it.cell);run.px+=it.s.rx*it.s.ry});
+        U.runs.push(run)})});
     const inG=new Set([...grp.values()].flat().map(s=>s.id)),chainScr=scr.filter(s=>!inG.has(s.id));
     const ids=new Set(chainScr.map(s=>s.id)),preds=new Set(chainScr.filter(s=>s.next&&ids.has(s.next)).map(s=>s.next)),done=new Set();
     const walk=h=>{const ch=[];let c=h;while(c&&!done.has(c.id)&&ids.has(c.id)){done.add(c.id);ch.push(c);c=c.next?chainScr.find(z=>z.id===c.next):null}return ch};
@@ -1057,9 +1092,18 @@ function assignRaw(){
     const uInfo=[];UN.forEach(U=>{const f=runs.length+1;runs.push(...U.runs);uInfo.push({key:U.key,name:U.list.map(s=>s.name).join(U.key[0]==="g"?" + ":" → "),p0:f,p1:runs.length})});
     runs.forEach(r=>px+=r.px);
     let spec,auto=E.model==="auto";const red=S.opts.red||"none",nP=runs.length,need=red==="same"?nP*2:nP;
-    if(auto){const okSc=m=>!E.scaler||E.scaler==="any"||(E.scaler==="yes"?!!m.sc:!m.sc);
-      let own=PROCLIB.filter(m=>m.stock&&okSc(m)),pool=own.length?own:PROCLIB.filter(okSc);if(!pool.length)pool=PROCLIB;
-      spec=[...pool].sort((a,b)=>a.p-b.p||a.c-b.c||(a.sc?1:0)-(b.sc?1:0)).find(m=>m.p>=need&&m.c>=px)||pool.reduce((a,b)=>b.p>a.p?b:a,pool[0])}
+    // ¿qué le llega? un servidor o procesador ya saca la señal a medida → sin escalador (salvo que la zona no quepa en ninguna); señal estándar → con escalador
+    const feed=feedKind(E),bw=scr.length?x1-x0:0,bh=scr.length?y1-y0:0,fitsIn=m=>m.sc||!m.inW||(bw*bh<=m.inW*m.inH&&Math.max(bw,bh)<=(m.side||Math.max(m.inW,m.inH))&&(m.side||(bw<=m.inW&&bh<=m.inH)));
+    const wantSc=E.scaler==="yes"?true:E.scaler==="no"?false:feed==="std"?true:feed==="pix"?false:null;
+    let scForced=false;
+    if(auto){const okSc=m=>wantSc===null||(wantSc?!!m.sc:!m.sc&&fitsIn(m));
+      const pick=f=>{let own=PROCLIB.filter(m=>m.stock&&f(m)),pool=own.length?own:PROCLIB.filter(f);if(!pool.length)return null;
+        return [...pool].sort((a,b)=>a.p-b.p||a.c-b.c||(a.sc?1:0)-(b.sc?1:0)).find(m=>m.p>=need&&m.c>=px)||null};
+      spec=pick(okSc);
+      // pix: si ninguna sin escalador admite la zona, se acepta una con escalador (y se avisa)
+      if(!spec&&wantSc===false){spec=pick(m=>!!m.sc);scForced=!!spec}
+      if(!spec){let pool=PROCLIB.filter(okSc);if(!pool.length)pool=PROCLIB;spec=pool.reduce((a,b)=>b.p>a.p?b:a,pool[0])}
+      if(wantSc===false&&spec&&spec.sc)scForced=true}
     else if(E.model==="custom")spec={id:"custom",n:"Personalizada",p:Math.max(1,E.p|0),c:Math.max(1000,+E.c)};
     else spec=procOf(E.model)||PROCLIB[0];
     let load=0;
@@ -1070,7 +1114,9 @@ function assignRaw(){
         if(!map.has(g.s.id))map.set(g.s.id,[]);map.get(g.s.id).push(a);
         if(a.nextS&&!a.jNext)jumps.push({from:g.s,to:a.nextS,m:+g.s.jump||0,a,fromCell:g.cells[g.cells.length-1],toCell:a.nextCell})})});
     const bbox=scr.length?{x:x0,y:y0,w:x1-x0,h:y1-y0}:null;
-    out.push({E,idx,letter:LET[idx%26],color:ELC[idx%ELC.length],spec,auto,screens:scr,units:uInfo,ports:need,main:nP,red,px,bbox,jumps,
+    // sobredimensionado: le llega señal a medida y se ha puesto una con escalador cuando una sin escalador valía
+    const altNoSc=PROCLIB.filter(m=>!m.sc&&m.p>=need&&m.c>=px&&fitsIn(m)),overkill=feed==="pix"&&!!spec.sc&&!scForced&&altNoSc.length>0;
+    out.push({E,idx,letter:LET[idx%26],color:ELC[idx%ELC.length],spec,auto,screens:scr,units:uInfo,ports:need,main:nP,red,px,bbox,jumps,feed,scForced,overkill,altNoSc:altNoSc.sort((a,b)=>(b.stock?1:0)-(a.stock?1:0)||a.p-b.p)[0]||null,
       over:need>spec.p||px>spec.c,inOver:!!(bbox&&E.inW&&(bbox.w>E.inW||bbox.h>E.inH)),
       noSc:!spec.sc,inBudget:spec.inW?spec.inW*spec.inH:0,inArea:bbox?bbox.w*bbox.h:0,
       scOver:!!(bbox&&!spec.sc&&spec.inW&&bbox.w*bbox.h>spec.inW*spec.inH),
@@ -1105,8 +1151,13 @@ function packElec(id){
 function srcList(){let h=[];try{h=JSON.parse(localStorage.getItem("pixelmap-sources")||"[]")}catch(e){}
   return [...new Set([...S.elecs.flatMap(E=>(E.ins||[]).map(q=>q.src)).filter(Boolean),...h])]}
 function rememberSrc(v){if(!v)return;try{let h=JSON.parse(localStorage.getItem("pixelmap-sources")||"[]");h=[v,...h.filter(x=>x.toLowerCase()!==v.toLowerCase())].slice(0,40);localStorage.setItem("pixelmap-sources",JSON.stringify(h))}catch(e){}}
+// uso de los equipos de señal: salidas ocupadas y cuántos equipos hacen falta
+function srcUse(A){const M=new Map();A.elecs.filter(x=>x.screens.length&&x.E.feed&&srcOf(x.E.feed)).forEach(x=>{const s=srcOf(x.E.feed);if(!M.has(s.id))M.set(s.id,{s,outs:0,who:[]});const u=M.get(s.id),n=srcOuts(s,x.bbox.w,x.bbox.h);u.outs+=n;u.who.push(`${x.letter}${n>1?` (${n} salidas)`:""}`)});
+  return[...M.values()].map(u=>Object.assign(u,{units:u.s.k==="pix"&&u.s.o?Math.ceil(u.outs/u.s.o):0}))}
+function renderSrcSum(A){const U=srcUse(A);$("srcSum").innerHTML=U.map(u=>u.s.k!=="pix"?`<span>📡 <b>${esc(u.s.n)}</b> → ${u.who.join(", ")} · con escalador</span>`:
+  `<span${u.units>srcQty(u.s)&&srcQty(u.s)?' class="warn"':""}>📡 <b>${esc(u.s.n)}</b>: ${u.outs} salida${u.outs===1?"":"s"} → ${u.who.join(", ")} · ${u.units} equipo${u.units===1?"":"s"} de ${u.s.o} salidas${srcQty(u.s)?` (tenéis ${srcQty(u.s)})`:""}${u.units>srcQty(u.s)&&srcQty(u.s)?" · ¡NO HAY SUFICIENTES!":""}</span>`).join("")}
 function renderElecs(){
-  const A=assign();{let dl=document.getElementById("dl-src");if(!dl){dl=document.createElement("datalist");dl.id="dl-src";document.body.appendChild(dl)}dl.innerHTML=srcList().map(v=>`<option value="${esc(v)}">`).join("")}$("eCount").textContent=`(${S.elecs.length})`;
+  const A=assign();renderSrcSum(A);{let dl=document.getElementById("dl-src");if(!dl){dl=document.createElement("datalist");dl.id="dl-src";document.body.appendChild(dl)}dl.innerHTML=srcList().map(v=>`<option value="${esc(v)}">`).join("")}$("eCount").textContent=`(${S.elecs.length})`;
   $("elecs").innerHTML=A.elecs.map(x=>{const E=x.E,b=x.bbox;
     const opts=`<option value="auto"${E.model==="auto"?" selected":""}>Automático (según bocas)</option>`+PROCLIB.map(p=>`<option value="${p.id}"${E.model===p.id?" selected":""}>${p.stock?"★ ":""}${esc(short(p.n))} · ${p.p} bocas · ${p.sc?"escalador":"1:1"}</option>`).join("")+`<option value="custom"${E.model==="custom"?" selected":""}>Personalizada…</option>`;
     const inSel=INPUTS.map(([w,h,l])=>`<option value="${w}x${h}"${E.inW===w&&E.inH===h?" selected":""}>${l}</option>`).join("");
@@ -1117,6 +1168,7 @@ function renderElecs(){
       <div class="ed2">
         <label>Modelo<select data-f="model">${opts}</select></label>
         <label>Entrada máx.<select data-f="input">${inSel}</select></label>
+        <label class="full" style="grid-column:1/-1">Le llega desde<select data-f="feed"><option value="">Sin indicar</option>${SRCLIB.map(s=>`<option value="${s.id}"${E.feed===s.id?" selected":""}>${esc(s.n)}${s.k==="pix"?" · a medida":" · necesita escalador"}</option>`).join("")}</select></label>
         <label class="full" style="grid-column:1/-1">Escalador<select data-f="scaler"><option value="any"${!E.scaler||E.scaler==="any"?" selected":""}>Indiferente</option><option value="yes"${E.scaler==="yes"?" selected":""}>Necesito escalador</option><option value="no"${E.scaler==="no"?" selected":""}>Sin escalador (1:1)</option></select></label>
         <div class="ins" style="grid-column:1/-1">${(()=>{const L=E.ins&&E.ins.length?E.ins:[{}],ly=x.spec.ly||0,n=(E.ins||[]).filter(q=>q.use||q.src).length+feedsOf(E).length;
           const fd=feedsOf(E);return fd.map(f=>`<div class="feed">← <b>${esc(f.src)}</b>${f.use?` → ${esc(f.use)}`:""}${f.res?` · ${f.res}`:""}</div>`).join("")+`<div class="hint" style="margin:4px 0">Entradas${ly?` · capas ${n} de ${ly}`:""}${ly&&n>ly?' <span class="warn">más entradas que capas</span>':""}</div>`+
@@ -1131,6 +1183,10 @@ function renderElecs(){
         ${x.noSc?`<br>Sin escalador: la señal llega 1:1 y puedes darle la forma que quieras.${x.inBudget?` Entrada ${fmt(x.inArea/1e6)} de ${fmt(x.inBudget/1e6)} Mpx (${Math.round(x.inArea/x.inBudget*100)}%)`:""}${x.spec.side?` · lado máx. ${x.spec.side} px`:""}.
           ${x.scOver?`<br><span class="warn">La zona de entrada (${b.w}×${b.h} = ${fmt(x.inArea/1e6)} Mpx) supera los ${fmt(x.inBudget/1e6)} Mpx de entrada de la ${esc(short(x.spec.n))}.</span>`:""}
           ${x.sideOver?`<br><span class="warn">Un lado de la zona supera los ${x.spec.side} px que admite la entrada.</span>`:""}`:""}
+        ${x.feed?`<br>Le llega: <strong>${esc((srcOf(x.E.feed)||{n:"procesador de señal (6b)"}).n)}</strong>${x.feed==="pix"?" · señal a medida, no necesita escalador":" · señal estándar, necesita escalador"}`:""}
+        ${x.overkill?`<br><span class="warnO">⚠ Escalador innecesario: ya le llega la señal a medida. Basta una ${esc(short(x.altNoSc.n))} sin escalador${x.altNoSc.stock?" (la tenéis)":""}.</span>`:""}
+        ${x.scForced?`<br><span class="warnO">La zona de ${b.w}×${b.h} no cabe en la entrada de ninguna sin escalador: se propone una con escalador. Otra opción es repartir la pantalla en más electrónicas.</span>`:""}
+        ${x.feed==="std"&&!x.spec.sc?`<br><span class="warn">Le llega señal estándar (16:9) y esta electrónica no escala: hace falta una con escalador.</span>`:""}
         ${x.over?`<br><span class="warn">No cabe en una ${esc(short(x.spec.n))}: reparte pantallas en otra electrónica.</span>`:""}`:"Sin pantallas asignadas."}</div>
       ${x.units.length>1?`<div class="pord" style="grid-column:1/-1"><div class="hint" style="margin:2px 0 4px">Orden de bocas</div>${x.units.map((u,k)=>`<div class="prow" data-k="${esc(u.key)}"><span class="pnum">${u.p1<u.p0?"—":(A.multi?x.letter:"P")+u.p0+(u.p1>u.p0?"–"+(A.multi?x.letter:"P")+u.p1:"")}</span><span class="pnm">${esc(u.name)}</span><button data-a="pup" ${k?"":"disabled"} aria-label="Subir">↑</button><button data-a="pdn" ${k<x.units.length-1?"":"disabled"} aria-label="Bajar">↓</button></div>`).join("")}${Array.isArray(x.E.order)&&x.E.order.length?`<button data-a="pres" class="ghost" style="margin-top:4px;font-size:12px;padding:4px 8px">Orden automático</button>`:""}</div>`:""}
       <div class="acts">${x.screens.length?`<button data-a="name">Nombre sugerido: ${esc(x.suggest)}</button><button data-a="selE" title="Selecciona todas sus pantallas para moverlas juntas">Seleccionar sus pantallas</button><button data-a="pack" title="Coloca sus pantallas juntas, sin huecos">Juntar pantallas</button>`:""}</div>
@@ -1144,6 +1200,7 @@ $("elecs").addEventListener("change",e=>{const card=e.target.closest(".el");if(!
     if(v)E.ins[k][g]=v;else delete E.ins[k][g]}
   else if(f==="model")E.model=e.target.value;
   else if(f==="scaler")E.scaler=e.target.value;
+  else if(f==="feed"){if(e.target.value)E.feed=e.target.value;else delete E.feed}
   else if(f==="input"){const[w,h]=e.target.value.split("x").map(Number);E.inW=w;E.inH=h}
   else if(f==="p")E.p=Math.max(1,+e.target.value|0);else if(f==="c")E.c=Math.max(1000,+e.target.value||0);
   commit()});
@@ -1163,6 +1220,8 @@ const openSc=new Set();
 function scalers(){if(!Array.isArray(S.scalers))S.scalers=[];return S.scalers}
 function newScaler(){const n=scalers().length+1;return{id:"x"+Math.random().toString(36).slice(2,8),name:`Procesador ${n}`,model:"Magnimage EC40",ins:[{}],outs:[{}]}}
 // entradas que llegan a una electrónica LED desde un procesador de señal
+// tipo de señal que recibe una electrónica: la elegida en «Le llega desde», o «pix» si sale de un procesador de señal del apartado 6b
+function feedKind(E){const s=srcOf(E.feed);if(s)return s.k;if(scalers().some(X=>(X.outs||[]).some(q=>q.to===E.id)))return"pix";return null}
 function feedsOf(E){const out=[];scalers().forEach(X=>(X.outs||[]).forEach((q,k)=>{if(q.to===E.id)out.push({X,q,k,use:q.inp||"",src:`${X.name} · ${q.n||"Salida "+(k+1)}`,res:q.w&&q.h?`${q.w}×${q.h}`:"",lk:true})}));return out}
 function feedWarn(x,q){if(!x||!x.bbox||!q.w||!q.h)return"";const b=x.bbox;
   if(b.w>q.w||b.h>q.h)return `La zona de ${x.letter} (${b.w}×${b.h}) no cabe en ${q.w}×${q.h}`;
@@ -1343,7 +1402,14 @@ function usage(){
   return{mods,procs};
 }
 let armed=null;
-function renderLib(){invDatalist();
+function renderSrcLib(){const L=$("srcLib");if(!L)return;
+  L.innerHTML=SRCLIB.map((s,i)=>`<div class="lib" data-i="${i}"><div class="hd"><input data-s="n" value="${esc(s.n)}" aria-label="Nombre" style="font-weight:600"><button data-s="del" class="ghost danger" title="Quitar">✕</button></div>
+    <div class="grid2"><label>Tipo<select data-s="k"><option value="pix"${s.k==="pix"?" selected":""}>A medida (sin escalador)</option><option value="std"${s.k==="std"?" selected":""}>Estándar (con escalador)</option></select></label>
+    <label>Salidas${s.k==="pix"?"":" (no aplica)"}<input type="number" min="0" data-s="o" value="${s.o||0}"></label>
+    <label>Ancho máx. por salida (px)<input type="number" min="0" data-s="w" value="${s.w||""}"></label><label>Alto máx. por salida (px)<input type="number" min="0" data-s="h" value="${s.h||""}"></label>
+    <label>Unidades<input type="number" min="0" data-s="qty" value="${s.qty||0}"></label><label>Artículo del almacén<input data-s="inv" list="dl-inv" value="${esc(s.inv||"")}"></label>
+    <label class="full" style="grid-column:1/-1">Nota<input data-s="note" value="${esc(s.note||"")}"></label></div></div>`).join("")}
+function renderLib(){invDatalist();renderSrcLib();
   const U=usage(),only=$("fModStock").checked;
   const provs=[...new Set([...LIB,...PROCLIB].map(p=>p.prov).filter(Boolean))].sort();
   {const fp=$("fModProv"),cur=fp.value;fp.innerHTML=`<option value="">Todos los proveedores</option><option value="__tls">Telesonic</option>`+provs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");fp.value=[...fp.options].some(o=>o.value===cur)?cur:"";
@@ -1398,6 +1464,11 @@ function renderLib(){invDatalist();
     <div class="acts"><button data-a="dup">Duplicar</button><button data-a="del" class="ghost danger">${armed===p.id?"¿Seguro? Pulsa otra vez":"Eliminar"}</button></div></div>`}).join("");
 }
 function libChanged(){saveLib();buildPanelSelect($("panel").value);commit()}
+$("srcLib").addEventListener("change",e=>{const c=e.target.closest(".lib"),k=e.target.dataset.s;if(!c||!k)return;const s=SRCLIB[+c.dataset.i];if(!s)return;
+  if(["n","k","inv","note"].includes(k)){const v=e.target.value.trim();if(k==="n"&&!v)return;if(v)s[k]=v;else delete s[k]}else s[k]=Math.max(0,Math.round(+e.target.value||0));
+  if(k==="w"||k==="h")delete s.a;s.edT=Date.now();saveLib();commit();renderSrcLib()});
+$("srcLib").addEventListener("click",e=>{const b=e.target.closest("button[data-s=del]");if(!b)return;const i=+b.closest(".lib").dataset.i,s=SRCLIB[i];SRCLIB.splice(i,1);S.elecs.forEach(E=>{if(E.feed===s.id)delete E.feed});saveLib();commit();renderSrcLib();toast(`Quitado: ${s.n}`)});
+$("bNewSrc").onclick=()=>{SRCLIB.unshift({id:uid("src"),n:"Nuevo equipo",k:"pix",o:4,w:1920,h:1080,qty:1});saveLib();renderSrcLib()};
 $("fModStock").onchange=renderLib;$("fModProv").onchange=renderLib;
 $("modLib").addEventListener("change",e=>{const card=e.target.closest(".lib"),f=e.target.dataset.f;if(!card||!f)return;const p=LIB.find(z=>z.id===card.dataset.id);
   if(f==="n")p.n=e.target.value.trim()||p.n;else if(f==="pc")p.pc=e.target.value;else if(f==="stock")p.stock=e.target.checked;
@@ -1452,6 +1523,7 @@ function mergeBase(b){
   let nm=0,np=0;
   (b.modules||[]).forEach(m=>{if(!m||!m.id)return;const i=LIB.findIndex(z=>z.id===m.id),it=Object.assign({},strip(m),{base:true});if(i>=0){if(!keepLocal(LIB[i],b))LIB[i]=it;else LIB[i].base=true}else LIB.push(it);nm++});
   (b.processors||[]).forEach(m=>{if(!m||!m.id)return;const i=PROCLIB.findIndex(z=>z.id===m.id),it=Object.assign({},strip(m),{base:true});if(i>=0){if(!keepLocal(PROCLIB[i],b))PROCLIB[i]=it;else PROCLIB[i].base=true}else PROCLIB.push(it);np++});
+  if(Array.isArray(b.sources))b.sources.forEach(m=>{if(!m||!m.id)return;const i=SRCLIB.findIndex(z=>z.id===m.id),it=Object.assign({},strip(m),{base:true});if(i>=0){if(!keepLocal(SRCLIB[i],b))SRCLIB[i]=it}else SRCLIB.push(it)});
   if(Array.isArray(b.inventory)){b.inventory.forEach(i=>{if(!i||!i.n)return;const ex=invFind(i.n);if(ex)Object.assign(ex,i);else INV.push(Object.assign({},i))})}
   if(b.eq&&typeof b.eq==="object")Object.assign(EQ,b.eq);saveInv();
   BASE_INFO={nm,np,ver:b.version||"",date:b.date||"",by:b.by||""};saveLib();buildPanelSelect($("panel").value);renderBaseInfo();commit();
@@ -1462,7 +1534,7 @@ function loadBase(){if(window.claude||!location.protocol.startsWith("http"))retu
 $("bBaseExport").onclick=()=>{
   const now=new Date(),d=`${String(now.getDate()).padStart(2,"0")}/${String(now.getMonth()+1).padStart(2,"0")}/${now.getFullYear()}`;
   const clean=a=>a.map(o=>{const c=Object.assign({},o);delete c.base;delete c.edT;return c});
-  offer("biblioteca.json",JSON.stringify({app:"pixelmap-led",kind:"biblioteca-base",date:d,stamp:now.getTime(),by:"takathunder",modules:clean(LIB),processors:clean(PROCLIB),inventory:INV,eq:EQ},null,2));
+  offer("biblioteca.json",JSON.stringify({app:"pixelmap-led",kind:"biblioteca-base",date:d,stamp:now.getTime(),by:"takathunder",modules:clean(LIB),processors:clean(PROCLIB),sources:clean(SRCLIB),inventory:INV,eq:EQ},null,2));
 };
 
 /* ---------- persistencia ---------- */
@@ -2055,6 +2127,7 @@ function prepProject(){const A=assign(),o=S.opts,out=[],add=(n,q,d="")=>{if(q>0)
   {const byE=new Map();A.elecs.filter(x=>x.screens.length).forEach(x=>{const k=x.spec.id||x.spec.n;if(!byE.has(k))byE.set(k,{x,n:0,l:[]});const e=byE.get(k);e.n++;e.l.push(`${x.letter} · ${x.E.name}`)});
     byE.forEach(e=>{const it={n:`Electrónica ${short(e.x.spec.n)}`,q:e.n,d:e.l.join(", "),inv:e.x.spec.inv};out.push(it)})}
   scalers().forEach(X=>out.push({n:`Procesador ${X.model||X.name}`,q:1,d:X.name,inv:X.model||X.name}));
+  srcUse(A).filter(u=>u.units>0).forEach(u=>out.push({n:`Equipo de señal ${u.s.n}`,q:u.units,d:`${u.outs} salidas → ${u.who.join(", ")}`,inv:u.s.inv}));
   const BP=boxPlan();if(BP.boxes.length){add(BP.cfg.model||eqn("cuadro"),BP.boxes.length,`${BP.cfg.a} A · ${BP.cfg.n} circuitos · ${BP.boxes.map(B=>B.name).join(", ")}`);add(eqn("acom"),BP.boxes.length,"una por cuadro · metros: ____")}
   return out}
 function prepTotals(){const m=new Map(),inv=new Map(),who=new Map(),put=(n,q,i,w)=>{if(i)inv.set(n,i);if(w){if(!who.has(n))who.set(n,new Set());who.get(n).add(w)}if(q===null){if(!m.has(n))m.set(n,null);return}if(q>0)m.set(n,(m.get(n)||0)+q)};
@@ -2410,7 +2483,7 @@ async function exportPng(transparent){
 function inputList(spec){const t=(spec&&spec.inputs||"").split("·")[0];return [...new Set(t.split(/,|\by\b/).map(v=>v.trim().replace(/^\d+\s*[x×]\s*/i,"")).filter(Boolean))]}
 const insOf=E=>[...feedsOf(E),...(E.ins||[]).filter(q=>q.use||q.src)];
 const sigTxt=E=>insOf(E).map(q=>[q.use,q.src].filter(Boolean).join(" · ")+(q.res?` ${q.res}`:"")+(q.u?` (${q.u})`:"")).join("; ")||"—";
-function signalRows(A){const o=S.opts;return A.elecs.filter(x=>x.screens.length).flatMap(x=>{const L=insOf(x.E).length?insOf(x.E):[{}];const sv=q=>(q.src||"—")+(q.res?` · ${q.res}`:"")+(q.u?` (${q.u})`:"");return L.map((q,k)=>k?["","",`capa ${k+1}`,q.use||"—",sv(q),"",""]:[x.letter,x.E.name,short(x.spec.n),q.use||"—",sv(q),
+function signalRows(A){const o=S.opts;return A.elecs.filter(x=>x.screens.length).flatMap(x=>{const L=insOf(x.E).length?insOf(x.E):[{}];const sv=q=>(q.src||"—")+(q.res?` · ${q.res}`:"")+(q.u?` (${q.u})`:"");const fs=srcOf(x.E.feed),fx=fs?`${fs.n}${x.spec.sc&&fs.k==="pix"?" (escalador innecesario)":""} · `:"";return L.map((q,k)=>k?["","",`capa ${k+1}`,q.use||"—",sv(q),"",""]:[x.letter,x.E.name,short(x.spec.n)+(x.spec.sc?" (escalador)":""),q.use||"—",fx+sv(q),
   `${x.bbox.w}×${x.bbox.h} desde ${x.bbox.x},${x.bbox.y}${!x.spec.sc&&x.inBudget?` (${Math.round(x.inArea/x.inBudget*100)}% de ${x.spec.inW}×${x.spec.inH})`:""}${x.inOver||x.scOver?" SUPERA":""}`,
   `${x.main}${x.red==="same"?` + ${x.main}`:x.red==="mirror"?" ×2":""} / ${x.spec.p} · ${fmt(x.px/1e6)} / ${fmt(x.spec.c/1e6)} Mpx${x.over?" NO CABE":""}`])})}
 function noteRows(A){const r=[];
@@ -2774,7 +2847,7 @@ $("bCsv").onclick=()=>{const rows=[["pantalla","modulo","x","y","ancho_px","alto
 $("bImport").onclick=()=>$("fileIn").click();
 $("fileIn").onchange=async e=>{const f=e.target.files[0];if(!f)return;
   try{const o=JSON.parse(await f.text());if(!o.stage||!Array.isArray(o.screens))throw 0;
-    S={stage:o.stage,opts:Object.assign(defaultState().opts,o.opts||{}),meta:Object.assign(defaultState().meta,o.meta||{}),screens:o.screens,elecs:o.elecs,scalers:Array.isArray(o.scalers)?o.scalers:[],boxes:Array.isArray(o.boxes)?o.boxes:[],pa:o.pa||{},logo:Object.assign(defaultState().logo,o.logo||{}),example:false};ensureElecs();dedupeNames();loadLogo();
+    S={stage:o.stage,opts:Object.assign(defaultState().opts,o.opts||{}),meta:Object.assign(defaultState().meta,o.meta||{}),screens:o.screens,elecs:o.elecs,scalers:Array.isArray(o.scalers)?o.scalers:[],boxes:Array.isArray(o.boxes)?o.boxes:[],pa:o.pa||{},space:o.space||undefined,logo:Object.assign(defaultState().logo,o.logo||{}),example:false};ensureElecs();dedupeNames();loadLogo();
     if(Array.isArray(o.modules))o.modules.forEach(p=>{if(p&&p.id&&!LIB.some(m=>m.id===p.id))LIB.push(p)});
     if(Array.isArray(o.processors))o.processors.forEach(p=>{if(p&&p.id&&!PROCLIB.some(m=>m.id===p.id))PROCLIB.push(p)});
     if(Array.isArray(o.panels))o.panels.forEach(p=>{if(p&&p.n&&!LIB.some(m=>m.n.toLowerCase()===p.n.toLowerCase()))LIB.push(Object.assign({stock:false,qty:0},p,{id:uid("m")}))});
