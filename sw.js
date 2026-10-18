@@ -1,5 +1,5 @@
 // Pixel Map LED · funciona sin conexión tras la primera visita
-const CACHE = "pixelmap-v92";
+const CACHE = "pixelmap-v94";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png",
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js",
