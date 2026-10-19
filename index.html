@@ -549,17 +549,30 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <button data-q="Banner: 12x2 módulos de digiled 4.8 con vx6s">12×2 módulos Digiled</button></div>
 <div id="qPrev" style="margin-top:10px"></div>
 <div id="qAsk" class="qask" hidden>
-  <h3>Dos preguntas para elegir la electrónica</h3>
+  <h3>1 · La señal</h3>
   <div class="qgrid">
-    <label>¿Qué señal os dan?<select id="qRes"><option value="1920x1080">Full HD 1920×1080</option><option value="3840x2160">4K 3840×2160</option><option value="1920x1200">WUXGA 1920×1200</option><option value="1280x720">HD 1280×720</option><option value="0x0">No lo sé todavía</option></select></label>
-    <label>Por<select id="qCon"><option>3G-SDI</option><option>12G-SDI</option><option>HDMI</option><option>DVI</option><option>DisplayPort</option><option>Fibra</option></select></label>
-    <label class="full">¿De quién / de dónde? (fuente)<input id="qSrc" list="dl-src" placeholder="p. ej. Realización, ETB 1, PC presentaciones"></label>
-    <label class="full">¿El contenido viene adaptado a la resolución de la pantalla (píxel a píxel)?<select id="qAd"><option value="no">No, es una señal estándar → con escalador</option><option value="yes">Sí, viene hecho a medida → sin escalador (1:1)</option><option value="any">No lo sé → que elija la herramienta</option></select></label>
+    <label class="full">¿De dónde viene la señal?<select id="qFeed"></select></label>
+    <label class="qStd">¿Qué resolución?<select id="qRes"><option value="1920x1080">Full HD 1920×1080</option><option value="3840x2160">4K 3840×2160 a 60 Hz</option><option value="1920x1200">WUXGA 1920×1200</option><option value="1280x720">HD 1280×720</option><option value="0x0">No lo sé todavía</option></select></label>
+    <label class="qStd">Por<select id="qCon"><option>3G-SDI</option><option>12G-SDI</option><option>HDMI</option><option>DVI</option><option>DisplayPort</option><option>Fibra</option></select></label>
+    <label class="full qStd">¿De quién? (fuente)<input id="qSrc" list="dl-src" placeholder="p. ej. Realización, ETB 1, PC presentaciones"></label>
+    <label class="full qAdW">¿El contenido viene adaptado a la resolución de la pantalla (píxel a píxel)?<select id="qAd"><option value="no">No, es una señal estándar → con escalador</option><option value="yes">Sí, viene hecho a medida → sin escalador (1:1)</option><option value="any">No lo sé → que elija la herramienta</option></select></label>
+    <label class="qSrv">¿Dónde está la máquina?<select id="qXloc"><option value="">En control</option><option value="screen">Junto a las pantallas</option></select></label>
+    <label class="qSrvC">¿A cuántos metros de las pantallas?<input type="number" min="0" id="qXdist" placeholder="p. ej. 40"></label>
+    <label class="check full qSrvC"><input type="checkbox" id="qLocal"> El espacio pone los transmisores (infraestructura local, no sale del almacén)</label>
+    <label class="full qLoc">¿Qué usan?<input id="qLocalTxt" placeholder="p. ej. extensores HDBaseT del palacio"></label>
   </div>
-  <p class="hint" id="qSug" style="margin:6px 0 0"></p>
+  <h3 style="margin-top:12px">2 · La electrónica LED</h3>
+  <div class="qgrid">
+    <label>¿Dónde va?<select id="qEloc"><option value="">Junto a la pantalla</option><option value="control">En control</option></select></label>
+    <label class="qEl">¿A cuántos metros de la pantalla?<input type="number" min="0" step="0.5" id="qEdist" placeholder="5"></label>
+    <label class="full">Respaldo<select id="qRed"><option value="auto">Automático (2 electrónicas si hace falta para tener respaldo de verdad)</option><option value="same">En la misma electrónica (dobla bocas)</option><option value="none">Sin respaldo</option></select></label>
+  </div>
+  <h3 style="margin-top:12px">3 · El soporte de cada pantalla</h3>
+  <div id="qMounts" class="qgrid"></div>
+  <p class="hint" id="qSug" style="margin:8px 0 0"></p>
 </div>
 <label class="check" style="margin-top:8px"><input type="checkbox" id="qAdd">Añadir al proyecto actual (si no, empieza uno nuevo)</label>
-<div class="row" style="margin-top:12px;gap:8px;display:flex;flex-wrap:wrap"><button id="qGo" class="primary">Crear proyecto</button><button id="qGoPdf">Crear y descargar ficha PDF</button></div>
+<div class="row" style="margin-top:12px;gap:8px;display:flex;flex-wrap:wrap"><button id="qGoPdf" class="primary">Crear proyecto y ficha PDF</button><button id="qGo">Solo crear el proyecto</button></div>
 <p class="hint">Entiende: medidas en metros («6x4 m», «6 por 4 metros») o en módulos («12x8 módulos»); marca y pitch («absen 2.5», «yestech 1.9», «ledman 3.9», «P3.9 500x1000»); nombre antes de dos puntos («Central: …»); «2 pantallas de…»; una electrónica concreta («con vx1000»); «sin redundancia»; y líneas «Proyecto:», «Lugar:», «Fecha:», «Responsable:». Si la medida no es múltiplo del módulo, redondea al módulo entero y lo marca con ≈.</p>
 </div>
 </dialog>
@@ -569,7 +582,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <p class="lead">Prepara una pantalla LED de principio a fin: pixel map, recorridos de datos y corriente, electrónicas NovaStar con redundancia, material, stock de Telesonic, plantilla de señal y ficha técnica en PDF. Todo se guarda solo en este navegador.</p>
 
 <details open><summary>⚡ Ficha rápida · un proyecto con una frase</summary>
-<p>Botón <b>⚡ Ficha rápida</b> (arriba). Escribe el montaje, por ejemplo «pantalla de 6x4 metros de absen 2.5», y pulsa <b>Crear proyecto</b> o <b>Crear y descargar ficha PDF</b>. Ves antes qué ha entendido (módulos, medida real y resolución) y te pregunta <b>qué señal os dan</b> (resolución, conexión y fuente) y <b>si el contenido viene adaptado</b> a la pantalla: si no, elige electrónica con escalador; si sí, sin escalador 1:1 y comprueba que cabe en la señal. Una pantalla por línea; acepta nombre («Central: …»), varias iguales («2 pantallas de…»), módulos en vez de metros, electrónica concreta («con vx1000»), «sin redundancia» y líneas «Proyecto:», «Lugar:», «Fecha:», «Responsable:». Después puedes retocar todo como siempre.</p></details>
+<p>Botón <b>⚡ Ficha rápida</b> (arriba). Escribe las pantallas, por ejemplo «Central: 6x4 m de absen 2.5», y contesta: <b>1 · la señal</b> (de dónde viene: Watchout, Disguise, vMix, EC40… o «nos la sirven», con su resolución y fuente; con un servidor, dónde está y a cuántos metros, y si el espacio pone los transmisores), <b>2 · la electrónica LED</b> (junto a la pantalla o en control, a cuántos metros, y el respaldo) y <b>3 · el soporte de cada pantalla</b> (volada, apoyada o estructura de 8s sobre bumper, balcón o tarima). Solo salen las preguntas que tocan. <b>Crear proyecto y ficha PDF</b> crea el proyecto y descarga la ficha con el material y los avisos; luego puedes afinarlo todo como siempre. Acepta también nombre («Central: …»), varias iguales («2 pantallas de…»), módulos en vez de metros, electrónica concreta («con vx1000»), «sin redundancia» y líneas «Proyecto:», «Lugar:», «Fecha:», «Responsable:».</p></details>
 
 <details><summary>Inicio rápido · un proyecto en 8 pasos</summary>
 <ol>
@@ -3070,11 +3083,27 @@ function qPreview(){const P=qParse($("qText").value),el=$("qPrev");
   el.innerHTML=`<table class="qtab"><thead><tr><th>Pantalla</th><th>Módulo</th><th>Módulos</th><th>Medida real</th><th>Resolución</th></tr></thead><tbody>${P.screens.map((s,i)=>`<tr><td>${esc(s.name||"Pantalla "+(i+1))}</td><td>${esc(s.mod.n)}</td><td>${s.cols}×${s.rows} = ${s.cols*s.rows}</td><td${s.exact?"":' class="warn" title="Redondeado al módulo entero"'}>${fmt(s.cols*s.mod.w/1000)} × ${fmt(s.rows*s.mod.h/1000)} m${s.exact?"":" ≈"}</td><td>${s.cols*s.mod.x}×${s.rows*s.mod.y}</td></tr>`).join("")}</tbody></table>`+
     (Object.keys(P.meta).length?`<p class="hint" style="margin:6px 0 0">${Object.entries(P.meta).map(([k,v])=>`${({project:"Proyecto",place:"Lugar",date:"Fecha",resp:"Responsable"})[k]}: <b>${esc(v)}</b>`).join(" · ")}</p>`:"")+
     (P.warn.length?`<p class="hint warn" style="margin:6px 0 0">${P.warn.map(esc).join("<br>")}</p>`:"");
-  $("qGo").disabled=$("qGoPdf").disabled=false;$("qAsk").hidden=false;qSuggest(P);return P}
-function qAns(){const[w,h]=$("qRes").value.split("x").map(Number);return{w,h,con:$("qCon").value,src:$("qSrc").value.trim(),ad:$("qAd").value}}
+  $("qGo").disabled=$("qGoPdf").disabled=false;$("qAsk").hidden=false;qFeedOpts();
+  if(P.opts.red==="none"&&!$("qRed").dataset.t)$("qRed").value="none";
+  P.screens.forEach((s,i)=>{if(qMnt[i]===undefined){qMnt[i]=s.mount==="struct"?"struct:"+(s.sup||"b0"):s.mount||""}});qMnt.length=P.screens.length;
+  $("qMounts").innerHTML=P.screens.map((s,i)=>`<label class="full">${esc(s.name||"Pantalla "+(i+1))} · ${esc(s.mod.n)}<select data-qm="${i}">${QMNT.map(([k,l])=>`<option value="${k}"${qMnt[i]===k?" selected":""}>${l}</option>`).join("")}</select></label>`).join("");
+  qSync();qSuggest(P);return P}
+function qAns(){const[w,h]=$("qRes").value.split("x").map(Number),f=$("qFeed").value;
+  return{w,h,con:$("qCon").value,src:$("qSrc").value.trim(),ad:$("qAd").value,feed:f,srv:f.startsWith("srv:")?f.slice(4):"",xloc:$("qXloc").value,xdist:+$("qXdist").value||0,
+    local:$("qLocal").checked,localTxt:$("qLocalTxt").value.trim(),eloc:$("qEloc").value,edist:+$("qEdist").value||0,red:$("qRed").value}}
+// opciones del soporte de cada pantalla en la ficha rápida
+const QMNT=[["","Sin indicar"],["fly","Volada"],["ground","Apoyada · base original"],["groundT","Apoyada · chapa fina Telesonic"],["struct:bumper","Estructura de 8s · sobre su bumper"],["struct:b0","Estructura de 8s · balcón en la base"],["struct:b05","Estructura de 8s · balcón en la mitad"],["struct:b1","Estructura de 8s · balcón arriba del 1er 8s"],["struct:tarima","Estructura de 8s · sobre tarima"]];
+let qMnt=[];
+function qFeedOpts(){const el=$("qFeed");if(el.options.length)return;
+  el.innerHTML=`<option value="">No lo sé todavía</option><optgroup label="Servidores y procesadores (control)">${SRCLIB.filter(s=>s.k==="pix"||s.id==="vmix").map(s=>`<option value="srv:${s.id}">${esc(s.n)}</option>`).join("")}</optgroup><option value="std">Nos la sirven (realización, tele, ATEM, PC)</option><option value="otro">Otro equipo</option>`}
+function qSync(){const a=qAns(),srv=!!a.srv,show=(c,v)=>document.querySelectorAll("#qAsk ."+c).forEach(e=>{e.hidden=!v;e.style.display=v?"":"none"});
+  show("qStd",a.feed==="std"||a.feed===""||a.feed==="otro");show("qAdW",a.feed===""||a.feed==="otro");show("qSrv",srv);show("qSrvC",srv&&a.xloc!=="screen");show("qLoc",srv&&a.xloc!=="screen"&&a.local);show("qEl",a.eloc!=="control")}
 function qSuggest(P){const a=qAns();let W0=0,H0=0;P.screens.forEach(s=>{W0+=s.cols*s.mod.x;H0=Math.max(H0,s.rows*s.mod.y)});
   let txt=`Pantalla${P.screens.length>1?"s":""} en total ${W0}×${H0} px. `;
-  if(a.ad==="no")txt+=a.w?`Con una señal ${a.w}×${a.h} sin adaptar, la herramienta elige una electrónica <b>con escalador</b> (VX…) que reescala la imagen a la pantalla.`:"Se elegirá una electrónica <b>con escalador</b>.";
+  if(a.srv){const sd=srcOf(a.srv);txt+=sd&&sd.k==="pix"?`${esc(sd.n)} saca la señal a medida: electrónica <b>sin escalador</b> si cabe.`:`${esc(sd?sd.n:"")} trabaja en 16:9: electrónica <b>con escalador</b>.`;
+    txt+=a.xloc==="screen"?" Máquina junto a las pantallas: conexión corta, zona a medida.":a.xdist?(a.xdist>20?` A ${a.xdist} m: señal estándar por ${a.local?"los transmisores del espacio":"fibra (Lightware)"}.`:` A ${a.xdist} m: HDMI${a.xdist>10?" en fibra":""}.`):" <span class=\"warnO\">Falta la distancia de control a las pantallas.</span>";
+    txt+=" Al crear, revisa los avisos en la ficha.";$("qSug").innerHTML=txt;return}
+  if(a.ad==="no"||a.feed==="std")txt+=a.w?`Con una señal ${a.w}×${a.h} sin adaptar, la herramienta elige una electrónica <b>con escalador</b> (VX…) que reescala la imagen a la pantalla.`:"Se elegirá una electrónica <b>con escalador</b>.";
   else if(a.ad==="yes"){txt+=`Contenido a medida: electrónica <b>sin escalador</b> (MCTRL), la señal entra 1:1.`;
     if(a.w&&(W0>a.w||H0>a.h))txt+=` <span class="warn">Ojo: ${W0}×${H0} no cabe en ${a.w}×${a.h}; necesitarás más de una señal, recolocar el contenido o un escalador.</span>`}
   else txt+="La herramienta elegirá la más pequeña que cubra bocas y píxeles.";
@@ -3090,9 +3119,19 @@ function qBuild(P){
     S.screens.push(s);(P._ids=P._ids||[]).push(s.id);x+=W(s)});
   S.elecs=S.elecs.filter(E=>S.screens.some(s=>s.e===E.id));if(!S.elecs.length)S.elecs=[newElec(1)];
   // respuestas: señal, fuente y si viene adaptada (escalador sí/no)
-  const a=qAns(),news=new Set(P._ids||[]);S.elecs.forEach(E=>{if(!S.screens.some(s=>s.e===E.id&&news.has(s.id)))return;
-    E.scaler=a.ad==="no"?"yes":a.ad==="yes"?"no":"any";
-    if(a.ad==="yes"&&a.w){E.inW=a.w;E.inH=a.h}
+  const a=qAns(),news=new Set(P._ids||[]);
+  // soporte de cada pantalla (lo elegido en la ficha rápida manda sobre lo entendido en el texto)
+  S.screens.filter(s=>news.has(s.id)).forEach((s,i)=>{const v=qMnt[i];if(v===undefined)return;delete s.mount;delete s.sup;delete s.base;
+    if(v==="fly"||v==="ground")s.mount=v;else if(v==="groundT"){s.mount="ground";s.base="tls"}else if(v.startsWith("struct:")){s.mount="struct";s.sup=v.slice(7)}});
+  // respaldo
+  if(a.red==="none")S.opts.red="none";else if(S.opts.red==="none"&&!keep)S.opts.red="same";
+  // máquina que da la señal (una para todo lo creado), con dónde está y a qué distancia
+  let X=null;if(a.srv){X=newInst(a.srv);if(a.xloc==="screen")X.loc="screen";else{if(a.xdist)X.dist=a.xdist;if(a.local){X.local=true;if(a.localTxt)X.localTxt=a.localTxt}}}
+  S.elecs.forEach(E=>{if(!S.screens.some(s=>s.e===E.id&&news.has(s.id)))return;
+    if(a.red==="same")E.red="same";if(a.eloc==="control")E.loc="control";else if(a.edist&&a.edist!==5)E.dist=a.edist;
+    if(X){E.feed=X.id;E.scaler="any";return}
+    E.scaler=a.feed==="std"||a.ad==="no"?"yes":a.ad==="yes"?"no":"any";
+    if((a.feed==="std"||a.ad==="yes")&&a.w){E.inW=a.w;E.inH=a.h}
     if(a.src||a.con){E.ins=E.ins||[];if(!E.ins.some(q=>q.use||q.src))E.ins=[{use:a.con,src:a.src?(a.src+(a.w?` · ${a.w}×${a.h}`:"")):(a.w?`${a.w}×${a.h}`:"")}]}});
   if(a.src)rememberSrc(a.src);
   [["mProject","project"],["mPlace","place"],["mDate","date"],["mResp","resp"],["mVer","ver"]].forEach(([id,k])=>{const el=$(id);if(el)el.value=S.meta[k]||""});
@@ -3102,11 +3141,12 @@ function qBuild(P){
 $("bQuick").onclick=()=>{const d=$("quick");qPreview();if(d.showModal)d.showModal();else d.setAttribute("open","");setTimeout(()=>$("qText").focus(),50)};
 $("qX").onclick=()=>$("quick").close();
 $("quick").addEventListener("click",e=>{if(e.target.id==="quick")e.target.close()});
-$("qText").addEventListener("input",qPreview);["qRes","qCon","qAd"].forEach(id=>$(id).addEventListener("change",qPreview));
+$("qText").addEventListener("input",()=>{qMnt=[];qPreview()});["qRes","qCon","qAd","qFeed","qXloc","qXdist","qLocal","qEloc","qEdist","qRed"].forEach(id=>$(id).addEventListener("change",()=>{if(id==="qRed")$("qRed").dataset.t="1";qPreview()}));
+$("qMounts").addEventListener("change",e=>{const i=e.target.dataset.qm;if(i!=null){qMnt[+i]=e.target.value}});
 $("qGo").onclick=()=>{const P=qPreview();if(!P.screens.length)return;qBuild(P);$("quick").close()};
 $("qGoPdf").onclick=async()=>{const P=qPreview();if(!P.screens.length)return;qBuild(P);$("quick").close();await exportPdf()};
 
-document.querySelector(".qex").addEventListener("click",e=>{const b=e.target.closest("button[data-q]");if(!b)return;$("qText").value=b.dataset.q.replace(/&#10;/g,"\n");qPreview()});
+document.querySelector(".qex").addEventListener("click",e=>{const b=e.target.closest("button[data-q]");if(!b)return;$("qText").value=b.dataset.q.replace(/&#10;/g,"\n");qMnt=[];qPreview()});
 $("bPngBg").onclick=()=>exportPng(false);$("bPngT").onclick=()=>exportPng(true);
 $("bJson").onclick=()=>offer(`${baseName()}.json`,JSON.stringify({app:"pixelmap-led",version:1,stage:S.stage,opts:S.opts,meta:S.meta,elecs:S.elecs,scalers:S.scalers||[],boxes:S.boxes||[],pa:S.pa||{},logo:S.logo,screens:S.screens,modules:LIB,processors:PROCLIB},null,2));
 $("bCsv").onclick=()=>{const rows=[["pantalla","modulo","x","y","ancho_px","alto_px","columnas","filas","mod_px_x","mod_px_y","mod_mm_x","mod_mm_y","ancho_m","alto_m","mod_por_puerto","puertos","w_max_mod","w_max_total","mod_por_linea","lineas","kg_mod","kg_total","kg_por_columna","conector_corriente"]];
