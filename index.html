@@ -225,6 +225,11 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 #quick .hhead{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line)}
 #quick .hhead h2{margin:0;font:800 17px var(--f-display);color:var(--fg);text-transform:none;letter-spacing:.01em}
 #quick .hbody{overflow:auto;padding:14px 18px 18px;font-size:14px;line-height:1.5}
+#testDlg{width:min(520px,calc(100% - 24px));padding:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);box-shadow:0 20px 60px rgba(0,0,0,.45)}
+#testDlg::backdrop{background:rgba(0,0,0,.55)}
+#testDlg .hhead{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line)}
+#testDlg .hhead h2{margin:0;font:800 17px var(--f-display);color:var(--fg);text-transform:none;letter-spacing:.01em}
+#testDlg .hbody{padding:14px 18px 18px;font-size:14px}
 #quick textarea{font-size:14px;min-height:120px}
 .qask{margin-top:12px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
 .qask h3{margin:0 0 8px;font:700 13px var(--f-display);color:var(--accent)}
@@ -275,8 +280,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
   <button id="bPdf2">Ficha PDF</button>
   <button id="bDocx2" title="Ficha en Word, con todos los textos editables">Ficha Word</button>
   <button id="bXlsx2" title="Lista de material para almacén, en Excel">Excel almacén</button>
-  <button id="bPngBg" class="primary">PNG con fondo</button>
-  <button id="bPngT">PNG transparente</button>
+  <button id="bTest" class="primary" title="Test pattern de una pantalla a su resolución nativa: damero, diagonales, círculo, nombre y resolución">Test pattern PNG</button>
 </header>
 
 <div class="app">
@@ -476,7 +480,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
   <section>
     <h2><span>8</span>Exportar PNG</h2>
     <div class="grid2">
-      <label class="check full"><input type="checkbox" id="xLean">Solo nombre y resolución (limpio)</label>
+      <label class="check full"><input type="checkbox" id="xLean">Limpio: damero, diagonales, círculo, nombre y resolución</label>
       <label class="check"><input type="checkbox" id="xWire">Incluir cableado</label>
       <label class="check"><input type="checkbox" id="xAlpha">Fondo transparente</label>
     </div>
@@ -614,7 +618,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 <li><b>⚡ Ficha rápida</b>: crea el proyecto a partir de una descripción en texto.</li>
 <li><b>? Ayuda</b>: esta guía.</li>
 <li><b>Ficha PDF / Ficha Word</b>: ficha técnica con el diseño de Telesonic (la de Word, editable).</li>
-<li><b>PNG con fondo / transparente</b>: el lienzo completo a resolución real.</li>
+<li><b>Test pattern PNG</b>: el test pattern limpio de la pantalla que elijas, a su resolución nativa.</li>
 </ul></details>
 
 <details><summary>Pestañas Módulos y Electrónicas · bibliotecas</summary>
@@ -724,8 +728,9 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 
 <details><summary>8 · Exportar PNG y plantilla de señal</summary>
 <ul>
+<li><b>Test pattern PNG</b> (arriba): el test pattern de una pantalla a su resolución nativa: damero, diagonales, círculo, nombre y resolución, sin cableado ni números. Con varias pantallas eliges cuál, unas cuantas o todas (.zip).</li>
 <li><b>PNG de cada pantalla (.zip)</b>: un PNG por pantalla a su resolución nativa, con o sin cableado y con o sin fondo.</li>
-<li><b>Solo nombre y resolución (limpio)</b>: marca esta casilla para que los PNG (los de arriba, los de cada pantalla y la plantilla de señal) salgan solo con el damero de módulos, el nombre y la resolución: sin cableado, números, diagonales, círculo, coordenadas, notas ni logo.</li>
+<li><b>Limpio</b>: marca esta casilla para que los PNG de cada pantalla y la plantilla de señal salgan solo con el damero de módulos, las diagonales, el círculo, el nombre y la resolución: sin cableado, números, coordenadas, notas ni logo. El botón Test pattern PNG de arriba sale siempre así.</li>
 <li><b>Plantilla de señal</b>: encaja la composición en la señal que te llega (Full HD de una realización, 4K…). Elige qué pantallas (todas, una electrónica o la selección), ajuste y alineación. Te dice qué zona de la señal va a cada pantalla, y lo descargas en PNG o CSV.</li>
 </ul></details>
 
@@ -2748,8 +2753,25 @@ function initExport(){
 function baseName(){return `pixelmap_${S.stage.w}x${S.stage.h}`}
 // exportación «limpia»: solo nombre y resolución, sin cableado, números, diagonales, círculo, coordenadas, notas ni logo
 const isLean=()=>{const el=document.getElementById("xLean");return !!(el&&el.checked)};
-function withLean(fn){if(!isLean())return fn();const prev=S.opts;S.opts=Object.assign({},prev,{lean:true,labels:true,nums:false,diag:false,circle:false,coords:false,notes:false,wiring:"none"});
+function withLean(fn,force){if(!force&&!isLean())return fn();const prev=S.opts;S.opts=Object.assign({},prev,{lean:true,labels:true,nums:false,diag:true,circle:true,coords:false,notes:false,wiring:"none"});
   try{return fn()}finally{S.opts=prev}}
+// test pattern limpio de una pantalla (o de las elegidas) a su resolución nativa: sin cableado, números ni diagonales
+async function exportTest(ids){const L=S.screens.map((s,i)=>({s,i})).filter(o=>ids.includes(o.s.id));if(!L.length)return;
+  const one=async o=>toBlob(withLean(()=>screenCanvas(o.s,o.i,{transparent:false,wiring:false}),"test")),nm=o=>`test_${slugify(o.s.name)}_${W(o.s)}x${H(o.s)}`;
+  if(L.length===1){offer(nm(L[0])+".png",await one(L[0]));return}
+  if(!window.JSZip){toast("No se ha podido cargar el compresor ZIP. Recarga la página.");return}
+  const zip=new JSZip(),used=new Set();for(const o of L){let n=nm(o);while(used.has(n))n+="_b";used.add(n);zip.file(n+".png",await one(o))}
+  offer(`test_patterns_${slugify(S.meta.project||"pixelmap")}.zip`,await zip.generateAsync({type:"blob"}))}
+function openTest(){if(!S.screens.length){toast("Agrega al menos una pantalla.");return}
+  if(S.screens.length===1){exportTest([S.screens[0].id]);return}
+  let d=document.getElementById("testDlg");if(!d){d=document.createElement("dialog");d.id="testDlg";d.className="dlg";document.body.appendChild(d);
+    d.addEventListener("click",e=>{if(e.target===d){d.close();return}const b=e.target.closest("button[data-t]");if(!b)return;const k=b.dataset.t;
+      if(k==="x"){d.close();return}const ids=k==="sel"?[...d.querySelectorAll("input[data-s]:checked")].map(i=>i.dataset.s):k==="all"?S.screens.map(s=>s.id):[k];if(!ids.length){toast("Marca alguna pantalla.");return}d.close();exportTest(ids)})}
+  d.innerHTML=`<div class="hhead"><h2>Test pattern PNG</h2><button data-t="x" class="ghost" aria-label="Cerrar">✕</button></div><div class="hbody">
+    <p class="hint" style="margin-top:0">A la resolución nativa de la pantalla: damero, diagonales, círculo, nombre y resolución (sin cableado ni números).</p>
+    ${S.screens.map(s=>`<div class="row" style="gap:8px;align-items:center;margin:4px 0"><label class="check" style="flex:1;margin:0"><input type="checkbox" data-s="${s.id}"> ${esc(s.name)} · ${W(s)}×${H(s)}</label><button data-t="${s.id}" class="ghost" style="font-size:12px;padding:4px 10px">Descargar</button></div>`).join("")}
+    <div class="row" style="gap:8px;margin-top:10px"><button data-t="sel">Las marcadas (.zip)</button><button data-t="all" class="primary">Todas (.zip)</button></div></div>`;
+  if(d.showModal)d.showModal();else d.setAttribute("open","")}
 async function exportPng(transparent){
   if(!S.screens.length){toast("Agrega al menos una pantalla.");return}
   const c=document.createElement("canvas");c.width=S.stage.w;c.height=S.stage.h;withLean(()=>draw(c.getContext("2d"),{transparent}));
@@ -3147,7 +3169,7 @@ $("qGo").onclick=()=>{const P=qPreview();if(!P.screens.length)return;qBuild(P);$
 $("qGoPdf").onclick=async()=>{const P=qPreview();if(!P.screens.length)return;qBuild(P);$("quick").close();await exportPdf()};
 
 document.querySelector(".qex").addEventListener("click",e=>{const b=e.target.closest("button[data-q]");if(!b)return;$("qText").value=b.dataset.q.replace(/&#10;/g,"\n");qMnt=[];qPreview()});
-$("bPngBg").onclick=()=>exportPng(false);$("bPngT").onclick=()=>exportPng(true);
+$("bTest").onclick=openTest;
 $("bJson").onclick=()=>offer(`${baseName()}.json`,JSON.stringify({app:"pixelmap-led",version:1,stage:S.stage,opts:S.opts,meta:S.meta,elecs:S.elecs,scalers:S.scalers||[],boxes:S.boxes||[],pa:S.pa||{},logo:S.logo,screens:S.screens,modules:LIB,processors:PROCLIB},null,2));
 $("bCsv").onclick=()=>{const rows=[["pantalla","modulo","x","y","ancho_px","alto_px","columnas","filas","mod_px_x","mod_px_y","mod_mm_x","mod_mm_y","ancho_m","alto_m","mod_por_puerto","puertos","w_max_mod","w_max_total","mod_por_linea","lineas","kg_mod","kg_total","kg_por_columna","conector_corriente"]];
   S.screens.forEach(s=>rows.push([s.name,s.pn||"",s.x,s.y,W(s),H(s),s.cols,s.rows,s.rx,s.ry,s.cw,s.ch,(s.cols*s.cw/1000).toFixed(3),(s.rows*s.ch/1000).toFixed(3),effData(s),nData(s)??"",s.wm||"",(s.wm||0)*s.cols*s.rows||"",effPow(s)??"",nPow(s)??"",s.kg||"",s.kg?kgOf(s).toFixed(2):"",s.kg?kgCol(s).toFixed(2):"",(PC[s.pc||""]||PC[""]).n]));
