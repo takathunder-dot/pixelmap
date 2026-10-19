@@ -230,6 +230,9 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 #testDlg .hhead{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line)}
 #testDlg .hhead h2{margin:0;font:800 17px var(--f-display);color:var(--fg);text-transform:none;letter-spacing:.01em}
 #testDlg .hbody{padding:14px 18px 18px;font-size:14px}
+.tpbox .tpo2{display:flex;flex-wrap:wrap;gap:4px 14px;margin-bottom:6px}.tpbox .tpo2 .check{margin:0}.tpbox input[type=range]{width:100%;padding:0}
+.tpprev{margin-top:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:#000;display:flex;justify-content:center}.tpprev canvas{max-width:100%;height:auto;image-rendering:auto}
+#testDlg .tpo{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;padding:8px 10px;margin:0 0 10px;border:1px solid var(--line);border-radius:8px}#testDlg .tpo .check{margin:0}#testDlg .tpc{display:flex;align-items:center;gap:6px;font-size:13px}#testDlg .tpc input{width:64px}#testDlg .tpk{display:flex;align-items:center;gap:6px;font-size:13px}#testDlg .tpk select{width:auto}#testDlg .tpo label.tpk,#testDlg .tpo label.tpc{display:flex!important;flex-direction:row!important;align-items:center;gap:6px;text-transform:none;letter-spacing:0;font-size:13px;color:var(--fg);margin:0}#testDlg .tpo .tpk select{width:auto;min-width:0}#testDlg .tpo .tpc input{width:70px}
 #quick textarea{font-size:14px;min-height:120px}
 .qask{margin-top:12px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg)}
 .qask h3{margin:0 0 8px;font:700 13px var(--f-display);color:var(--accent)}
@@ -478,11 +481,11 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
   </section>
 
   <section>
-    <h2><span>8</span>Exportar PNG</h2>
-    <div class="grid2">
-      <label class="check full"><input type="checkbox" id="xLean">Limpio: damero, diagonales, círculo, nombre y resolución</label>
+    <h2><span>8</span>Test patterns y PNG</h2>
+    <div id="tpBox" class="tpbox"></div>
+    <div class="grid2" style="margin-top:10px">
+      <label class="check full"><input type="checkbox" id="xLean">Limpio: con los ajustes de test pattern de arriba</label>
       <label class="check"><input type="checkbox" id="xWire">Incluir cableado</label>
-      <label class="check"><input type="checkbox" id="xAlpha">Fondo transparente</label>
     </div>
     <div class="row" style="margin-top:10px"><button id="bScreensZip">PNG de cada pantalla (.zip)</button></div>
     <p class="hint">Un PNG por pantalla a su resolución nativa, todos en un .zip.</p>
@@ -728,9 +731,9 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 
 <details><summary>8 · Exportar PNG y plantilla de señal</summary>
 <ul>
-<li><b>Test pattern PNG</b> (arriba): el test pattern de una pantalla a su resolución nativa: damero, diagonales, círculo, nombre y resolución, sin cableado ni números. Con varias pantallas eliges cuál, unas cuantas o todas (.zip).</li>
-<li><b>PNG de cada pantalla (.zip)</b>: un PNG por pantalla a su resolución nativa, con o sin cableado y con o sin fondo.</li>
-<li><b>Limpio</b>: marca esta casilla para que los PNG de cada pantalla y la plantilla de señal salgan solo con el damero de módulos, las diagonales, el círculo, el nombre y la resolución: sin cableado, números, coordenadas, notas ni logo. El botón Test pattern PNG de arriba sale siempre así.</li>
+<li><b>Test pattern PNG</b> (arriba, o en el apartado 8): el test pattern de una pantalla a su resolución nativa, sin cableado ni números. Los ajustes están en el apartado <b>8 · Test patterns y PNG</b>, con vista previa: nombre y resolución, diagonales, círculo y su tamaño en % (100 = toca los bordes), color (el de cada pantalla, uno igual para todas o gris) y fondo (damero, degradado o liso con la rejilla de módulos). Con varias pantallas eliges cuál, unas cuantas o todas (.zip). Se guardan con el proyecto.</li>
+<li><b>PNG de cada pantalla (.zip)</b>: un PNG por pantalla a su resolución nativa, con o sin cableado.</li>
+<li><b>Limpio</b>: los PNG de cada pantalla y la plantilla de señal salen como el Test pattern PNG: damero y, según sus opciones, nombre y resolución, diagonales y círculo; sin cableado, números, coordenadas, notas ni logo.</li>
 <li><b>Plantilla de señal</b>: encaja la composición en la señal que te llega (Full HD de una realización, 4K…). Elige qué pantallas (todas, una electrónica o la selección), ajuste y alineación. Te dice qué zona de la señal va a cada pantalla, y lo descargas en PNG o CSV.</li>
 </ul></details>
 
@@ -1819,17 +1822,17 @@ function drawLogo(ctx,x,y,w,h,pos,labels){
 function syncLogo(){const L=S.logo,has=!!(L&&L.src);$("logoPrev").hidden=!has;if(has)$("logoPrev").src=L.src;$("bLogoDel").hidden=!has;$("logoOpts").hidden=!has;
   $("bLogo").textContent=has?"Cambiar logo":"Cargar logo";if(!L)return;$("oLogoPos").value=L.pos;$("oLogoSize").value=L.size;$("oLogoOp").value=L.op;$("lSizeV").textContent=L.size+"%";$("lOpV").textContent=L.op+"%"}
 function drawScreen(ctx,s,i,coordTxt,G){
-  const o=S.opts,hue=HUES[hueOf(G?G.g[0]:s)],sw=W(s),sh=H(s);
+  const o=S.opts,tc=o.tpCol,hue=tc&&tc!=="gris"?+tc:HUES[hueOf(G?G.g[0]:s)],sat=tc==="gris"?0:70,sw=W(s),sh=H(s);
   ctx.save();ctx.beginPath();ctx.rect(s.x,s.y,sw,sh);ctx.clip();
   for(let r=0;r<s.rows;r++)for(let c=0;c<s.cols;c++){
     const x=s.x+c*s.rx,y=s.y+r*s.ry;let l;
     if(o.pattern==="checker")l=(r+c)%2?34:46;
     else if(o.pattern==="grad")l=26+28*((c/(Math.max(1,s.cols-1))+r/(Math.max(1,s.rows-1)))/2);
     else l=40;
-    ctx.fillStyle=o.wiring==="power"?`hsl(${hue} 6% ${l-8}%)`:`hsl(${hue} 70% ${l}%)`;ctx.fillRect(x,y,s.rx,s.ry);
+    ctx.fillStyle=o.wiring==="power"?`hsl(${hue} 6% ${l-8}%)`:`hsl(${hue} ${sat}% ${l}%)`;ctx.fillRect(x,y,s.rx,s.ry);
   }
   // rejilla de módulos
-  ctx.strokeStyle=o.wiring==="power"?"rgba(255,200,0,.35)":`hsl(${hue} 80% 78% / .55)`;ctx.lineWidth=1;ctx.beginPath();
+  ctx.strokeStyle=o.wiring==="power"?"rgba(255,200,0,.35)":`hsl(${hue} ${sat?80:0}% 78% / .55)`;ctx.lineWidth=1;ctx.beginPath();
   for(let c=1;c<s.cols;c++){const x=s.x+c*s.rx+.5;ctx.moveTo(x,s.y);ctx.lineTo(x,s.y+sh)}
   for(let r=1;r<s.rows;r++){const y=s.y+r*s.ry+.5;ctx.moveTo(s.x,y);ctx.lineTo(s.x+sw,y)}
   if(G){ctx.rect(s.x+.5,s.y+.5,sw-1,sh-1)} // costura entre partes = una línea más de la rejilla
@@ -1849,7 +1852,7 @@ function drawScreen(ctx,s,i,coordTxt,G){
 }
 function drawOverlay(ctx,x,y,w,h){const o=S.opts;
   if(o.diag){ctx.strokeStyle="rgba(255,255,255,.7)";ctx.lineWidth=Math.max(1,Math.min(w,h)/400);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+w,y+h);ctx.moveTo(x+w,y);ctx.lineTo(x,y+h);ctx.stroke()}
-  if(o.circle){ctx.strokeStyle="rgba(255,255,255,.7)";ctx.lineWidth=Math.max(1,Math.min(w,h)/300);ctx.beginPath();ctx.arc(x+w/2,y+h/2,Math.min(w,h)/2-ctx.lineWidth,0,Math.PI*2);ctx.stroke()}
+  if(o.circle){ctx.strokeStyle="rgba(255,255,255,.7)";ctx.lineWidth=Math.max(1,Math.min(w,h)/300);ctx.beginPath();ctx.arc(x+w/2,y+h/2,Math.max(2,(Math.min(w,h)/2)*Math.min(100,Math.max(5,o.circPct||100))/100-ctx.lineWidth),0,Math.PI*2);ctx.stroke()}
   if(LOGO&&S.logo.pos!=="stage"&&!o.lean)drawLogo(ctx,x,y,w,h,S.logo.pos,o.labels)}
 function drawPowTag(ctx,x,y,sw,sh){const fs=Math.max(10,Math.min(sw,sh)*.07),tx="CORRIENTE";ctx.save();ctx.font=`800 ${fs}px "Archivo",sans-serif`;const tw=ctx.measureText(tx).width;
     ctx.fillStyle="#ffc400";ctx.fillRect(x+sw-tw*1.12-fs*.9,y+fs*.3,tw*1.12+fs*.6,fs*1.3);ctx.fillStyle="#111";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tx,x+sw-tw*.56-fs*.6,y+fs*.97,tw*1.1);ctx.restore()}
@@ -2617,7 +2620,7 @@ async function exportXlsx(){if(!S.screens.length){toast("No hay pantallas.");ret
     {name:"Cableado y corriente",rows:cab,widths:[12,52,10,60],freeze:1,style:(ri,ci)=>ri===0?1:ci===2?6:0}]);
   offer(`material_${slugify(m.project||"pixelmap")}.xlsx`,blob)}
 function renderMat(){renderPrep();$("mat").innerHTML=S.screens.length?material().map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td><td><strong>${r[2]}</strong></td><td>${esc(r[3])}</td></tr>`).join(""):`<tr><td colspan="4" style="text-align:left;color:var(--muted)">Sin pantallas.</td></tr>`}
-function renderAll(){render();renderList();renderTable();renderPorts();renderProc();renderMat();renderTpl();
+function renderAll(){render();renderList();renderTable();renderPorts();renderProc();renderMat();renderTpl();renderTpBox();
   const o=S.opts;$("foot").textContent=`Puertos calculados a ${o.pxPort.toLocaleString("es-ES")} px por puerto Gigabit. Líneas de corriente a ${o.volt} V · ${o.amp} A usando el ${o.fac}% (${fmt(o.volt*o.amp*o.fac/100)} W por línea) con el consumo máximo de cada módulo. La fila de total en «Mód/línea» muestra la corriente total a ${o.volt} V. Comprueba siempre con la ficha del fabricante y el procesador real.`}
 const STD=[[1280,720,"HD 720p"],[1920,1080,"Full HD"],[1920,1200,"WUXGA"],[2560,1440,"QHD"],[3840,1080,"Dual Full HD"],[3840,2160,"4K UHD"],[4096,2160,"4K DCI"],[7680,2160,"Dual 4K"],[7680,4320,"8K UHD"]];
 function syncAutoStage(){if(S.opts.autoStage===false||!S.screens.length)return false;
@@ -2682,7 +2685,7 @@ const toBlob=c=>new Promise(r=>c.toBlob(r,"image/png"));
 async function exportScreens(){
   if(!S.screens.length){toast("Agrega al menos una pantalla.");return}
   if(!window.JSZip){toast("No se ha podido cargar el compresor ZIP. Recarga la página.");return}
-  const zip=new JSZip(),wiring=$("xWire").checked,transparent=$("xAlpha").checked,used=new Set();
+  const zip=new JSZip(),wiring=$("xWire").checked,transparent=false,used=new Set();
   for(let i=0;i<S.screens.length;i++){const s=S.screens[i];let n=`${slugify(s.name)}_${W(s)}x${H(s)}`;while(used.has(n))n+="_b";used.add(n);
     zip.file(n+".png",await toBlob(withLean(()=>screenCanvas(s,i,{transparent,wiring}))))}
   offer(`pantallas_${slugify(S.meta.project||"pixelmap")}.zip`,await zip.generateAsync({type:"blob"}));
@@ -2735,7 +2738,7 @@ function renderTpl(){
 }
 async function exportTpl(){
   const L=tplLayout();if(!L){toast("No hay pantallas en esta selección.");return}
-  const c=withLean(()=>tplCanvas(L,{transparent:$("xAlpha").checked,wiring:$("xWire").checked}));
+  const c=withLean(()=>tplCanvas(L,{transparent:false,wiring:$("xWire").checked}));
   offer(`plantilla_${slugify(S.meta.project||"senal")}_${L.TW}x${L.TH}.png`,await toBlob(c));
 }
 function exportTplCsv(){
@@ -2746,14 +2749,28 @@ function exportTplCsv(){
 }
 function initExport(){
   $("tPresets").onclick=e=>{const b=e.target.closest("button");if(!b)return;$("tW").value=b.dataset.w;$("tH").value=b.dataset.h;renderTpl()};
-  ["tSrc","tW","tH","tMode","tAlign","tPack","xWire","xAlpha","xLean"].forEach(id=>$(id).addEventListener("change",renderTpl));
+  ["tSrc","tW","tH","tMode","tAlign","tPack","xWire","xLean"].forEach(id=>$(id).addEventListener("change",renderTpl));
   $("bScreensZip").onclick=exportScreens;$("bTpl").onclick=exportTpl;$("bTplCsv").onclick=exportTplCsv;
 }
 
 function baseName(){return `pixelmap_${S.stage.w}x${S.stage.h}`}
 // exportación «limpia»: solo nombre y resolución, sin cableado, números, diagonales, círculo, coordenadas, notas ni logo
 const isLean=()=>{const el=document.getElementById("xLean");return !!(el&&el.checked)};
-function withLean(fn,force){if(!force&&!isLean())return fn();const prev=S.opts;S.opts=Object.assign({},prev,{lean:true,labels:true,nums:false,diag:true,circle:true,coords:false,notes:false,wiring:"none"});
+// opciones del test pattern (Test pattern PNG y PNG limpios): texto, diagonales, círculo y su tamaño
+const tpOpts=()=>Object.assign({txt:true,diag:true,circ:true,pct:100,col:"",pat:""},S.opts.tp||{});
+const TPPAT=[["","Como en el dibujo"],["checker","Damero"],["grad","Degradado"],["solid","Liso (con la rejilla de módulos)"]];
+function tpSet(k,v){S.opts.tp=tpOpts();S.opts.tp[k]=k==="pct"?Math.min(100,Math.max(5,+v||100)):v;save()}
+// ajustes de test pattern en el apartado 8, con vista previa de una pantalla
+function renderTpBox(){const el=$("tpBox");if(!el)return;const T=tpOpts();
+  el.innerHTML=`<div class="tpo2"><label class="check"><input type="checkbox" data-tp="txt"${T.txt?" checked":""}> Nombre y resolución</label><label class="check"><input type="checkbox" data-tp="diag"${T.diag?" checked":""}> Diagonales</label><label class="check"><input type="checkbox" data-tp="circ"${T.circ?" checked":""}> Círculo</label></div>
+    <div class="grid2"><label>Tamaño del círculo · ${T.pct} %<input type="range" min="5" max="100" step="5" data-tp="pct" value="${T.pct}"${T.circ?"":" disabled"}></label>
+    <label>Color<select data-tp="col">${TPCOL.map(([k,l])=>`<option value="${k}"${T.col===k?" selected":""}>${l}</option>`).join("")}</select></label>
+    <label class="full" style="grid-column:1/-1">Fondo<select data-tp="pat">${TPPAT.map(([k,l])=>`<option value="${k}"${T.pat===k?" selected":""}>${l}</option>`).join("")}</select></label></div>
+    ${S.screens.length?`<div class="tpprev"><canvas id="tpPrev"></canvas></div><div class="row" style="gap:8px;margin-top:8px"><button id="bTest2" class="primary">Test pattern PNG…</button></div>`:""}`;
+  const cv=$("tpPrev");if(cv&&S.screens.length){const s=S.screens[0],src=withLean(()=>screenCanvas(s,0,{}),"test"),k=Math.min(1,280/src.width,140/src.height);cv.width=Math.max(1,Math.round(src.width*k));cv.height=Math.max(1,Math.round(src.height*k));cv.getContext("2d").drawImage(src,0,0,cv.width,cv.height)}
+  const b=$("bTest2");if(b)b.onclick=openTest}
+const TPCOL=[["","El de cada pantalla"],["205","Azul"],["180","Cian"],["145","Verde"],["48","Amarillo"],["28","Naranja"],["0","Rojo"],["330","Rosa"],["262","Morado"],["gris","Gris"]];
+function withLean(fn,force){if(!force&&!isLean())return fn();const prev=S.opts,T=tpOpts();S.opts=Object.assign({},prev,{lean:true,labels:T.txt,nums:false,diag:T.diag,circle:T.circ,circPct:T.pct,tpCol:T.col,pattern:T.pat||prev.pattern,coords:false,notes:false,wiring:"none"});
   try{return fn()}finally{S.opts=prev}}
 // test pattern limpio de una pantalla (o de las elegidas) a su resolución nativa: sin cableado, números ni diagonales
 async function exportTest(ids){const L=S.screens.map((s,i)=>({s,i})).filter(o=>ids.includes(o.s.id));if(!L.length)return;
@@ -2765,10 +2782,13 @@ async function exportTest(ids){const L=S.screens.map((s,i)=>({s,i})).filter(o=>i
 function openTest(){if(!S.screens.length){toast("Agrega al menos una pantalla.");return}
   if(S.screens.length===1){exportTest([S.screens[0].id]);return}
   let d=document.getElementById("testDlg");if(!d){d=document.createElement("dialog");d.id="testDlg";d.className="dlg";document.body.appendChild(d);
+    d.addEventListener("change",e=>{const k=e.target.dataset.tp;if(!k)return;tpSet(k,k==="pct"||k==="col"||k==="pat"?e.target.value:e.target.checked);renderTpBox();
+      const c=d.querySelector(".tpc");if(c){c.style.opacity=S.opts.tp.circ?1:.45;c.querySelector("input").disabled=!S.opts.tp.circ}});
     d.addEventListener("click",e=>{if(e.target===d){d.close();return}const b=e.target.closest("button[data-t]");if(!b)return;const k=b.dataset.t;
       if(k==="x"){d.close();return}const ids=k==="sel"?[...d.querySelectorAll("input[data-s]:checked")].map(i=>i.dataset.s):k==="all"?S.screens.map(s=>s.id):[k];if(!ids.length){toast("Marca alguna pantalla.");return}d.close();exportTest(ids)})}
   d.innerHTML=`<div class="hhead"><h2>Test pattern PNG</h2><button data-t="x" class="ghost" aria-label="Cerrar">✕</button></div><div class="hbody">
-    <p class="hint" style="margin-top:0">A la resolución nativa de la pantalla: damero, diagonales, círculo, nombre y resolución (sin cableado ni números).</p>
+    <p class="hint" style="margin-top:0">A la resolución nativa de la pantalla, sin cableado ni números de módulo.</p>
+    ${(T=>`<div class="tpo"><label class="check"><input type="checkbox" data-tp="txt"${T.txt?" checked":""}> Nombre y resolución</label><label class="check"><input type="checkbox" data-tp="diag"${T.diag?" checked":""}> Diagonales</label><label class="check"><input type="checkbox" data-tp="circ"${T.circ?" checked":""}> Círculo</label><label class="tpk">Fondo <select data-tp="pat">${TPPAT.map(([k,l])=>`<option value="${k}"${T.pat===k?" selected":""}>${l}</option>`).join("")}</select></label><label class="tpk">Color <select data-tp="col">${TPCOL.map(([k,l])=>`<option value="${k}"${T.col===k?" selected":""}>${l}</option>`).join("")}</select></label><label class="tpc"${T.circ?"":' style="opacity:.45"'}>Tamaño del círculo <input type="number" min="5" max="100" step="5" data-tp="pct" value="${T.pct}"${T.circ?"":" disabled"}> %</label></div>`)(tpOpts())}
     ${S.screens.map(s=>`<div class="row" style="gap:8px;align-items:center;margin:4px 0"><label class="check" style="flex:1;margin:0"><input type="checkbox" data-s="${s.id}"> ${esc(s.name)} · ${W(s)}×${H(s)}</label><button data-t="${s.id}" class="ghost" style="font-size:12px;padding:4px 10px">Descargar</button></div>`).join("")}
     <div class="row" style="gap:8px;margin-top:10px"><button data-t="sel">Las marcadas (.zip)</button><button data-t="all" class="primary">Todas (.zip)</button></div></div>`;
   if(d.showModal)d.showModal();else d.setAttribute("open","")}
@@ -3170,6 +3190,8 @@ $("qGoPdf").onclick=async()=>{const P=qPreview();if(!P.screens.length)return;qBu
 
 document.querySelector(".qex").addEventListener("click",e=>{const b=e.target.closest("button[data-q]");if(!b)return;$("qText").value=b.dataset.q.replace(/&#10;/g,"\n");qMnt=[];qPreview()});
 $("bTest").onclick=openTest;
+$("tpBox").addEventListener("input",e=>{const k=e.target.dataset.tp;if(k!=="pct")return;const l=e.target.closest("label");if(l)l.firstChild.nodeValue=`Tamaño del círculo · ${e.target.value} %`});
+$("tpBox").addEventListener("change",e=>{const k=e.target.dataset.tp;if(!k)return;tpSet(k,e.target.type==="checkbox"?e.target.checked:e.target.value);renderTpBox();renderTpl()});
 $("bJson").onclick=()=>offer(`${baseName()}.json`,JSON.stringify({app:"pixelmap-led",version:1,stage:S.stage,opts:S.opts,meta:S.meta,elecs:S.elecs,scalers:S.scalers||[],boxes:S.boxes||[],pa:S.pa||{},logo:S.logo,screens:S.screens,modules:LIB,processors:PROCLIB},null,2));
 $("bCsv").onclick=()=>{const rows=[["pantalla","modulo","x","y","ancho_px","alto_px","columnas","filas","mod_px_x","mod_px_y","mod_mm_x","mod_mm_y","ancho_m","alto_m","mod_por_puerto","puertos","w_max_mod","w_max_total","mod_por_linea","lineas","kg_mod","kg_total","kg_por_columna","conector_corriente"]];
   S.screens.forEach(s=>rows.push([s.name,s.pn||"",s.x,s.y,W(s),H(s),s.cols,s.rows,s.rx,s.ry,s.cw,s.ch,(s.cols*s.cw/1000).toFixed(3),(s.rows*s.ch/1000).toFixed(3),effData(s),nData(s)??"",s.wm||"",(s.wm||0)*s.cols*s.rows||"",effPow(s)??"",nPow(s)??"",s.kg||"",s.kg?kgOf(s).toFixed(2):"",s.kg?kgCol(s).toFixed(2):"",(PC[s.pc||""]||PC[""]).n]));
