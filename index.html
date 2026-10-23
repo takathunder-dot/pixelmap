@@ -230,6 +230,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
 #testDlg .hhead{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line)}
 #testDlg .hhead h2{margin:0;font:800 17px var(--f-display);color:var(--fg);text-transform:none;letter-spacing:.01em}
 #testDlg .hbody{padding:14px 18px 18px;font-size:14px}
+.mdet{border:1px solid var(--line);border-radius:8px;padding:6px 10px}.mdet>summary{cursor:pointer;font-size:12.5px;list-style:revert}.mdet[open]>summary{margin-bottom:8px}
 .tpbox .tpo2{display:flex;flex-wrap:wrap;gap:4px 14px;margin-bottom:6px}.tpbox .tpo2 .check{margin:0}.tpbox input[type=range]{width:100%;padding:0}
 .tpprev{margin-top:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:#000;display:flex;justify-content:center}.tpprev canvas{max-width:100%;height:auto;image-rendering:auto}
 #testDlg .tpo{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;padding:8px 10px;margin:0 0 10px;border:1px solid var(--line);border-radius:8px}#testDlg .tpo .check{margin:0}#testDlg .tpc{display:flex;align-items:center;gap:6px;font-size:13px}#testDlg .tpc input{width:64px}#testDlg .tpk{display:flex;align-items:center;gap:6px;font-size:13px}#testDlg .tpk select{width:auto}#testDlg .tpo label.tpk,#testDlg .tpo label.tpc{display:flex!important;flex-direction:row!important;align-items:center;gap:6px;text-transform:none;letter-spacing:0;font-size:13px;color:var(--fg);margin:0}#testDlg .tpo .tpk select{width:auto;min-width:0}#testDlg .tpo .tpc input{width:70px}
@@ -355,6 +356,7 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
     <h2><span>2</span>Agregar pantalla</h2>
     <div class="grid2">
       <label class="full">Módulo / cabinet<select id="panel"></select></label>
+      <details id="mDet" class="mdet full" style="grid-column:1/-1"><summary id="mSum">Datos del módulo</summary><div class="grid2">
       <label>Ancho módulo (mm)<input id="cW" type="number" min="1"></label>
       <label>Alto módulo (mm)<input id="cH" type="number" min="1"></label>
       <label>Resolución X<input id="rX" type="number" min="1"></label>
@@ -364,11 +366,12 @@ table.pt td:nth-child(3),table.pt th:nth-child(3){text-align:left;white-space:no
       <label class="full">Máx. por boca de datos<input id="cKd" type="number" min="0" placeholder="calculado con los píxeles por puerto"></label>
       <label>Peso módulo (kg)<input id="cKg" type="number" min="0" step="0.01" placeholder="ficha técnica"></label>
       <label>Conector corriente<select id="cPc"></select></label>
+      <div class="full row"><button id="bToLib" class="ghost">Guardar estos datos como módulo nuevo</button><button id="bGoLib" class="ghost">Ver biblioteca</button></div>
+      </div></details>
       <label>Columnas<input id="cols" type="number" min="1" value="10"></label>
       <label>Filas<input id="rows" type="number" min="1" value="6"></label>
       <label>Ancho (m)<input id="mW" type="number" min="0" step="0.05"></label>
       <label>Alto (m)<input id="mH" type="number" min="0" step="0.05"></label>
-      <div class="full row"><button id="bToLib" class="ghost">Guardar estos datos como módulo nuevo</button><button id="bGoLib" class="ghost">Ver biblioteca</button></div>
       <label class="full">Electrónica<select id="sElec" style="font-family:var(--f-body)"></select></label>
       <label class="full">Nombre de la pantalla<input id="sName" type="text" placeholder="Central, Lateral izq., Suelo…" style="font-family:var(--f-body)"></label>
     </div>
@@ -927,12 +930,14 @@ function loadLib(){loadInv();
 }
 function saveLib(){try{localStorage.setItem("pixelmap-lib-mod",JSON.stringify(LIB));localStorage.setItem("pixelmap-lib-proc",JSON.stringify(PROCLIB));localStorage.setItem("pixelmap-lib-src",JSON.stringify(SRCLIB))}catch(e){}}
 const pLabel=p=>`${p.stock?"★ ":p.prov?`[${p.prov}] `:""}${p.n} · ${fmtN(p.w)}×${fmtN(p.h)} mm · ${p.x}×${p.y} px${p.wm?` · ${p.wm} W`:""}`;
+// en «Agregar pantalla» solo modelo y resolución; el resto va en el desplegable de datos del módulo
+const pLabelS=p=>`${p.stock?"★ ":p.prov?`[${p.prov}] `:""}${p.n} · ${p.x}×${p.y} px`;
 const fmtN=v=>String(v).replace(".",",");
 function panelOf(v){if(!v||v==="custom")return null;return LIB.find(p=>p.id===v)||null}
 const procOf=id=>PROCLIB.find(p=>p.id===id)||null;
 function buildPanelSelect(val){
   const st=LIB.filter(p=>p.stock),ot=LIB.filter(p=>!p.stock&&!p.prov),provs=[...new Set(LIB.filter(p=>!p.stock&&p.prov).map(p=>p.prov))].sort();
-  const grp=(label,arr)=>arr.length?`<optgroup label="${label}">${arr.map(p=>`<option value="${p.id}">${esc(pLabel(p))}</option>`).join("")}</optgroup>`:"";
+  const grp=(label,arr)=>arr.length?`<optgroup label="${label}">${arr.map(p=>`<option value="${p.id}">${esc(pLabelS(p))}</option>`).join("")}</optgroup>`:"";
   $("panel").innerHTML=grp("En Telesonic",st)+provs.map(v=>grp(esc(v),LIB.filter(p=>!p.stock&&p.prov===v))).join("")+grp("Otros módulos",ot)+`<option value="custom">Personalizado…</option>`;
   $("panel").value=val&&(val==="custom"||panelOf(val))?val:(st[0]||LIB[0]||{id:"custom"}).id;
 }
@@ -1773,6 +1778,9 @@ function preview(){const rx=+$("rX").value,ry=+$("rY").value,c=+$("cols").value,
   if(rx>0&&ry>0){const md=maxData(t);$("pvData").textContent=md?`${md} mód/puerto · ${chunks(t,md).length} puertos`:"módulo demasiado grande"}else $("pvData").textContent="—";
   const kg=+$("cKg").value||0;$("pvKg").textContent=kg?`${fmt(kg*c*r)} kg · ${fmt(kg*r)} kg/col.`:"indica peso";
   const mp=maxPow(t);$("pvPow").textContent=mp===null?"indica consumo":mp?`${mp} mód/línea ${S.opts.amp} A · ${chunks(t,mp).length} líneas`:"un módulo supera la línea";
+  // resumen del módulo (los datos van plegados); si falta el consumo, se despliega
+  {const kg0=+$("cKg").value||0,ms=$("mSum");if(ms)ms.innerHTML=`<b>${rx}×${ry} px</b> · ${+$("cW").value||"?"}×${+$("cH").value||"?"} mm${cw&&rx?` · P${(cw/rx).toFixed(2).replace(".",",")}`:""} · ${t.wm>0?t.wm+" W":'<span class="warn">sin consumo</span>'}${kg0?` · ${fmt(kg0)} kg`:""} <span class="hint" style="margin:0">· ver y editar datos</span>`;
+    if(!(t.wm>0)&&!(t.k>0)&&$("mDet"))$("mDet").open=true}
   // recordatorio: sin consumo no hay líneas de corriente, cuadros ni circuitos
   {const miss=!(t.wm>0)&&!(t.k>0),w=$("powWarn");$("cP").style.outline=miss?"2px solid var(--danger)":"";
     if(w){w.hidden=!miss;w.style.display=miss?"":"none";w.innerHTML=miss?`⚠ <b>Falta el consumo de este módulo</b> (W máx. o máx. por línea). Sin él no se calculan las líneas de corriente, los cuadros ni los circuitos. Escríbelo arriba y pulsa «Guardar estos datos como módulo nuevo», o rellénalo en <b>Módulos</b> para que quede en la biblioteca.`:""}}}
